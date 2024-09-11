@@ -145,7 +145,7 @@ const HomePage = () => {
       </div>
 
       {/* Best Seller Product */}
-      <div className='flex'>
+      <div className='flex w-screen h-screen bg-purple-200'>
         <div>
           <div>
             Best Seller Product
@@ -158,7 +158,7 @@ const HomePage = () => {
           </div>
         </div>
         <div>
-          
+
         </div>
       </div>
     </div>
