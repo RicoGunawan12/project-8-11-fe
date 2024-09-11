@@ -19,6 +19,9 @@ const config: Config = {
       },
       dropShadow:{
         default: "0 3px 10px rgba(0,0,0,1)"
+      },
+      borderRadius:{
+        banner: "15rem"
       }
     },
   },
