@@ -1,45 +1,72 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from '../component/navbar'
 import Image from "next/image";
+import HotProduct from './product/hot';
+import OnSaleProduct from './product/onsale';
+import TrendingProduct from './product/trendingNow';
+import NewArrivalProduct from './product/newArrival';
 
 const HomePage = () => {
 
-  const banners = [
-    {
-      title : "Ini ke-1",
-      name : "TYESO Travel Mug 1",
-      link : "https://tyesoindonesia.id/wp-content/uploads/2024/02/232-1024x1024.png",
-      id: "1",
-    },
-    {
-      title : "Ini ke-2",
-      name : "TYESO Travel Mug 2",
-      link : "https://tyesoindonesia.id/wp-content/uploads/2024/02/1.1-1.jpg",
-      id: "",
-    },
-    {
-      title : "Ini ke-3",
-      name : "TYESO Travel Mug 3",
-      link : "https://tyesoindonesia.id/wp-content/uploads/2024/02/1.2.jpg",
-      id: "",
-    },
-    {
-      title : "Ini ke-4",
-      name : "TYESO Travel Mug 4",
-      link : "https://tyesoindonesia.id/wp-content/uploads/2024/02/1.3.jpg",
-      id: "",
-    },
-  ]
+  const [pager, setPager] = useState(1)
 
-  const slideNext = () =>{
-    const slider = document.getElementById('slider')
-
-    if(slider){
-      slider.style.transform = 'translate(-1024px, 0)'
-    }
-    console.log("move")
-  }
+  const carousels = [
+    {
+      product_name: "Nadine Abigail",
+      rating: 3,
+      photo_link:
+        "https://scontent-cgk1-1.cdninstagram.com/v/t39.30808-6/454937963_18449291683031145_1184331195895188137_n.jpg?stp=dst-jpg_e35_p1080x1080&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTYuc2RyLmYzMDgwOC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk1-1.cdninstagram.com&_nc_cat=109&_nc_ohc=ukFBUFKiBPsQ7kNvgGRqVLt&edm=AFg4Q8wAAAAA&ccb=7-5&ig_cache_key=MzQzMjA3MTAwOTk2OTU1MzYxNQ%3D%3D.3-ccb7-5&oh=00_AYDnQ3Qvjj8QvZPcNdiJa8PTjXRSziv729h5vqm_V9PzHQ&oe=66E71B96&_nc_sid=0b30b7",
+      discount: true,
+      price: 540000,
+      original_price: 830000,
+    },
+    {
+      product_name: "Nadine Abigail",
+      rating: 3,
+      photo_link:
+        "https://scontent-cgk1-1.cdninstagram.com/v/t39.30808-6/454937963_18449291683031145_1184331195895188137_n.jpg?stp=dst-jpg_e35_p1080x1080&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTYuc2RyLmYzMDgwOC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk1-1.cdninstagram.com&_nc_cat=109&_nc_ohc=ukFBUFKiBPsQ7kNvgGRqVLt&edm=AFg4Q8wAAAAA&ccb=7-5&ig_cache_key=MzQzMjA3MTAwOTk2OTU1MzYxNQ%3D%3D.3-ccb7-5&oh=00_AYDnQ3Qvjj8QvZPcNdiJa8PTjXRSziv729h5vqm_V9PzHQ&oe=66E71B96&_nc_sid=0b30b7",
+      discount: true,
+      price: 540000,
+      original_price: 830000,
+    },
+    {
+      product_name: "Nadine Abigail",
+      rating: 3,
+      photo_link:
+        "https://scontent-cgk1-1.cdninstagram.com/v/t39.30808-6/454937963_18449291683031145_1184331195895188137_n.jpg?stp=dst-jpg_e35_p1080x1080&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTYuc2RyLmYzMDgwOC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk1-1.cdninstagram.com&_nc_cat=109&_nc_ohc=ukFBUFKiBPsQ7kNvgGRqVLt&edm=AFg4Q8wAAAAA&ccb=7-5&ig_cache_key=MzQzMjA3MTAwOTk2OTU1MzYxNQ%3D%3D.3-ccb7-5&oh=00_AYDnQ3Qvjj8QvZPcNdiJa8PTjXRSziv729h5vqm_V9PzHQ&oe=66E71B96&_nc_sid=0b30b7",
+      discount: true,
+      price: 540000,
+      original_price: 830000,
+    },
+    {
+      product_name: "Nadine Abigail",
+      rating: 3,
+      photo_link:
+        "https://scontent-cgk1-1.cdninstagram.com/v/t39.30808-6/454937963_18449291683031145_1184331195895188137_n.jpg?stp=dst-jpg_e35_p1080x1080&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTYuc2RyLmYzMDgwOC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk1-1.cdninstagram.com&_nc_cat=109&_nc_ohc=ukFBUFKiBPsQ7kNvgGRqVLt&edm=AFg4Q8wAAAAA&ccb=7-5&ig_cache_key=MzQzMjA3MTAwOTk2OTU1MzYxNQ%3D%3D.3-ccb7-5&oh=00_AYDnQ3Qvjj8QvZPcNdiJa8PTjXRSziv729h5vqm_V9PzHQ&oe=66E71B96&_nc_sid=0b30b7",
+      discount: true,
+      price: 540000,
+      original_price: 830000,
+    },
+    {
+      product_name: "Nadine Abigail",
+      rating: 3,
+      photo_link:
+        "https://scontent-cgk1-1.cdninstagram.com/v/t39.30808-6/454937963_18449291683031145_1184331195895188137_n.jpg?stp=dst-jpg_e35_p1080x1080&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTYuc2RyLmYzMDgwOC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk1-1.cdninstagram.com&_nc_cat=109&_nc_ohc=ukFBUFKiBPsQ7kNvgGRqVLt&edm=AFg4Q8wAAAAA&ccb=7-5&ig_cache_key=MzQzMjA3MTAwOTk2OTU1MzYxNQ%3D%3D.3-ccb7-5&oh=00_AYDnQ3Qvjj8QvZPcNdiJa8PTjXRSziv729h5vqm_V9PzHQ&oe=66E71B96&_nc_sid=0b30b7",
+      discount: true,
+      price: 540000,
+      original_price: 830000,
+    },
+    {
+      product_name: "Nadine Abigail",
+      rating: 3,
+      photo_link:
+        "https://scontent-cgk1-1.cdninstagram.com/v/t39.30808-6/454937963_18449291683031145_1184331195895188137_n.jpg?stp=dst-jpg_e35_p1080x1080&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTYuc2RyLmYzMDgwOC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk1-1.cdninstagram.com&_nc_cat=109&_nc_ohc=ukFBUFKiBPsQ7kNvgGRqVLt&edm=AFg4Q8wAAAAA&ccb=7-5&ig_cache_key=MzQzMjA3MTAwOTk2OTU1MzYxNQ%3D%3D.3-ccb7-5&oh=00_AYDnQ3Qvjj8QvZPcNdiJa8PTjXRSziv729h5vqm_V9PzHQ&oe=66E71B96&_nc_sid=0b30b7",
+      discount: true,
+      price: 540000,
+      original_price: 830000,
+    },
+  ];
 
   return (
     <div className="w-screen bg-white">
@@ -145,20 +172,94 @@ const HomePage = () => {
       </div>
 
       {/* Best Seller Product */}
-      <div className='flex w-screen h-screen bg-purple-200'>
-        <div>
-          <div>
+      <div className="flex w-screen h-screen bg-stone-800 justify-center items-center gap-6">
+        <div className="w-2/5">
+          <div className="text-white text-8xl font-bold">
             Best Seller Product
           </div>
-          <div>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores soluta dicta, tempora eaque placeat libero debitis voluptatum eum assumenda esse ducimus! Unde rem quasi inventore dignissimos ipsa corrupti sapiente. Amet dicta facere, eveniet in fugit saepe eum commodi totam temporibus rerum voluptatem, autem blanditiis distinctio nisi consequatur sequi deleniti? Sapiente.
+          <div className="text-lg mt-4">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores
+            soluta dicta, tempora eaque placeat libero debitis voluptatum eum
+            assumenda esse ducimus! Unde rem quasi inventore dignissimos ipsa
+            corrupti sapiente. Amet dicta facere, eveniet in fugit saepe eum
+            commodi totam temporibus rerum voluptatem, autem blanditiis
+            distinctio nisi consequatur sequi deleniti? Sapiente.
           </div>
-          <div>
-            <button></button>
+          <div className="border-white border w-fit px-6 py-2 mt-4">
+            <button>click here</button>
           </div>
         </div>
-        <div>
+        <div className="w-2/5 flex gap-12 overflow-x-auto">
+          {carousels.map((carousel, idx) => {
+            return (
+              <div key={idx} className="flex-shrink-0">
+                <Image
+                  src={carousel.photo_link}
+                  width={400}
+                  height={350}
+                  alt="logo pic"
+                  className="rounded-t-3xl"
+                />
+                <div className="bg-white py-6 px-10">
+                  <div className="text-black">{carousel.rating}</div>
+                  <div className="text-black">{carousel.product_name}</div>
+                  <div className="text-black flex gap-6">
+                    {carousel.discount ? (
+                      <div className="line-through text-gray-500">
+                        ${carousel.original_price}
+                      </div>
+                    ) : null}
+                    <div>${carousel.price}</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
+      {/* Our Product */}
+      <div className="w-screen h-screen bg-red-100">
+        <div>Our Product</div>
+        <div className="flex">
+          <button
+            onClick={() => {
+              console.log(1)
+              setPager(1)
+            }}
+          >
+            HOT
+          </button>
+          <button
+            onClick={() => {
+              console.log(2)
+              setPager(2)
+            }}
+          >
+            ON SALE
+          </button>
+          <button
+            onClick={() => {
+              console.log(3)
+              setPager(3)
+            }}
+          >
+            TRENDING NOW
+          </button>
+          <button
+            onClick={() => {
+              console.log(4)
+              setPager(4)
+            }}
+          >
+            NEW ARRIVAL
+          </button>
+        </div>
+        <div>
+          {pager === 1 && <HotProduct/>}
+          {pager === 2 && <OnSaleProduct/>}
+          {pager === 3 && <TrendingProduct/>}
+          {pager === 4 && <NewArrivalProduct/>}
         </div>
       </div>
     </div>
