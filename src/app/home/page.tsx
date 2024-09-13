@@ -219,9 +219,9 @@ const HomePage = () => {
       </div>
 
       {/* Our Product */}
-      <div className="w-screen h-screen bg-red-100">
-        <div>Our Product</div>
-        <div className="flex">
+      <div className="w-screen h-screen bg-red-100 flex items-center flex-col">
+        <div className='mt-4 text-8xl font-bold text-black'>Our Product</div>
+        <div className="flex text-black text-lg font-medium gap-10">
           <button
             onClick={() => {
               console.log(1)
@@ -255,7 +255,7 @@ const HomePage = () => {
             NEW ARRIVAL
           </button>
         </div>
-        <div>
+        <div className='mt-4'>
           {pager === 1 && <HotProduct/>}
           {pager === 2 && <OnSaleProduct/>}
           {pager === 3 && <TrendingProduct/>}
