@@ -177,7 +177,7 @@ const HomePage = () => {
           <div className="text-white text-8xl font-bold">
             Best Seller Product
           </div>
-          <div className="text-lg mt-4">
+          <div className="text-lg mt-4 text-white">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores
             soluta dicta, tempora eaque placeat libero debitis voluptatum eum
             assumenda esse ducimus! Unde rem quasi inventore dignissimos ipsa
@@ -185,7 +185,7 @@ const HomePage = () => {
             commodi totam temporibus rerum voluptatem, autem blanditiis
             distinctio nisi consequatur sequi deleniti? Sapiente.
           </div>
-          <div className="border-white border w-fit px-6 py-2 mt-4">
+          <div className="border-white text-white border w-fit px-6 py-2 mt-4">
             <button>click here</button>
           </div>
         </div>
@@ -219,8 +219,8 @@ const HomePage = () => {
       </div>
 
       {/* Our Product */}
-      <div className="w-screen h-screen bg-red-100 flex items-center flex-col">
-        <div className='mt-4 text-8xl font-bold text-black'>Our Product</div>
+      <div className="w-screen h-screen flex items-center flex-col">
+        <div className='mt-16 text-8xl font-bold text-black'>Our Product</div>
         <div className="flex text-black text-lg font-medium gap-10">
           <button
             onClick={() => {
@@ -262,6 +262,8 @@ const HomePage = () => {
           {pager === 4 && <NewArrivalProduct/>}
         </div>
       </div>
+
+
     </div>
   );
 }
