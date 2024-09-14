@@ -1,6 +1,7 @@
 import React from 'react'
 import Navbar from '../component/navbar'
 import Card from '../home/product/card';
+import { ProductCard } from '../model/product';
 
 const generateDummyData = (num: number): ProductCard[] => {
     return Array.from({ length: num }, (_, index) => ({
@@ -19,7 +20,7 @@ const ProductPage = () => {
   return (
     <div className='w-screen bg-white'>
         <Navbar />
-        <div className='grid-cols-5 grid w-full justify-items-center pt-24'>
+        <div className='grid-cols-5 grid w-full justify-items-center pt-12'>
         {dummyProducts.map((product, index) => (
           <Card
             key={index}
