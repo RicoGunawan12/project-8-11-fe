@@ -6,10 +6,9 @@ import HotProduct from './product/hot';
 import OnSaleProduct from './product/onsale';
 import TrendingProduct from './product/trendingNow';
 import NewArrivalProduct from './product/newArrival';
+import OurProductSection from './section/ourProduct';
 
 const HomePage = () => {
-
-  const [pager, setPager] = useState(1)
 
   const carousels = [
     {
@@ -219,49 +218,7 @@ const HomePage = () => {
       </div>
 
       {/* Our Product */}
-      <div className="w-screen h-screen flex items-center flex-col">
-        <div className='mt-16 text-8xl font-bold text-black'>Our Product</div>
-        <div className="flex text-black text-lg font-medium gap-10">
-          <button
-            onClick={() => {
-              console.log(1)
-              setPager(1)
-            }}
-          >
-            HOT
-          </button>
-          <button
-            onClick={() => {
-              console.log(2)
-              setPager(2)
-            }}
-          >
-            ON SALE
-          </button>
-          <button
-            onClick={() => {
-              console.log(3)
-              setPager(3)
-            }}
-          >
-            TRENDING NOW
-          </button>
-          <button
-            onClick={() => {
-              console.log(4)
-              setPager(4)
-            }}
-          >
-            NEW ARRIVAL
-          </button>
-        </div>
-        <div className='mt-4'>
-          {pager === 1 && <HotProduct/>}
-          {pager === 2 && <OnSaleProduct/>}
-          {pager === 3 && <TrendingProduct/>}
-          {pager === 4 && <NewArrivalProduct/>}
-        </div>
-      </div>
+      <OurProductSection/>
 
 
     </div>

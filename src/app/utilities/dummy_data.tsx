@@ -1,84 +1,173 @@
 import { ProductCard } from "../model/product";
 
-export const OUR_PRODUCT_DATA: ProductCard[] = [
+export const hotProduct: ProductCard[] = [
   {
     product_id: "1",
     photo_link:
-      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk2-1.cdninstagram.com&_nc_cat=106&_nc_ohc=1Kwbg9v6TeUQ7kNvgGdvenR&_nc_gid=f600ca7e65cb44e19c62bb3750b22243&edm=AFg4Q8wBAAAA&ccb=7-5&ig_cache_key=MzQxOTcyOTA0MDc2MTEwMzQ3NA%3D%3D.3-ccb7-5&oh=00_AYD7aBJDmDUR_frkyfHol-RqpKQKN6sDMMhqcnGUE3_JSw&oe=66E78E34&_nc_sid=0b30b7",
-    rating: 3,
-    product_name: "Nadine Abigail",
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 4,
+    product_name: "Maximus Power Drill",
     discount: true,
-    price: 540000,
-    original_price: 830000,
+    price: 1200000,
+    original_price: 1500000,
   },
   {
     product_id: "2",
     photo_link:
-      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk2-1.cdninstagram.com&_nc_cat=106&_nc_ohc=1Kwbg9v6TeUQ7kNvgGdvenR&_nc_gid=f600ca7e65cb44e19c62bb3750b22243&edm=AFg4Q8wBAAAA&ccb=7-5&ig_cache_key=MzQxOTcyOTA0MDc2MTEwMzQ3NA%3D%3D.3-ccb7-5&oh=00_AYD7aBJDmDUR_frkyfHol-RqpKQKN6sDMMhqcnGUE3_JSw&oe=66E78E34&_nc_sid=0b30b7",
-    rating: 3,
-    product_name: "Nadine Abigail",
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 5,
+    product_name: "Titanium Wrench Set",
     discount: false,
-    price: 540000,
-    original_price: 830000,
+    price: 2500000,
+    original_price: 3000000,
   },
   {
     product_id: "3",
     photo_link:
-      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk2-1.cdninstagram.com&_nc_cat=106&_nc_ohc=1Kwbg9v6TeUQ7kNvgGdvenR&_nc_gid=f600ca7e65cb44e19c62bb3750b22243&edm=AFg4Q8wBAAAA&ccb=7-5&ig_cache_key=MzQxOTcyOTA0MDc2MTEwMzQ3NA%3D%3D.3-ccb7-5&oh=00_AYD7aBJDmDUR_frkyfHol-RqpKQKN6sDMMhqcnGUE3_JSw&oe=66E78E34&_nc_sid=0b30b7",
-    rating: 3,
-    product_name: "Nadine Abigail",
-    discount: false,
-    price: 540000,
-    original_price: 830000,
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 4,
+    product_name: "Pro Tech Hammer",
+    discount: true,
+    price: 800000,
+    original_price: 1000000,
   },
   {
     product_id: "4",
     photo_link:
-      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk2-1.cdninstagram.com&_nc_cat=106&_nc_ohc=1Kwbg9v6TeUQ7kNvgGdvenR&_nc_gid=f600ca7e65cb44e19c62bb3750b22243&edm=AFg4Q8wBAAAA&ccb=7-5&ig_cache_key=MzQxOTcyOTA0MDc2MTEwMzQ3NA%3D%3D.3-ccb7-5&oh=00_AYD7aBJDmDUR_frkyfHol-RqpKQKN6sDMMhqcnGUE3_JSw&oe=66E78E34&_nc_sid=0b30b7",
-    rating: 3,
-    product_name: "Nadine Abigail",
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 5,
+    product_name: "Ultimate Screwdriver Kit",
+    discount: false,
+    price: 1500000,
+    original_price: 1700000,
+  },
+];
+
+export const newArrivalProduct: ProductCard[] = [
+  {
+    product_id: "1",
+    photo_link:
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 5,
+    product_name: "Speedy Electric Drill",
     discount: true,
-    price: 540000,
-    original_price: 830000,
+    price: 1800000,
+    original_price: 2200000,
   },
   {
-    product_id: "5",
+    product_id: "2",
     photo_link:
-      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk2-1.cdninstagram.com&_nc_cat=106&_nc_ohc=1Kwbg9v6TeUQ7kNvgGdvenR&_nc_gid=f600ca7e65cb44e19c62bb3750b22243&edm=AFg4Q8wBAAAA&ccb=7-5&ig_cache_key=MzQxOTcyOTA0MDc2MTEwMzQ3NA%3D%3D.3-ccb7-5&oh=00_AYD7aBJDmDUR_frkyfHol-RqpKQKN6sDMMhqcnGUE3_JSw&oe=66E78E34&_nc_sid=0b30b7",
-    rating: 3,
-    product_name: "Nadine Abigail",
-    discount: true,
-    price: 540000,
-    original_price: 830000,
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 4,
+    product_name: "Heavy Duty Saw",
+    discount: false,
+    price: 2000000,
+    original_price: 2500000,
   },
   {
-    product_id: "6",
+    product_id: "3",
     photo_link:
-      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk2-1.cdninstagram.com&_nc_cat=106&_nc_ohc=1Kwbg9v6TeUQ7kNvgGdvenR&_nc_gid=f600ca7e65cb44e19c62bb3750b22243&edm=AFg4Q8wBAAAA&ccb=7-5&ig_cache_key=MzQxOTcyOTA0MDc2MTEwMzQ3NA%3D%3D.3-ccb7-5&oh=00_AYD7aBJDmDUR_frkyfHol-RqpKQKN6sDMMhqcnGUE3_JSw&oe=66E78E34&_nc_sid=0b30b7",
-    rating: 3,
-    product_name: "Nadine Abigail",
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 5,
+    product_name: "Cordless Grinder",
     discount: true,
-    price: 540000,
-    original_price: 830000,
+    price: 3000000,
+    original_price: 3500000,
   },
   {
-    product_id: "7",
+    product_id: "4",
     photo_link:
-      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk2-1.cdninstagram.com&_nc_cat=106&_nc_ohc=1Kwbg9v6TeUQ7kNvgGdvenR&_nc_gid=f600ca7e65cb44e19c62bb3750b22243&edm=AFg4Q8wBAAAA&ccb=7-5&ig_cache_key=MzQxOTcyOTA0MDc2MTEwMzQ3NA%3D%3D.3-ccb7-5&oh=00_AYD7aBJDmDUR_frkyfHol-RqpKQKN6sDMMhqcnGUE3_JSw&oe=66E78E34&_nc_sid=0b30b7",
-    rating: 3,
-    product_name: "Nadine Abigail",
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 4,
+    product_name: "Precision Cutter",
+    discount: false,
+    price: 1400000,
+    original_price: 1600000,
+  },
+];
+
+export const trendingProduct: ProductCard[] = [
+  {
+    product_id: "1",
+    photo_link:
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 5,
+    product_name: "All-in-One Toolkit",
     discount: true,
-    price: 540000,
-    original_price: 830000,
+    price: 2300000,
+    original_price: 2700000,
   },
   {
-    product_id: "8",
+    product_id: "2",
     photo_link:
-      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk2-1.cdninstagram.com&_nc_cat=106&_nc_ohc=1Kwbg9v6TeUQ7kNvgGdvenR&_nc_gid=f600ca7e65cb44e19c62bb3750b22243&edm=AFg4Q8wBAAAA&ccb=7-5&ig_cache_key=MzQxOTcyOTA0MDc2MTEwMzQ3NA%3D%3D.3-ccb7-5&oh=00_AYD7aBJDmDUR_frkyfHol-RqpKQKN6sDMMhqcnGUE3_JSw&oe=66E78E34&_nc_sid=0b30b7",
-    rating: 3,
-    product_name: "Nadine Abigail",
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 5,
+    product_name: "Smart Laser Measure",
+    discount: false,
+    price: 1250000,
+    original_price: 1400000,
+  },
+  {
+    product_id: "3",
+    photo_link:
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 4,
+    product_name: "Advanced Screwdriver Set",
     discount: true,
-    price: 540000,
-    original_price: 830000,
+    price: 850000,
+    original_price: 1000000,
+  },
+  {
+    product_id: "4",
+    photo_link:
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 4,
+    product_name: "Powerful Sander",
+    discount: true,
+    price: 1900000,
+    original_price: 2200000,
+  },
+];
+
+export const onSaleProduct: ProductCard[] = [
+  {
+    product_id: "1",
+    photo_link:
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 5,
+    product_name: "Compact Drill Machine",
+    discount: true,
+    price: 1300000,
+    original_price: 1800000,
+  },
+  {
+    product_id: "2",
+    photo_link:
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 4,
+    product_name: "Pro Sander",
+    discount: true,
+    price: 900000,
+    original_price: 1300000,
+  },
+  {
+    product_id: "3",
+    photo_link:
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 5,
+    product_name: "Industrial Grinder",
+    discount: true,
+    price: 2400000,
+    original_price: 3000000,
+  },
+  {
+    product_id: "4",
+    photo_link:
+      "https://scontent-cgk2-1.cdninstagram.com/v/t51.29350-15/452843857_1266759404288274_2608934006228877857_n.heic?stp=dst-jpg_e35",
+    rating: 4,
+    product_name: "Precision Drill Set",
+    discount: true,
+    price: 1600000,
+    original_price: 2000000,
   },
 ];
