@@ -3,6 +3,7 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
 import { workerData } from "worker_threads";
+import Navbar from "@/app/component/navbar";
 
 const ProductDetailPage = () => {
   const router = useParams();
@@ -66,22 +67,24 @@ const ProductDetailPage = () => {
     },
   ];
 
-
   const [variantChosen, setVariantChosen] = useState(0);
 
   return (
     <div className="bg-white w-screen h-screen flex">
+      <Navbar />
       {/* Selected Variant */}
-      <div className="w-5/12 h-full bg-red-200 flex justify-center items-center">
+      <div className="w-5/12 h-full flex justify-center items-center pt-14">
         <Image
           src={productData[variantChosen].photo_link}
-          width={700}
-          height={700}
+          width={500}
+          height={500}
+          style={{ objectFit: "contain" }}
           alt="Not Found"
+          layout="fixed"
         />
       </div>
       {/* Variant List */}
-      <div className="w-2/12 h-full   text-black overflow-y-auto">
+      <div className="w-1/12 h-full text-black overflow-y-auto pt-product_detail">
         {productData.map((product, idx) => {
           return (
             <div
@@ -94,8 +97,7 @@ const ProductDetailPage = () => {
                 height={200}
                 alt="Not Found"
                 onClick={() => {
-                  
-                  setVariantChosen(idx)
+                  setVariantChosen(idx);
                 }}
               />
             </div>
@@ -104,8 +106,10 @@ const ProductDetailPage = () => {
       </div>
 
       {/* Variant Data */}
-      <div className="w-5/12 h-full bg-green-500 text-black p-6">
-        <div>{productData[variantChosen].product_name}</div>
+      <div className="w-5/12 h-full text-black pt-16 px-6">
+        <div className="text-8xl font-bold">
+          {productData[variantChosen].product_name}
+        </div>
         <div>owdkaoksd</div>
         <div>kdokwaodk</div>
       </div>

@@ -1,4 +1,5 @@
 export interface ProductCard {
+  product_id : string;
   photo_link: string;
   rating: number;
   product_name: string;
