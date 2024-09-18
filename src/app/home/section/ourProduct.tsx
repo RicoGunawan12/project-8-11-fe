@@ -60,13 +60,13 @@ const OurProductSection = () => {
                       <div>${product.price}</div>
                     </div>
                   </CardHeader>
-                  <CardBody className="overflow-visible py-2">
+                  <CardBody className="overflow-visible py-1">
                     <Image
                       alt="Card background"
                       className="object-cover rounded-xl"
                       src={product.photo_link}
-                      width={270}
-                      height={270}
+                      width={200}
+                      height={220}
                     />
                   </CardBody>
                 </Card>
