@@ -7,6 +7,9 @@ const nextConfig = {
       "scontent-cgk1-2.cdninstagram.com",
     ],
   },
+  env: {
+    USER_REGISTER: process.env.USER_REGISTER,
+  },
 };
 
 export default nextConfig;
