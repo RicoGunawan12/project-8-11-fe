@@ -1,12 +1,17 @@
 "use client"
 import React, { useState } from "react";
-import { User } from "@/app/model/user";
+import { UserRegister } from "@/app/model/user";
 import { Button, Input } from "@nextui-org/react";
 import Image from "next/image";
 import { toastSuccess, toastError } from '../../utilities/toast';
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const RegisterPage = () => {
-  const [newUserData, setNewUserData] = useState<User>({
+
+  const router = useRouter()
+
+  const [newUserData, setNewUserData] = useState<UserRegister>({
     username: "",
     email : "",
     password : ""
@@ -34,12 +39,12 @@ const RegisterPage = () => {
       });
 
       if (!response.ok) {
-        console.log(response)
-        throw new Error(response.message);
+        throw new Error("Account Registration Failed");
       }
 
       const data = await response.json();
       toastSuccess("Account Registered Successfully")
+      router.push("/auth/login")
     } catch (error : any) {
       toastError(error.message)
     }
@@ -57,8 +62,8 @@ const RegisterPage = () => {
             height={220}
           />
         </div>
-        <div className="w-1/2 rounded-r-2xl p-6">
-          <div className="text-black text-8xl font-bold text-center">
+        <div className="w-1/2 rounded-r-2xl p-36">
+          <div className="text-black text-7xl font-bold text-center">
             REGISTER
           </div>
           <div className="w-full">
@@ -95,6 +100,9 @@ const RegisterPage = () => {
           </div>
           <div className="flex justify-center mt-6 w-full">
             <Button onClick={register} className="w-full bg-secondary text-white font-semibold text-lg">Register</Button>
+          </div>
+          <div className="text-sm">
+            Already have an account? <Link href={"/auth/login"} className="text-blue-500 font-bold">Click here</Link>
           </div>
         </div>
       </div>

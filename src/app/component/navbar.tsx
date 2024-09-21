@@ -1,26 +1,98 @@
-import Link from 'next/link'
-import React from 'react'
+"use client";
+import React, { useState } from "react";
+import { deleteTokenCookie, getTokenCookie } from "../utilities/token";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
+  Link,
+  Button,
+} from "@nextui-org/react";
 
-const Navbar = () => {
+const NavigationBar = () => {
+  const token = getTokenCookie();
+  console.log(token);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const menuItems = [
+    "Profile",
+    "Dashboard",
+    "Activity",
+    "Analytics",
+    "System",
+    "Deployments",
+    "My Settings",
+    "Team Settings",
+    "Help & Feedback",
+    "Log Out",
+  ];
+
   return (
-    <div className='fixed top-0 z-50 lg:w-screen bg-secondary lg:flex lg:justify-between lg:py-2 lg:px-6 lg:rounded-b-xl lg:flex-wrap lg:items-center drop-shadow-default'>
-        
-        {/* Logo */}
-        <Link className='lg:text-3xl lg:font-bold text-white' href={"/"}>
+    <Navbar
+      onMenuOpenChange={setIsMenuOpen}
+      position="sticky"
+      className="bg-secondary"
+      shouldHideOnScroll
+      isBordered
+      isBlurred={false}
+    >
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden"
+        />
+        <NavbarBrand>
+          <Link className="lg:text-3xl lg:font-bold text-white" href={"/"}>
             TYESO
-        </Link>
-        
-        {/* Navigation */}
-        <div className='lg:text-lg text-white lg:font-semibold'>
-            <a href="/product">Product</a>
-        </div>
+          </Link>
+        </NavbarBrand>
+      </NavbarContent>
 
-        {/* right party (cart & profile) */}
-        <div className='lg:text-lg text-white lg:font-semibold'>
-            profile
-        </div>
-    </div>
-  )
-}
+      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarItem >
+          <Link className="font-semibold text-white text-xl" href="/product">
+            Product
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
+      <NavbarContent justify="end">
+        {token ? (
+          <NavbarItem className="hidden lg:flex">
+            <Link href="/auth/login" onClick={deleteTokenCookie} className="font-semibold text-white text-xl">Log out</Link>
+          </NavbarItem>
+        ) : (
+          <NavbarItem>
+            <Link href="/auth/login" className="font-semibold text-white text-xl">Log in</Link>
+          </NavbarItem>
+        )}
+      </NavbarContent>
+      <NavbarMenu>
+        {menuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link
+              color={
+                index === 2
+                  ? "primary"
+                  : index === menuItems.length - 1
+                  ? "danger"
+                  : "foreground"
+              }
+              className="w-full"
+              href="#"
+              size="lg"
+            >
+              {item}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
+    </Navbar>
+  );
+};
 
-export default Navbar
+export default NavigationBar;

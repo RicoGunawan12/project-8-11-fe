@@ -9,6 +9,7 @@ const nextConfig = {
   },
   env: {
     USER_REGISTER: process.env.USER_REGISTER,
+    USER_LOGIN: process.env.USER_LOGIN,
   },
 };
 
