@@ -13,7 +13,6 @@ const HomePage = () => {
     <div className="w-screen bg-white">
       
       <NavigationBar />
-
       <Banner/>
       <NewCollection/>
       <BestItem/>

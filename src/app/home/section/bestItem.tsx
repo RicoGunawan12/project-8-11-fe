@@ -6,7 +6,7 @@ const BestItem = () => {
     <div className="w-screen h-screen flex relative justify-center pt-32">
       <div className="w-2/5">
         <Image
-          src="https://scontent-cgk1-1.cdninstagram.com/v/t39.30808-6/454937963_18449291683031145_1184331195895188137_n.jpg?stp=dst-jpg_e35_p1080x1080&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTYuc2RyLmYzMDgwOC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=scontent-cgk1-1.cdninstagram.com&_nc_cat=109&_nc_ohc=ukFBUFKiBPsQ7kNvgGRqVLt&edm=AFg4Q8wAAAAA&ccb=7-5&ig_cache_key=MzQzMjA3MTAwOTk2OTU1MzYxNQ%3D%3D.3-ccb7-5&oh=00_AYDnQ3Qvjj8QvZPcNdiJa8PTjXRSziv729h5vqm_V9PzHQ&oe=66E71B96&_nc_sid=0b30b7"
+          src="/a.jpg"
           width={550}
           height={550}
           alt="logo pic"

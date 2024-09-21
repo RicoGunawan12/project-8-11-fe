@@ -26,7 +26,7 @@ const config: Config = {
         banner: "15rem"
       },
       padding:{
-        product_detail : "60px"
+        product_detail : "65px"
       }
     },
   },

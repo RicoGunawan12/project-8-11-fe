@@ -35,8 +35,7 @@ const NavigationBar = () => {
   return (
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
-      position="sticky"
-      className="bg-secondary"
+      className="bg-secondary fixed top-0 left-0 w-full z-50"
       shouldHideOnScroll
       isBordered
       isBlurred={false}
@@ -54,7 +53,7 @@ const NavigationBar = () => {
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem >
+        <NavbarItem>
           <Link className="font-semibold text-white text-xl" href="/product">
             Product
           </Link>
@@ -63,11 +62,22 @@ const NavigationBar = () => {
       <NavbarContent justify="end">
         {token ? (
           <NavbarItem className="hidden lg:flex">
-            <Link href="/auth/login" onClick={deleteTokenCookie} className="font-semibold text-white text-xl">Log out</Link>
+            <Link
+              href="/auth/login"
+              onClick={deleteTokenCookie}
+              className="font-semibold text-white text-xl"
+            >
+              Log out
+            </Link>
           </NavbarItem>
         ) : (
           <NavbarItem>
-            <Link href="/auth/login" className="font-semibold text-white text-xl">Log in</Link>
+            <Link
+              href="/auth/login"
+              className="font-semibold text-white text-xl"
+            >
+              Log in
+            </Link>
           </NavbarItem>
         )}
       </NavbarContent>
