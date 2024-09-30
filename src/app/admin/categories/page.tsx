@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useEffect, useState } from "react";
 import AdminNavigation from "../component/adminNavbar";
@@ -15,16 +16,18 @@ import {
 } from "@nextui-org/react";
 import { Categories } from "@/app/model/category";
 import Loading from "@/app/utilities/loading";
-import CreateProductModal from "../modal/createProductModal";
+import CreateProductCategoryModal from "../modal/createProductCategoryModal";
 
 const AdminCategories = () => {
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
 
-  const rowsPerPage = 4;
+  const rowsPerPage = 10;
 
   const [data, setData] = useState<Categories[]>([]);
+
   const [loading, setLoading] = useState(true);
+  const [shouldReload, setShouldReload] = useState(false)
 
   const pages = Math.ceil(data.length / rowsPerPage);
 
@@ -45,29 +48,30 @@ const AdminCategories = () => {
           headers: {
             "Content-Type": "application/json",
           },
-        });
-
+        })
         if (!response.ok) {
-          throw new Error("Failed to fetch data");
+          const newData: unknown = await response.json();
+          const errorResponse= newData as {message : string}
+          throw new Error(errorResponse.message)
         }
-
         const newData: Categories[] = await response.json();
-        console.log(newData);
-        setData(newData);
+        setData(newData)
       } catch (error) {
-        console.error("Error fetching categories:", error);
       } finally {
-        console.log(data);
-        setLoading(false);
+        setLoading(false)
       }
     };
 
     fetchData();
-  }, []);
+  }, [shouldReload]);
 
   const closeModal = () =>{
     console.log("tutup")
     setIsOpen(false)
+  }
+
+  const reload = () => {
+    setShouldReload(!shouldReload)
   }
 
   if (loading) {
@@ -88,7 +92,11 @@ const AdminCategories = () => {
           >
             Open Modal
           </button>
-          <CreateProductModal isOpen={isOpen} onClose={closeModal}/>
+          <CreateProductCategoryModal
+            isOpen={isOpen}
+            onClose={closeModal}
+            reload={reload}
+          />
         </div>
       </div>
     );
@@ -132,6 +140,19 @@ const AdminCategories = () => {
             )}
           </TableBody>
         </Table>
+        <button
+          onClick={() => {
+            setIsOpen(true);
+            console.log("jheje");
+          }}
+        >
+          Open Modal
+        </button>
+        <CreateProductCategoryModal
+          isOpen={isOpen}
+          onClose={closeModal}
+          reload={reload}
+        />
       </div>
     </div>
   );

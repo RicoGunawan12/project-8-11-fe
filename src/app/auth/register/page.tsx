@@ -38,12 +38,12 @@ const RegisterPage = () => {
         body: JSON.stringify(newUserData),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error("Account Registration Failed");
+        throw new Error(data.message);
       }
 
-      const data = await response.json();
-      toastSuccess("Account Registered Successfully")
+      toastSuccess(data.message)
       router.push("/auth/login")
     } catch (error : any) {
       toastError(error.message)

@@ -38,13 +38,13 @@ const LoginPage = () => {
         body: JSON.stringify(userPayload),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error("Login Failed");
+        throw new Error(data.message);
       }
 
-      const data = await response.json();
       setTokenCookie(data.token)
-      toastSuccess("Login Success")
+      toastSuccess(data.message);
       router.push("/")
     } catch (error : any) {
       toastError(error.message)
