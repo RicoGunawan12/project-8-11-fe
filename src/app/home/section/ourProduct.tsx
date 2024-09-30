@@ -32,7 +32,7 @@ const OurProductSection = () => {
 
   return (
     <div className="w-screen h-screen flex items-center flex-col">
-      <div className="mt-16 text-8xl font-bold text-black">Our Product</div>
+      <div className="mt-6 text-8xl font-bold text-black">Our Product</div>
       <div className="flex text-black text-lg font-medium gap-10">
       <button onClick={() => handleProductChange('hot')}>HOT</button>
         <button onClick={() => handleProductChange('onSale')}>ON SALE</button>

@@ -24,10 +24,10 @@ const ProductPage = () => {
   return (
     <div className="w-screen bg-white">
       <NavigationBar />
-      <div className="grid-cols-5 grid w-full justify-items-center pt-12">
+      <div className="grid-cols-7 grid w-full justify-items-center pt-12">
         {dummyProducts.map((product, index) => (
           <Link href={`/product/${product.product_id}`} key={index}>
-            <Card className="py-4">
+            <Card className="py-4 mt-6">
               <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                 <p className="text-tiny uppercase font-bold">
                   {product.product_name}
