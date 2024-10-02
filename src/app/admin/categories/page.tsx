@@ -53,6 +53,7 @@ const AdminCategoryPage = () => {
         toastError(error)
     }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldReload, debouncedValue])
 
   const renderActions = (data: any) => {
