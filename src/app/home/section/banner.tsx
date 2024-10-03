@@ -5,7 +5,7 @@ const Banner = () => {
   return (
     <div className="lg:flex w-screen h-screen justify-center items-center gap-24 bg-gradient-radial to-amber-500 via-yellow-300 from-yellow-200 p-6">
       <div className="lg:w-2/5 pt-20 lg:pt-0">
-        <div className="text-black text-6xl lg:text-8xl font-bold">
+        <div className="text-black text-4xl lg:text-8xl font-bold">
           Find The Best Cup For Your
         </div>
         <div className="text-black mt-2 text-md">
@@ -17,13 +17,13 @@ const Banner = () => {
           <button className="bg-black text-white py-2 px-10">Check</button>
         </div>
       </div>
-      <div className="lg:w-2/5 pt-6 lg:pt-0 flex justify-end lg:justify-center">
+      <div className="lg:w-2/5 lg:h-auto h-5/6 pt-6 lg:pt-0 flex justify-end lg:justify-center">
         <Image
           src="/a.jpg"
           width={400}
           height={400}
           alt="logo pic"
-          className="rounded-bl-banner w-[350px] h-[400px] lg:w-[500px] lg:h-[500px]"
+          className="rounded-bl-banner w-full h-1/2 lg:w-[500px] lg:h-[500px]"
         />
       </div>
     </div>

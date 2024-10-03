@@ -4,7 +4,7 @@ import React from "react";
 const BestSellerProduct = () => {
   const carousels = [
     {
-      product_name: "Nadine Abigail",
+      product_name: "Poppy 1",
       rating: 3,
       photo_link: "/a.jpg",
       discount: true,
@@ -12,7 +12,7 @@ const BestSellerProduct = () => {
       original_price: 830000,
     },
     {
-      product_name: "Nadine Abigail",
+      product_name: "Poppy 2",
       rating: 3,
       photo_link: "/a.jpg",
       discount: true,
@@ -20,7 +20,7 @@ const BestSellerProduct = () => {
       original_price: 830000,
     },
     {
-      product_name: "Nadine Abigail",
+      product_name: "Poppy 3",
       rating: 3,
       photo_link: "/a.jpg",
       discount: true,
@@ -28,7 +28,7 @@ const BestSellerProduct = () => {
       original_price: 830000,
     },
     {
-      product_name: "Nadine Abigail",
+      product_name: "Poppy 4",
       rating: 3,
       photo_link: "/a.jpg",
       discount: true,
@@ -36,7 +36,7 @@ const BestSellerProduct = () => {
       original_price: 830000,
     },
     {
-      product_name: "Nadine Abigail",
+      product_name: "Poppy 5",
       rating: 3,
       photo_link: "/a.jpg",
       discount: true,
@@ -44,7 +44,7 @@ const BestSellerProduct = () => {
       original_price: 830000,
     },
     {
-      product_name: "Nadine Abigail",
+      product_name: "Poppy 6",
       rating: 3,
       photo_link: "/a.jpg",
       discount: true,

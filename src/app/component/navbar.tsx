@@ -35,7 +35,7 @@ const NavigationBar = () => {
   return (
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
-      className="bg-secondary fixed top-0 left-0 w-full z-50"
+      className="bg-secondary fixed top-0 left-0 w-screen z-50"
       shouldHideOnScroll
       isBordered
       isBlurred={false}
