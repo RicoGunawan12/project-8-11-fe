@@ -6,6 +6,7 @@ import BestItem from './section/bestItem';
 import NewCollection from './section/newCollection';
 import Banner from './section/banner';
 import NavigationBar from '../component/navbar';
+import Footer from '../component/footer';
 
 const HomePage = () => {
 
@@ -18,6 +19,7 @@ const HomePage = () => {
       <BestItem/>
       <BestSellerProduct/>
       <OurProductSection/>
+      <Footer/>
 
     </div>
   );

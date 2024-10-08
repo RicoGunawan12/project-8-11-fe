@@ -6,7 +6,7 @@ import { toastSuccess } from "@/app/utilities/toast";
 import Loading from "@/app/utilities/loading";
 import { Categories } from "@/app/model/category";
 import { useDebounce } from "use-debounce";
-import CreateProductCategoryModal from "../modal/createProductCategoryModal";
+import CreateProductModal from "../modal/createProductModal";
 
 const AdminCategoryPage = () => {
   const columns = [
@@ -103,7 +103,7 @@ const AdminCategoryPage = () => {
           id={id}
           changeSearch={setSearch}
           />
-          <CreateProductCategoryModal
+          <CreateProductModal
           isOpen={isOpen}
           onClose={closeModal}
           reload={reload}

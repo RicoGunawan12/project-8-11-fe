@@ -5,7 +5,7 @@ const Banner = () => {
   return (
     <div className="lg:flex w-screen h-screen justify-center items-center gap-24 bg-gradient-radial to-amber-500 via-yellow-300 from-yellow-200 p-6">
       <div className="lg:w-2/5 pt-20 lg:pt-0">
-        <div className="text-black text-4xl lg:text-8xl font-bold">
+        <div className="text-black text-4rxl lg:text-8xl font-bold">
           Find The Best Cup For Your
         </div>
         <div className="text-black mt-2 text-md">
