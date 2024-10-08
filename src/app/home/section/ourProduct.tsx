@@ -1,7 +1,7 @@
 import { hotProduct, newArrivalProduct, onSaleProduct, trendingProduct } from "@/app/utilities/dummy_data";
 import React, { useState, useCallback, useMemo } from "react";
 import { Card, CardHeader, CardBody } from "@nextui-org/react";
-import { ProductCard } from "@/app/model/product";
+import { ProductCard } from "@/app/model/productCard";
 import Link from "next/link";
 import Image from "next/image";
 

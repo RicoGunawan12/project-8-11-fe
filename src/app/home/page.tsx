@@ -11,7 +11,7 @@ import Footer from '../component/footer';
 const HomePage = () => {
 
   return (
-    <div className="w-screen bg-white">
+    <div className="w-screen h-fit p-0 m-0 bg-white">
       
       <NavigationBar />
       <Banner/>
@@ -20,7 +20,6 @@ const HomePage = () => {
       <BestSellerProduct/>
       <OurProductSection/>
       <Footer/>
-
     </div>
   );
 }

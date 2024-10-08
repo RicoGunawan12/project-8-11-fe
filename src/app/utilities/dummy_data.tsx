@@ -1,4 +1,4 @@
-import { ProductCard } from "../model/product";
+import { ProductCard } from "../model/productCard";
 
 export const hotProduct: ProductCard[] = [
   {

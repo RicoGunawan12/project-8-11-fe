@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ProductCard } from "../model/product";
+import { ProductCard } from "../model/productCard";
 import Link from "next/link";
 import { Card, CardHeader, CardBody } from "@nextui-org/react";
 import Image from "next/image";
