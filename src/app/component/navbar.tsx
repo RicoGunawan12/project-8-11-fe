@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { deleteTokenCookie, getTokenCookie } from "../utilities/token";
 import {
   Navbar,
@@ -10,15 +10,12 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Link,
-  Button,
 } from "@nextui-org/react";
 
 const NavigationBar = () => {
-  const token = getTokenCookie();
-  console.log(token);
+  const [token, setToken] = useState<string | null>(null)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const menuItems = [
     "Profile",
     "Dashboard",
@@ -31,6 +28,11 @@ const NavigationBar = () => {
     "Help & Feedback",
     "Log Out",
   ];
+
+  useEffect(() => {
+    const clientToken = getTokenCookie()
+    setToken(clientToken)
+  }, [])
 
   return (
     <Navbar

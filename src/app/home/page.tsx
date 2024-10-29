@@ -12,7 +12,6 @@ const HomePage = () => {
 
   return (
     <div className="w-screen h-fit p-0 m-0 bg-white">
-      
       <NavigationBar />
       <Banner/>
       <NewCollection/>

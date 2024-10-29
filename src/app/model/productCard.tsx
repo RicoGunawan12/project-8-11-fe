@@ -1,9 +1,15 @@
 export interface ProductCard {
-  product_id : string;
-  photo_link: string;
-  rating: number;
-  product_name: string;
-  discount: boolean;
-  price: number;
-  original_price: number;
+  productId : string,
+  productName : string,
+  productDescription : string,
+  product_category : string,
+  product_variants : [{
+    productVariantId : string,
+    sku : string,
+    productPrice : string,
+    productStock : number,
+    productImage : string,
+    productDiscount : boolean
+  }]
+  productDiscount : boolean
 }

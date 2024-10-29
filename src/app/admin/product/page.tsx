@@ -1,12 +1,15 @@
 "use client"
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AdminNavigation from "../component/adminNavbar";
 import DataTable from "@/app/component/table";
-import { toastSuccess } from "@/app/utilities/toast";
+import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Loading from "@/app/utilities/loading";
 import { Categories } from "@/app/model/category";
 import { useDebounce } from "use-debounce";
-import CreateProductModal from "../modal/createProductModal";
+import CreateProductModal from "../modal/product/createProductModal";
+import UpdateProductModal from "../modal/product/updateProductModal";
+import UpdateProductCategoryModal from "../modal/productCategory/updateProductCategoryModal";
+import { getTokenCookie } from "@/app/utilities/token";
 
 const AdminCategoryPage = () => {
   const columns = [
@@ -17,15 +20,16 @@ const AdminCategoryPage = () => {
 
   const id = "productId"
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [shouldReload, setShouldReload] = React.useState(false)
-  const [search, setSearch] = React.useState<string>("")
-
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false)
+  const [shouldReload, setShouldReload] = useState(false)
+  const [search, setSearch] = useState<string>("")
+  const [chosenId, setChosenId] = useState<string>("")
   const [debouncedValue] = useDebounce(search, 3000)
 
-  const [data, setData] = React.useState<Categories[]>()
+  const [data, setData] = useState<Categories[]>()
 
-  React.useEffect(() => {
+  useEffect(() => {
 
     try {
       const FetchData = async() => {
@@ -53,18 +57,45 @@ const AdminCategoryPage = () => {
 
   }, [debouncedValue, shouldReload])
 
+  const handleDelete = async (id: string) => {
+    try {
+      const token = getTokenCookie();
+
+      if (!token) {
+        throw new Error("You are not authorized");
+      }
+
+      const response = await fetch(`${process.env.PRODUCTS}/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      toastSuccess(data.message);
+      reload();
+    } catch (error: any) {
+      toastError(error.message);
+    }
+  };
+
   const renderActions = (data: any) => {
     return (
       <div className="flex  gap-2">
         <button
           className="text-yellow-500"
-          onClick={() => console.log("Edit", data[id])}
+          onClick={() => openUpdateModal(data[id])}
         >
           Edit
         </button>
         <button
           className="text-red-500"
-          onClick={() => console.log("Delete", data[id])}
+          onClick={() => handleDelete(data[id])}
         >
           Delete
         </button>
@@ -72,12 +103,21 @@ const AdminCategoryPage = () => {
     );
   };
 
-  const closeModal = () => {
-    setIsOpen(false)
+   const closeCreateModal = () => {
+    setIsCreateOpen(false);
   }
 
-  const openModal = () => {
-    setIsOpen(true)
+  const openCreateModal = () => {
+    setIsCreateOpen(true);
+  }
+
+  const closeUpdateModal = () => {
+    setIsUpdateOpen(false)
+  }
+
+  const openUpdateModal = (id : string) => {
+    setChosenId(id)
+    setIsUpdateOpen(true)
   }
 
   const reload = () => {
@@ -99,15 +139,21 @@ const AdminCategoryPage = () => {
           data={data}
           defaultVisibleColumns={["productId", "productName", "actions"]}
           renderActions={renderActions}
-          onAddNew={openModal}
+          onAddNew={openCreateModal}
           id={id}
           changeSearch={setSearch}
           />
           <CreateProductModal
-          isOpen={isOpen}
-          onClose={closeModal}
+          isOpen={isCreateOpen}
+          onClose={closeCreateModal}
           reload={reload}
-        />
+          />
+          <UpdateProductCategoryModal
+          isOpen={isUpdateOpen}
+          onClose={closeUpdateModal}
+          reload={reload}
+          id={chosenId}
+          />
       </div>
     </div>
   );

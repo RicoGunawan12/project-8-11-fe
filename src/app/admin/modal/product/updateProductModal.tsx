@@ -11,6 +11,7 @@ import {
 } from "@nextui-org/react";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Image from "next/image";
+import { getTokenCookie } from "@/app/utilities/token";
 
 export interface Product {
   categoryName: string;
@@ -21,18 +22,20 @@ export interface Product {
     productPrice: number;
     productStock: number;
     sku: string;
-  }[]; // Updated to match new structure
-  productImage: File[]; // Updated to match new structure
+  }[];
+  productImage: File[]; 
 }
 
-const CreateProductModal = ({
+const UpdateProductModal = ({
   isOpen,
   onClose,
   reload,
+  id
 }: {
   isOpen: boolean;
   onClose: () => void;
   reload: () => void;
+  id: string
 }) => {
   const [product, setProduct] = useState<Product>({
     categoryName: "",
@@ -46,7 +49,7 @@ const CreateProductModal = ({
     productVariantName: "",
     productPrice: 0,
     productStock: 0,
-    sku: "", // Added SKU field
+    sku: "",
   });
 
   const handleInputChange = (
@@ -95,6 +98,12 @@ const CreateProductModal = ({
 
   const handleCreateProduct = async () => {
     try {
+      const token = getTokenCookie();
+
+      if (!token) {
+        throw new Error("You are not authorized");
+      }
+
       const formData = new FormData();
 
       formData.append("productCategoryName", product.categoryName);
@@ -107,8 +116,11 @@ const CreateProductModal = ({
         formData.append("productImage", file)
       );
 
-      const response = await fetch(`${process.env.PRODUCTS}`, {
-        method: "POST",
+      const response = await fetch(`${process.env.PRODUCTS}/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -128,7 +140,7 @@ const CreateProductModal = ({
     <Modal isOpen={isOpen} onClose={onClose} size="3xl">
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1 text-black">
-          Create New Product
+          Update Product
         </ModalHeader>
         <ModalBody className="text-black">
           <Input
@@ -257,7 +269,7 @@ const CreateProductModal = ({
             Close
           </Button>
           <Button color="primary" onPress={handleCreateProduct}>
-            Create Product
+            Update Product
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -265,4 +277,4 @@ const CreateProductModal = ({
   );
 };
 
-export default CreateProductModal;
+export default UpdateProductModal;

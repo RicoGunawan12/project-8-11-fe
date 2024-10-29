@@ -1,12 +1,14 @@
 "use client"
-import React from "react";
+import React, { useState } from "react";
 import AdminNavigation from "../component/adminNavbar";
 import DataTable from "@/app/component/table";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Loading from "@/app/utilities/loading";
 import { Categories } from "@/app/model/category";
-import CreateProductCategoryModal from "../modal/createProductCategoryModal";
+import CreateProductCategoryModal from "../modal/productCategory/createProductCategoryModal";
 import { useDebounce } from "use-debounce";
+import { getTokenCookie } from "@/app/utilities/token";
+import UpdateProductCategoryModal from "../modal/productCategory/updateProductCategoryModal";
 
 const AdminCategoryPage = () => {
   const columns = [
@@ -17,10 +19,12 @@ const AdminCategoryPage = () => {
 
   const id = "productCategoryId"
 
-  const [data, setData] = React.useState<Categories[]>()
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [shouldReload, setShouldReload] = React.useState(false)
-  const [search, setSearch] = React.useState<string>("")
+  const [data, setData] = useState<Categories[]>()
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false)
+  const [shouldReload, setShouldReload] = useState(false)
+  const [search, setSearch] = useState<string>("")
+  const [chosenId, setChosenId] = useState<string>("")
 
   const [debouncedValue] = useDebounce(search, 3000)
 
@@ -41,8 +45,6 @@ const AdminCategoryPage = () => {
           throw new Error(data.message);
         }
 
-        console.log(data)
-        console.log("Asdwa")
         setData(data)
 
         toastSuccess(data.message);
@@ -56,31 +58,66 @@ const AdminCategoryPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldReload, debouncedValue])
 
+  const handleDelete = async (id : string) => {
+    try {
+
+      const token = getTokenCookie();
+
+      if (!token) {
+        throw new Error("You are not authorized");
+      }
+
+      const response = await fetch(`${process.env.CATEGORIES}/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      toastSuccess(data.message);
+      reload();
+
+    } catch (error: any) {
+      toastError(error.message);
+    }
+  };
+
   const renderActions = (data: any) => {
     return (
       <div className="flex  gap-2">
         <button
           className="text-yellow-500"
-          onClick={() => console.log("Edit", data[id])}
+          onClick={() => openUpdateModal(data[id])}
         >
           Edit
         </button>
-        <button
-          className="text-red-500"
-          onClick={() => console.log("Delete", data[id])}
-        >
+        <button className="text-red-500" onClick={() => handleDelete(data[id])}>
           Delete
         </button>
       </div>
     );
   };
 
-  const closeModal = () => {
-    setIsOpen(false)
+  const closeCreateModal = () => {
+    setIsCreateOpen(false);
   }
 
-  const openModal = () => {
-    setIsOpen(true)
+  const openCreateModal = () => {
+    setIsCreateOpen(true);
+  }
+
+  const closeUpdateModal = () => {
+    setIsUpdateOpen(false)
+  }
+
+  const openUpdateModal = (id : string) => {
+    setChosenId(id)
+    setIsUpdateOpen(true)
   }
 
   const reload = () => {
@@ -100,16 +137,26 @@ const AdminCategoryPage = () => {
         <DataTable
           columns={columns}
           data={data}
-          defaultVisibleColumns={["productCategoryId", "productCategoryName", "actions"]}
+          defaultVisibleColumns={[
+            "productCategoryId",
+            "productCategoryName",
+            "actions",
+          ]}
           renderActions={renderActions}
-          onAddNew={openModal}
+          onAddNew={openCreateModal}
           id={id}
           changeSearch={setSearch}
         />
         <CreateProductCategoryModal
-          isOpen={isOpen}
-          onClose={closeModal}
+          isOpen={isCreateOpen}
+          onClose={closeCreateModal}
           reload={reload}
+        />
+        <UpdateProductCategoryModal
+          isOpen={isUpdateOpen}
+          onClose={closeUpdateModal}
+          reload={reload}
+          id={chosenId}
         />
       </div>
     </div>

@@ -1,120 +1,64 @@
 "use client";
-import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { workerData } from "worker_threads";
-import Navbar from "@/app/component/navbar";
 import NavigationBar from "@/app/component/navbar";
 import { Button, Input } from "@nextui-org/react";
+import { ProductCard } from "@/app/model/productCard";
+import Loading from "@/app/utilities/loading";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const ProductDetailPage = () => {
   const router = useParams();
   const id = router.param;
 
-  const productData = [
-    {
-      photo_link: "/a.jpg",
-      rating: Math.floor(Math.random() * 5) + 1,
-      product_name: "Wireless Earbuds",
-      discount: Math.random() > 0.5,
-      price: Math.floor(Math.random() * 500) + 10000,
-      original_price: Math.floor(Math.random() * 500) + 15000,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit fugit repellat cumque inventore aliquid earum beatae nemo consequuntur molestiae harum!",
-    },
-    {
-      photo_link: "/a.jpg",
-      rating: Math.floor(Math.random() * 5) + 1,
-      product_name: "Wireless Earbuds",
-      discount: Math.random() > 0.5,
-      price: Math.floor(Math.random() * 500) + 10000,
-      original_price: Math.floor(Math.random() * 500) + 15000,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit fugit repellat cumque inventore aliquid earum beatae nemo consequuntur molestiae harum!",
-    },
-    {
-      photo_link: "/a.jpg",
-      rating: Math.floor(Math.random() * 5) + 1,
-      product_name: "Wireless Earbuds",
-      discount: Math.random() > 0.5,
-      price: Math.floor(Math.random() * 500) + 10000,
-      original_price: Math.floor(Math.random() * 500) + 15000,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit fugit repellat cumque inventore aliquid earum beatae nemo consequuntur molestiae harum!",
-    },  
-    {
-      photo_link: "/a.jpg",
-      rating: Math.floor(Math.random() * 5) + 1,
-      product_name: "Bluetooth Speaker",
-      discount: Math.random() > 0.5,
-      price: Math.floor(Math.random() * 500) + 10000,
-      original_price: Math.floor(Math.random() * 500) + 15000,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit fugit repellat cumque inventore aliquid earum beatae nemo consequuntur molestiae harum!",
-    },
-    {
-      photo_link: "/a.jpg",
-      rating: Math.floor(Math.random() * 5) + 1,
-      product_name: "Smartwatch",
-      discount: Math.random() > 0.5,
-      price: Math.floor(Math.random() * 500) + 10000,
-      original_price: Math.floor(Math.random() * 500) + 15000,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit fugit repellat cumque inventore aliquid earum beatae nemo consequuntur molestiae harum!",
-    },
-    {
-      photo_link: "/a.jpg",
-      rating: Math.floor(Math.random() * 5) + 1,
-      product_name: "Portable Charger",
-      discount: Math.random() > 0.5,
-      price: Math.floor(Math.random() * 500) + 10000,
-      original_price: Math.floor(Math.random() * 500) + 15000,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit fugit repellat cumque inventore aliquid earum beatae nemo consequuntur molestiae harum!",
-    },
-    {
-      photo_link: "/a.jpg",
-      rating: Math.floor(Math.random() * 5) + 1,
-      product_name: "Fitness Tracker",
-      discount: Math.random() > 0.5,
-      price: Math.floor(Math.random() * 500) + 10000,
-      original_price: Math.floor(Math.random() * 500) + 15000,
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit fugit repellat cumque inventore aliquid earum beatae nemo consequuntur molestiae harum!",
-    },
-  ];
+  const [data, setData] = useState<ProductCard>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`${process.env.PRODUCTS}/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      console.log(data);
+
+      setData(data);
+    };
+
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [variantChosen, setVariantChosen] = useState(0);
 
-  const addToCart = () => {
+  const addToCart = () => {};
 
+  if (!data) {
+    return <Loading />;
   }
 
   return (
     <div className="bg-white w-screen h-screen overflow-y-hidden">
       <NavigationBar />
       <div className="flex h-full">
-        {/* Selected Variant */}
-        <div className="w-5/12 h-full flex justify-center items-center">
-          <Image
-            src={productData[variantChosen].photo_link}
-            width={500}
-            height={500}
-            style={{ objectFit: "contain" }}
-            alt="Not Found"
-            layout="fixed"
-          />
-        </div>
         {/* Variant List */}
         <div className="w-1/12 h-full text-black overflow-y-auto pt-product_detail">
-          {productData.map((product, idx) => {
+          {data?.product_variants.map((product, idx) => {
             return (
               <div
                 key={idx}
                 className="flex justify-center items-center py-2 px-6"
               >
                 <Image
-                  src={product.photo_link}
+                  src={`${process.env.BACK_BASE_URL}${product.productImage}`}
                   width={200}
                   height={200}
                   alt="Not Found"
@@ -126,24 +70,43 @@ const ProductDetailPage = () => {
             );
           })}
         </div>
+        {/* Selected Variant */}
+        <div className="w-5/12 h-full flex justify-center items-center">
+          <Image
+            src={`${process.env.BACK_BASE_URL}${data?.product_variants[variantChosen].productImage}`}
+            width={500}
+            height={500}
+            style={{ objectFit: "contain" }}
+            alt="Not Found"
+            layout="fixed"
+          />
+        </div>
 
         {/* Variant Data */}
         <div className="w-5/12 h-full text-black px-6 flex flex-col justify-between pt-24 pb-12">
           <div>
-            <div className="text-5xl font-bold">
-              {productData[variantChosen].product_name}
-            </div>
+            <div className="text-5xl font-bold">{data?.productName}</div>
             <div className="flex mt-2">
-              {productData[variantChosen].discount ? (
+              {data?.product_variants[variantChosen].productDiscount ? (
                 <div className="line-through text-gray-500 mr-2">
-                  ${productData[variantChosen].original_price}
+                  ${data?.product_variants[variantChosen].productPrice}
                 </div>
               ) : null}
-              ${productData[variantChosen].price}
+              ${data?.product_variants[variantChosen].productPrice}
             </div>
-            <div>{productData[variantChosen].rating} *</div>
-            <div>{productData[variantChosen].description}</div>
+            <div>{data?.product_variants[variantChosen].sku}</div>
           </div>
+          <Swiper
+            spaceBetween={50}
+            slidesPerView={1}
+            onSlideChange={() => console.log("slide change")}
+            onSwiper={(swiper) => console.log(swiper)}
+          >
+            <SwiperSlide>Slide 1</SwiperSlide>
+            <SwiperSlide>Slide 2</SwiperSlide>
+            <SwiperSlide>Slide 3</SwiperSlide>
+            <SwiperSlide>Slide 4</SwiperSlide>
+          </Swiper>
           <div>
             <Input
               type="number"

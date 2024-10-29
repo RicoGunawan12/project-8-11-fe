@@ -1,4 +1,5 @@
 import { toastError, toastSuccess } from "@/app/utilities/toast";
+import { getTokenCookie } from "@/app/utilities/token";
 import {
   Button,
   Input,
@@ -10,42 +11,54 @@ import {
 } from "@nextui-org/react";
 import React, { useState } from "react";
 
-const CreateProductCategoryModal = ({
+const UpdateProductCategoryModal = ({
   isOpen,
   onClose,
-  reload
+  reload,
+  id
 }: {
-  isOpen: boolean
-  onClose: () => void
-  reload : () => void
+  isOpen: boolean;
+  onClose: () => void;
+  reload: () => void;
+  id: string
 }) => {
-  const [newCategory, setNewCategory] = useState<String>()
+  const [newCategory, setNewCategory] = useState<String>();
 
   const handleChanges = (e: React.FocusEvent<Element>) => {
-    const target = e.target as HTMLInputElement
-    const value = target.value
+    const target = e.target as HTMLInputElement;
+    const value = target.value;
 
-    setNewCategory(value)
-  }
+    setNewCategory(value);
+  };
 
-  const handleCreate = async () => {
+  const handleUpdate = async () => {
     try {
-      const response = await fetch(`${process.env.CATEGORIES}`, {
-        method: "POST",
+      const token = getTokenCookie();
+
+      if (!token) {
+        throw new Error("You are not authorized");
+      }
+
+      console.log(newCategory)
+      console.log(id)
+
+      const response = await fetch(`${process.env.CATEGORIES}/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ category: newCategory }),
-      })
+        body: JSON.stringify({ productCategoryName: newCategory }),
+      });
 
-      const data = await response.json()
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message)
+        throw new Error(data.message);
       }
-      toastSuccess(data.message)
-      reload()
+      toastSuccess(data.message);
+      reload();
     } catch (error: any) {
-      toastError(error.message)
+      toastError(error.message);
     }
   };
 
@@ -55,7 +68,7 @@ const CreateProductCategoryModal = ({
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1 text-black">
-              Insert Product Category
+              Update Product Category
             </ModalHeader>
             <ModalBody className="text-black">
               <Input
@@ -72,8 +85,8 @@ const CreateProductCategoryModal = ({
               <Button color="danger" variant="light" onPress={onClose}>
                 Close
               </Button>
-              <Button color="primary" onPress={onClose} onClick={handleCreate}>
-                Insert
+              <Button color="primary" onPress={onClose} onClick={handleUpdate}>
+                Update
               </Button>
             </ModalFooter>
           </>
@@ -83,4 +96,4 @@ const CreateProductCategoryModal = ({
   );
 };
 
-export default CreateProductCategoryModal;
+export default UpdateProductCategoryModal;

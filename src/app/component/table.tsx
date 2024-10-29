@@ -42,7 +42,7 @@ function DataTable<T extends { [key: string]: any }>({
   id,
   onAddNew,
   renderActions,
-  changeSearch
+  changeSearch,
 }: DataTableProps<T>) {
   const [visibleColumns, setVisibleColumns] = React.useState<Set<String> | "all">(new Set(defaultVisibleColumns));
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -95,7 +95,6 @@ function DataTable<T extends { [key: string]: any }>({
           className="w-full sm:max-w-[44%]"
           placeholder="Search by any field..."
           startContent={<FontAwesomeIcon icon={faMagnifyingGlass}/>}
-        //   value={search}
           onClear={() => changeSearch("")}
           onValueChange={onSearchChange}
         />
@@ -115,7 +114,7 @@ function DataTable<T extends { [key: string]: any }>({
               onSelectionChange={setVisibleColumns}
             >
               {columns.map((column) => (
-                <DropdownItem key={column.uid} className="capitalize">
+                <DropdownItem key={column.uid} className="capitalize text-black">
                   {column.name}
                 </DropdownItem>
               ))}
