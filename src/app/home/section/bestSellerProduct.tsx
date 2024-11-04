@@ -1,51 +1,53 @@
+"use client";
 import Image from "next/image";
 import React from "react";
+import { renderStars } from '../../utilities/icons';
 
 const BestSellerProduct = () => {
   const carousels = [
     {
-      product_name: "Poppy 1",
-      rating: 3,
+      product_name: "Cup 1",
+      rating: 3.14,
       photo_link: "/a.jpg",
       discount: true,
       price: 540000,
       original_price: 830000,
     },
     {
-      product_name: "Poppy 2",
-      rating: 3,
+      product_name: "Cup 2",
+      rating: 2.45,
       photo_link: "/a.jpg",
       discount: true,
       price: 540000,
       original_price: 830000,
     },
     {
-      product_name: "Poppy 3",
-      rating: 3,
+      product_name: "Cup 3",
+      rating: 4.65,
       photo_link: "/a.jpg",
       discount: true,
       price: 540000,
       original_price: 830000,
     },
     {
-      product_name: "Poppy 4",
-      rating: 3,
+      product_name: "Cup 4",
+      rating: 5,
       photo_link: "/a.jpg",
       discount: true,
       price: 540000,
       original_price: 830000,
     },
     {
-      product_name: "Poppy 5",
-      rating: 3,
+      product_name: "Cup 5",
+      rating: 4.34,
       photo_link: "/a.jpg",
       discount: true,
       price: 540000,
       original_price: 830000,
     },
     {
-      product_name: "Poppy 6",
-      rating: 3,
+      product_name: "Cup 6",
+      rating: 3.87,
       photo_link: "/a.jpg",
       discount: true,
       price: 540000,
@@ -64,12 +66,7 @@ const BestSellerProduct = () => {
               Best Seller Product
             </div>
             <div className="text-lg mt-4 text-white">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-              Asperiores soluta dicta, tempora eaque placeat libero debitis
-              voluptatum eum assumenda esse ducimus! Unde rem quasi inventore
-              dignissimos ipsa corrupti sapiente. Amet dicta facere, eveniet in
-              fugit saepe eum commodi totam temporibus rerum voluptatem, autem
-              blanditiis distinctio nisi consequatur sequi deleniti? Sapiente.
+            Our best seller product is renowned for its exceptional quality and customer satisfaction. Carefully crafted using the finest materials, it offers a perfect balance of durability, functionality, and style. Customers love it for its reliability and outstanding performance, making it the top choice in its category. Whether you&apos;re looking for something to enhance your everyday life or a dependable solution to meet your needs, our best seller delivers unmatched value. With countless positive reviews and high ratings, it&apos;s clear why this product stands out as a customer favorite. Experience the excellence that sets it apart today!
             </div>
             <div className="border-white text-white border w-fit px-6 py-2 mt-4">
               <button>click here</button>
@@ -87,9 +84,9 @@ const BestSellerProduct = () => {
                   className="rounded-t-3xl"
                 />
                 <div className="bg-white py-6 px-10">
-                  <div className="text-black">{carousel.rating}</div>
+                  <div className="text-black">{renderStars(carousel.rating)}</div>
                   <div className="text-black">{carousel.product_name}</div>
-                  <div className="text-black flex gap-6">
+                  <div className="text-black flex gap-2">
                     {carousel.discount ? (
                       <div className="line-through text-gray-500">
                         ${carousel.original_price}

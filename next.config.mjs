@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["localhost"],
+    remotePatterns:[{
+      protocol: 'http',
+      hostname: 'localhost'
+    }]
   },
   env: {
     USER_REGISTER: process.env.USER_REGISTER,
@@ -10,6 +13,7 @@ const nextConfig = {
     PRODUCTS: process.env.PRODUCTS,
     BACK_BASE_URL: process.env.BACK_BASE_URL,
   },
+  
 };
 
 export default nextConfig;

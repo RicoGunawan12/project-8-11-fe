@@ -1,109 +1,63 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { deleteTokenCookie, getTokenCookie } from "../utilities/token";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
-  Link,
-} from "@nextui-org/react";
+import { getTokenCookie } from "../utilities/token";
+import { Link } from "@nextui-org/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping, faScroll, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const NavigationBar = () => {
-  const [token, setToken] = useState<string | null>(null)
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const clientToken = getTokenCookie()
-    setToken(clientToken)
-  }, [])
+    const clientToken = getTokenCookie();
+    setToken(clientToken);
+  }, []);
 
   return (
-    <Navbar
-      onMenuOpenChange={setIsMenuOpen}
-      className="bg-secondary fixed top-0 left-0 w-screen z-50"
-      shouldHideOnScroll
-      isBordered
-      isBlurred={false}
-    >
-      <NavbarContent>
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden"
-        />
-        <NavbarBrand>
-          <Link className="lg:text-3xl lg:font-bold text-white" href={"/"}>
-            TYESO
-          </Link>
-        </NavbarBrand>
-      </NavbarContent>
+    <div className="w-full bg-secondary h-20 fixed top-0 flex justify-between items-center px-6 shadow-md z-50">
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link className="font-semibold text-white text-xl" href="/product">
-            Product
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
-      <NavbarContent justify="end">
+      <div className="flex items-center gap-6">
+        <Link href="/" className="text-3xl font-bold text-white">
+          TYESO
+        </Link>
+        
+      </div>
+
+      <div className="flex items-center gap-6">
+      <Link href="/product" className="text-lg font-semibold text-white hover:underline">
+          Product
+        </Link>
+        <Link href="/blog" className="text-lg font-semibold text-white hover:underline">
+          Blog
+        </Link>
+        <Link href="/faq" className="text-lg font-semibold text-white hover:underline">
+          FAQ
+        </Link>
+        <Link href="/contact" className="text-lg font-semibold text-white hover:underline">
+          Contact Us
+        </Link>
+        <Link href="/about" className="text-lg font-semibold text-white hover:underline">
+          About Us
+        </Link>
+      </div>
+
+      <div className="flex items-center gap-6 w-auto">
         {token ? (
-          <NavbarItem className="hidden lg:flex">
-            <Link
-              href="/auth/login"
-              onClick={deleteTokenCookie}
-              className="font-semibold text-white text-xl"
-            >
-              Log out
-            </Link>
-          </NavbarItem>
+          <div className="flex items-center gap-4">
+            <Link href="/cart"><FontAwesomeIcon icon={faCartShopping} className="text-white text-xl cursor-pointer hover:text-gray-300" /></Link>
+            {/* <Link href="/history"><FontAwesomeIcon icon={faScroll} className="text-white text-xl cursor-pointer hover:text-gray-300" /></Link> */}
+            <Link href="/profile"><FontAwesomeIcon icon={faUser} className="text-white text-xl cursor-pointer hover:text-gray-300" /></Link>
+          </div>
         ) : (
-          <NavbarItem>
-            <Link
-              href="/auth/login"
-              className="font-semibold text-white text-xl"
-            >
-              Log in
-            </Link>
-          </NavbarItem>
+          <Link
+            href="/auth/login"
+            className="text-xl font-semibold text-white hover:underline"
+          >
+            Login
+          </Link>
         )}
-      </NavbarContent>
-      <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              color={
-                index === 2
-                  ? "primary"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              className="w-full"
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
-    </Navbar>
+      </div>
+    </div>
   );
 };
 

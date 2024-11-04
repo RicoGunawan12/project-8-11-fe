@@ -7,10 +7,12 @@ import { Button, Input } from "@nextui-org/react";
 import { ProductCard } from "@/app/model/productCard";
 import Loading from "@/app/utilities/loading";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { getTokenCookie } from "@/app/utilities/token";
 
 const ProductDetailPage = () => {
   const router = useParams();
   const id = router.param;
+  const [token, setToken] = useState<string | null>(null);
 
   const [data, setData] = useState<ProductCard>();
 
@@ -28,9 +30,9 @@ const ProductDetailPage = () => {
         throw new Error(data.message);
       }
 
-      console.log(data);
-
       setData(data);
+      const clientToken = getTokenCookie();
+      setToken(clientToken);
     };
 
     fetchData();
@@ -96,36 +98,27 @@ const ProductDetailPage = () => {
             </div>
             <div>{data?.product_variants[variantChosen].sku}</div>
           </div>
-          <Swiper
-            spaceBetween={50}
-            slidesPerView={1}
-            onSlideChange={() => console.log("slide change")}
-            onSwiper={(swiper) => console.log(swiper)}
-          >
-            <SwiperSlide>Slide 1</SwiperSlide>
-            <SwiperSlide>Slide 2</SwiperSlide>
-            <SwiperSlide>Slide 3</SwiperSlide>
-            <SwiperSlide>Slide 4</SwiperSlide>
-          </Swiper>
-          <div>
-            <Input
-              type="number"
-              label="Quantity"
-              placeholder="0"
-              labelPlacement="outside"
-              startContent={
-                <div className="pointer-events-none flex items-center">
-                  <span className="text-default-400 text-small"></span>
-                </div>
-              }
-            />
-            <Button
-              onClick={addToCart}
-              className="w-full bg-secondary text-white font-semibold text-lg mt-6"
-            >
-              Add to Cart
-            </Button>
-          </div>
+          {token ? (
+            <div>
+              <Input
+                type="number"
+                label="Quantity"
+                placeholder="0"
+                labelPlacement="outside"
+                startContent={
+                  <div className="pointer-events-none flex items-center">
+                    <span className="text-default-400 text-small"></span>
+                  </div>
+                }
+              />
+              <Button
+                onClick={addToCart}
+                className="w-full bg-secondary text-white font-semibold text-lg mt-6"
+              >
+                Add to Cart
+              </Button>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
