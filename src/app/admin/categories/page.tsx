@@ -1,14 +1,13 @@
 "use client"
 import React, { useState } from "react";
 import AdminNavigation from "../component/adminNavbar";
-import DataTable from "@/app/component/table";
+import DataTable from "@/app/component/interactiveTable";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Loading from "@/app/utilities/loading";
 import { Categories } from "@/app/model/category";
-import CreateProductCategoryModal from "../modal/productCategory/createProductCategoryModal";
 import { useDebounce } from "use-debounce";
 import { getTokenCookie } from "@/app/utilities/token";
-import UpdateProductCategoryModal from "../modal/productCategory/updateProductCategoryModal";
+import { useRouter } from "next/navigation";
 
 const AdminCategoryPage = () => {
   const columns = [
@@ -20,11 +19,9 @@ const AdminCategoryPage = () => {
   const id = "productCategoryId"
 
   const [data, setData] = useState<Categories[]>()
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [isUpdateOpen, setIsUpdateOpen] = useState(false)
   const [shouldReload, setShouldReload] = useState(false)
   const [search, setSearch] = useState<string>("")
-  const [chosenId, setChosenId] = useState<string>("")
+  const router = useRouter()
 
   const [debouncedValue] = useDebounce(search, 3000)
 
@@ -80,8 +77,7 @@ const AdminCategoryPage = () => {
       }
 
       toastSuccess(data.message);
-      reload();
-
+      setShouldReload(!shouldReload)
     } catch (error: any) {
       toastError(error.message);
     }
@@ -92,7 +88,7 @@ const AdminCategoryPage = () => {
       <div className="flex  gap-2">
         <button
           className="text-yellow-500"
-          onClick={() => openUpdateModal(data[id])}
+          onClick={UpdateCategories}
         >
           Edit
         </button>
@@ -103,25 +99,12 @@ const AdminCategoryPage = () => {
     );
   };
 
-  const closeCreateModal = () => {
-    setIsCreateOpen(false);
+  const CreateCategories = () => {
+    router.push("/admin/categories/create")
   }
 
-  const openCreateModal = () => {
-    setIsCreateOpen(true);
-  }
-
-  const closeUpdateModal = () => {
-    setIsUpdateOpen(false)
-  }
-
-  const openUpdateModal = (id : string) => {
-    setChosenId(id)
-    setIsUpdateOpen(true)
-  }
-
-  const reload = () => {
-    setShouldReload(!shouldReload)
+  const UpdateCategories = () => {
+    router.push("/admin/categories/create")
   }
 
   if(!data){
@@ -143,21 +126,10 @@ const AdminCategoryPage = () => {
             "actions",
           ]}
           renderActions={renderActions}
-          onAddNew={openCreateModal}
+          onAddNew={CreateCategories}
           id={id}
           changeSearch={setSearch}
-        />
-        <CreateProductCategoryModal
-          isOpen={isCreateOpen}
-          onClose={closeCreateModal}
-          reload={reload}
-        />
-        <UpdateProductCategoryModal
-          isOpen={isUpdateOpen}
-          onClose={closeUpdateModal}
-          reload={reload}
-          id={chosenId}
-        />
+          />
       </div>
     </div>
   );

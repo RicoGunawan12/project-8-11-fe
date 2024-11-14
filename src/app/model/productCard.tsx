@@ -1,11 +1,15 @@
 export interface ProductCard {
   productId : string,
   productName : string,
-  // productDescription : string,
-  // productCategory : string,
-  productImage : string,
-  productDiscount : boolean
-  productRating : number,
-  productPrice : number,
-  originalProductPrice : number
+  productDescription : string,
+  product_category : {
+    productCatgoryName : string
+  },
+  product_variants:[{
+    productImage : string,
+    productPrice : number,
+    productStock : number,
+    productVariantId : string,
+    sku : string
+  }]
 }

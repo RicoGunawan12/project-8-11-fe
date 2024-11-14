@@ -1,13 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import AdminNavigation from "../component/adminNavbar";
-import DataTable from "@/app/component/table";
+import DataTable from "@/app/component/interactiveTable";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Loading from "@/app/utilities/loading";
 import { Categories } from "@/app/model/category";
 import { useDebounce } from "use-debounce";
-import CreateProductModal from "../modal/product/createProductModal";
-import UpdateProductCategoryModal from "../modal/productCategory/updateProductCategoryModal";
 import { getTokenCookie } from "@/app/utilities/token";
 
 const AdminVoucherPage = () => {
@@ -131,17 +129,6 @@ const AdminVoucherPage = () => {
           onAddNew={openCreateModal}
           id={id}
           changeSearch={setSearch}
-        />
-        <CreateProductModal
-          isOpen={isCreateOpen}
-          onClose={closeCreateModal}
-          reload={reload}
-        />
-        <UpdateProductCategoryModal
-          isOpen={isUpdateOpen}
-          onClose={closeUpdateModal}
-          reload={reload}
-          id={chosenId}
         />
       </div>
     </div>

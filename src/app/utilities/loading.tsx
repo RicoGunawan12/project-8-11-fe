@@ -3,7 +3,7 @@ import React from 'react'
 
 const Loading = () => {
   return (
-    <div className='w-screen h-screen flex justify-center items-center'><Spinner label="Loading" color="primary" labelColor="primary"/></div>
+    <div className='w-screen bg-white h-screen flex justify-center items-center'><Spinner label="Loading" color="primary" labelColor="primary"/></div>
   )
 }
 

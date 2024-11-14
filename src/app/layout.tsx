@@ -2,9 +2,8 @@ import React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import "swiper/css";
-// import { ToastContainer} from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -25,7 +24,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <body className={poppinsFont.className}>
         {children}
-        {/* <ToastContainer /> */}
+        <ToastContainer />
       </body>
     </html>
   );

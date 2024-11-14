@@ -1,15 +1,13 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import AdminNavigation from "../component/adminNavbar";
-import DataTable from "@/app/component/table";
+import DataTable from "@/app/component/interactiveTable";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Loading from "@/app/utilities/loading";
 import { Categories } from "@/app/model/category";
 import { useDebounce } from "use-debounce";
-import CreateProductModal from "../modal/product/createProductModal";
-import UpdateProductModal from "../modal/product/updateProductModal";
-import UpdateProductCategoryModal from "../modal/productCategory/updateProductCategoryModal";
 import { getTokenCookie } from "@/app/utilities/token";
+import { useRouter } from "next/navigation";
 
 const AdminCategoryPage = () => {
   const columns = [
@@ -20,14 +18,12 @@ const AdminCategoryPage = () => {
 
   const id = "productId"
 
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [isUpdateOpen, setIsUpdateOpen] = useState(false)
   const [shouldReload, setShouldReload] = useState(false)
   const [search, setSearch] = useState<string>("")
-  const [chosenId, setChosenId] = useState<string>("")
   const [debouncedValue] = useDebounce(search, 3000)
 
   const [data, setData] = useState<Categories[]>()
+  const router = useRouter()
 
   useEffect(() => {
 
@@ -103,21 +99,12 @@ const AdminCategoryPage = () => {
     );
   };
 
-   const closeCreateModal = () => {
-    setIsCreateOpen(false);
-  }
-
   const openCreateModal = () => {
-    setIsCreateOpen(true);
-  }
-
-  const closeUpdateModal = () => {
-    setIsUpdateOpen(false)
+    router.push("/admin/product/create")
   }
 
   const openUpdateModal = (id : string) => {
-    setChosenId(id)
-    setIsUpdateOpen(true)
+    router.push("/admin/product/update")
   }
 
   const reload = () => {
@@ -142,17 +129,6 @@ const AdminCategoryPage = () => {
           onAddNew={openCreateModal}
           id={id}
           changeSearch={setSearch}
-          />
-          <CreateProductModal
-          isOpen={isCreateOpen}
-          onClose={closeCreateModal}
-          reload={reload}
-          />
-          <UpdateProductCategoryModal
-          isOpen={isUpdateOpen}
-          onClose={closeUpdateModal}
-          reload={reload}
-          id={chosenId}
           />
       </div>
     </div>

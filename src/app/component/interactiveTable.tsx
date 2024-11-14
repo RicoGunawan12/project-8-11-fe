@@ -25,7 +25,7 @@ interface TableColumn {
   align?: "start" | "center" | "end";
 }
 
-interface DataTableProps<T> {
+interface InteractiveDataTableProps<T> {
   columns: TableColumn[]
   data: T[]
   defaultVisibleColumns?: string[]
@@ -35,7 +35,7 @@ interface DataTableProps<T> {
   changeSearch: (val : string) => void
 }
 
-function DataTable<T extends { [key: string]: any }>({
+function InteractiveDataTable<T extends { [key: string]: any }>({
   columns,
   data,
   defaultVisibleColumns = [],
@@ -43,7 +43,7 @@ function DataTable<T extends { [key: string]: any }>({
   onAddNew,
   renderActions,
   changeSearch,
-}: DataTableProps<T>) {
+}: InteractiveDataTableProps<T>) {
   const [visibleColumns, setVisibleColumns] = React.useState<Set<String> | "all">(new Set(defaultVisibleColumns));
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState({
@@ -197,4 +197,4 @@ function DataTable<T extends { [key: string]: any }>({
   );
 }
 
-export default DataTable;
+export default InteractiveDataTable;

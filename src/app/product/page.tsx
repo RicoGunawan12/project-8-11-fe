@@ -29,7 +29,7 @@ const ProductPage = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
-
+      console.log(data)
       setData(data);
     }
 
@@ -49,22 +49,29 @@ const ProductPage = () => {
                   {product.productName}
                 </p>
                 <div className="flex">
-                  {product.productDiscount ? (
-                    <h4 className="line-through text-gray-500 mr-2">
-                      ${product.product_variants[0].productPrice}
-                    </h4>
-                  ) : null}
                   <div>${product.product_variants[0].productPrice}</div>
                 </div>
               </CardHeader>
               <CardBody className="overflow-visible py-1">
-                <Image
+                {
+                  product.product_variants[0].productImage ? 
+                  <Image
                   alt="Card background"
                   className="object-cover rounded-xl"
                   src={`${process.env.BACK_BASE_URL}${product.product_variants[0].productImage}`}
                   width={200}
                   height={220}
                 />
+                :
+                <Image
+                  alt="Card background"
+                  className="object-cover rounded-xl"
+                  src="/d.jpg"
+                  width={200}
+                  height={220}
+                />
+                }
+                
               </CardBody>
             </Card>
           </Link>

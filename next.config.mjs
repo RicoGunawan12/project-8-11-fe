@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns:[{
       protocol: 'http',
       hostname: 'localhost'
-    }]
+    }],
   },
   env: {
     USER_REGISTER: process.env.USER_REGISTER,
@@ -12,6 +12,7 @@ const nextConfig = {
     CATEGORIES: process.env.CATEGORIES,
     PRODUCTS: process.env.PRODUCTS,
     BACK_BASE_URL: process.env.BACK_BASE_URL,
+    CART: process.env.CART,
   },
   
 };
