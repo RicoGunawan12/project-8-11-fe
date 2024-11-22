@@ -75,8 +75,8 @@ const NavigationBar = () => {
                 <Link href="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
                   View Profile
                 </Link>
-                <Link href="/settings" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                  Settings
+                <Link href="/address" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  Address
                 </Link>
                 <Link onClick={deleteTokenCookie} href="/auth/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
                   Logout

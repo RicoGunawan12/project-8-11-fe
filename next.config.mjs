@@ -13,6 +13,7 @@ const nextConfig = {
     PRODUCTS: process.env.PRODUCTS,
     BACK_BASE_URL: process.env.BACK_BASE_URL,
     CART: process.env.CART,
+    ADDRESS: process.env.ADDRESS,
   },
   
 };
