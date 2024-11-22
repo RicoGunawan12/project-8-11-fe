@@ -88,7 +88,7 @@ const AdminCategoryPage = () => {
       <div className="flex  gap-2">
         <button
           className="text-yellow-500"
-          onClick={UpdateCategories}
+          onClick={() => UpdateCategories(data[id])}
         >
           Edit
         </button>
@@ -103,8 +103,8 @@ const AdminCategoryPage = () => {
     router.push("/admin/categories/create")
   }
 
-  const UpdateCategories = () => {
-    router.push("/admin/categories/create")
+  const UpdateCategories = (id : string) => {
+    router.push(`/admin/categories/update/${id}`)
   }
 
   if(!data){
