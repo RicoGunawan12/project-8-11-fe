@@ -14,6 +14,9 @@ const nextConfig = {
     BACK_BASE_URL: process.env.BACK_BASE_URL,
     CART: process.env.CART,
     ADDRESS: process.env.ADDRESS,
+    FAQ: process.env.FAQ,
+    POST: process.env.POST,
+    TRANSACTIONS: process.env.TRANSACTIONS
   },
   
 };

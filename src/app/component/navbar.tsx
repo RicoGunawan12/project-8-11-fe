@@ -48,6 +48,9 @@ const NavigationBar = () => {
         <Link href="/blog" className="text-lg font-semibold text-white hover:underline">
           Blog
         </Link>
+        <Link href="/post" className="text-lg font-semibold text-white hover:underline">
+          Post
+        </Link>
         <Link href="/faq" className="text-lg font-semibold text-white hover:underline">
           FAQ
         </Link>

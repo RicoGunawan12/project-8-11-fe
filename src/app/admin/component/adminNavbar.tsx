@@ -8,6 +8,9 @@ const AdminNavigation = () => {
         <Link href="/admin/product">Product</Link>
         <Link href="/admin/voucher">Voucher</Link>
         <Link href="/admin/promo">Promo</Link>
+        <Link href="/admin/post">Post</Link>
+        <Link href="/admin/blog">blogs</Link>
+        <Link href="/admin/faq">FAQ</Link>
     </div>
   )
 }

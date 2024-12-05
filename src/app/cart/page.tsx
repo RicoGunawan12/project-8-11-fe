@@ -1,66 +1,155 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import NavigationBar from '../component/navbar';
-import Image from 'next/image';
-import { getTokenCookie } from '../utilities/token';
-import { useRouter } from 'next/navigation';
-import { toastError, toastSuccess } from '../utilities/toast';
-import { Cart } from '../model/cart';
-import Loading from '../utilities/loading';
+"use client";
+import React, { useCallback, useEffect, useState } from "react";
+import NavigationBar from "../component/navbar";
+import Image from "next/image";
+import { getTokenCookie } from "../utilities/token";
+import { useRouter } from "next/navigation";
+import { toastError, toastSuccess } from "../utilities/toast";
+import { Cart } from "../model/cart";
+import Loading from "../utilities/loading";
+import { UserAddress } from "../model/address";
+import { Shipping } from "../model/shipping";
 
 const CartPage = () => {
     const router = useRouter();
     const [data, setData] = useState<Cart[]>([]);
+    const [address, setAddress] = useState<UserAddress[]>([]);
+    const [chosenAddress, setChosenAddress] = useState<UserAddress>();
     const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+    const [cashOnDelivery, setCashOnDelivery] = useState(false);
+    const [shippingOptions, setShippingOptions] = useState<Shipping[]>([]);
+    const [selectedShipping, setSelectedShipping] = useState<Shipping | null>(null);
+    const [paymentMethod, setPaymentMethod] = useState<string>("");
+    const [voucherCode, setVoucherCode] = useState<string>(""); // New state for voucher code
+    const [isShippingEnabled, setIsShippingEnabled] = useState(false);
+    const clientToken = getTokenCookie();
 
     useEffect(() => {
-        const clientToken = getTokenCookie();
-
         if (!clientToken) {
             router.push("/");
             return;
         }
 
-        const getCartData = async () => {
+        const fetchCartAndAddressData = async () => {
             try {
-                const response = await fetch(`${process.env.CART}`, {
+                const cartResponse = await fetch(`${process.env.CART}`, {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${clientToken}`,
-                    },
+                    headers: { Authorization: `Bearer ${clientToken}` },
                 });
-
-                const resp = await response.json();
-                if (!response.ok) {
-                    throw new Error(resp.message);
+                const cartData = await cartResponse.json();
+                if (!cartResponse.ok) {
+                    throw new Error(cartData.message || "Failed to fetch cart data");
                 }
-                setData(resp);
-                setQuantities(resp.reduce((acc: { [key: string]: number }, item: Cart) => {
-                    acc[item.productVariantId] = item.quantity || 1;
-                    return acc;
-                }, {}));
 
-                toastSuccess(resp.message);
+                const addressResponse = await fetch(`${process.env.ADDRESS}`, {
+                    method: "GET",
+                    headers: { Authorization: `Bearer ${clientToken}` },
+                });
+                const addressData = await addressResponse.json();
+                if (!addressResponse.ok) {
+                    throw new Error(addressData.message || "Failed to fetch address data");
+                }
+
+                setData(cartData);
+                setQuantities(
+                    cartData.reduce((acc: { [key: string]: number }, item: Cart) => {
+                        acc[item.productVariantId] = item.quantity || 1;
+                        return acc;
+                    }, {})
+                );
+                setAddress(addressData);
+
+                toastSuccess("Cart and address data loaded successfully");
             } catch (error: any) {
-                toastError(error.message);
+                toastError(error.message || "An unexpected error occurred");
             }
         };
 
-        getCartData();
-    }, [router]);
+        fetchCartAndAddressData();
+    }, [router, clientToken]);
 
-    const increaseQuantity = (productVariantId: string) => {
-        setQuantities((prev) => ({
-            ...prev,
-            [productVariantId]: (prev[productVariantId] || 1) + 1,
-        }));
-    };
+    const calculateShippingOptions = useCallback(async () => {
+        if (!chosenAddress) {
+            toastError("Please select a shipping address.");
+            return;
+        }
 
-    const decreaseQuantity = (productVariantId: string) => {
-        setQuantities((prev) => ({
-            ...prev,
-            [productVariantId]: Math.max((prev[productVariantId] || 1) - 1, 1),
-        }));
+        let totalWeight = 0;
+        const cartTotal = data.reduce((total, item) => {
+            totalWeight += item.product_variant.productWeight * quantities[item.productVariantId];
+            return total + item.product_variant.productPrice * quantities[item.productVariantId];
+        }, 0);
+
+        const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${cartTotal}&cod=${cashOnDelivery}`;
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: { Authorization: `Bearer ${clientToken}` },
+            });
+
+            const resp = await response.json();
+            if (!response.ok) {
+                throw new Error(resp.message);
+            }
+
+            setShippingOptions(resp.calculationResult.data.calculate_reguler);
+            setIsShippingEnabled(true);
+            toastSuccess(resp.message);
+        } catch (error: any) {
+            toastError(error.message || "Failed to calculate shipping options");
+        }
+    }, [clientToken, data, quantities, cashOnDelivery, chosenAddress]);
+
+    const checkOut = async () => {
+        if (!selectedShipping || !paymentMethod) {
+            toastError("Please select a shipping option and payment method.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${process.env.TRANSACTIONS}`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${clientToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    addressId : chosenAddress?.addressId,
+                    paymentMethod: paymentMethod,
+                    // voucherId: voucherCode,
+                    expedition: selectedShipping?.shipping_name,
+                    shippingType: "Reguler",
+                    deliveryFee: selectedShipping?.grandtotal,
+                    deliveryCashback: selectedShipping?.shipping_cashback,
+                    notes: "",
+                }),
+            });
+
+            const resp = await response.json();
+            if (!response.ok) {
+                throw new Error(resp.message);
+            }
+
+            await fetch(`${process.env.TRANSACTIONS}/${paymentMethod}`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${clientToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    transactionId: resp.transaction.transactionId,
+                    amount : selectedShipping?.grandtotal
+                })
+            }).then(() => {
+                router.push(`/payment/${paymentMethod}/${resp.transaction.transactionId}`);
+            })
+
+            toastSuccess(resp.message);
+            
+        } catch (error: any) {
+            toastError(error.message || "Failed to complete the checkout process");
+        }
     };
 
     if (!data) {
@@ -86,8 +175,7 @@ const CartPage = () => {
                                     height={200}
                                 />
                                 <div className="ml-4 flex-1">
-                                    <p className="text-sm text-gray-500">{item.productVariantId}</p>
-                                    <h3 className="text-lg font-semibold">{item.product_variant.productStock}</h3>
+                                    <h3 className="text-lg font-semibold">{item.cartItemId}</h3>
                                     <p className="text-sm text-gray-500">
                                         Color: {item.product_variant.productColor} | Size: {item.product_variant.productSize}
                                     </p>
@@ -97,14 +185,27 @@ const CartPage = () => {
                                 </div>
                                 <div className="flex items-center ml-4">
                                     <button
-                                        onClick={() => decreaseQuantity(item.productVariantId)}
+                                        onClick={() =>
+                                            setQuantities((prev) => ({
+                                                ...prev,
+                                                [item.productVariantId]: Math.max(
+                                                    (prev[item.productVariantId] || 1) - 1,
+                                                    1
+                                                ),
+                                            }))
+                                        }
                                         className="p-2 bg-gray-300 rounded"
                                     >
                                         -
                                     </button>
                                     <span className="px-4">{quantities[item.productVariantId]}</span>
                                     <button
-                                        onClick={() => increaseQuantity(item.productVariantId)}
+                                        onClick={() =>
+                                            setQuantities((prev) => ({
+                                                ...prev,
+                                                [item.productVariantId]: (prev[item.productVariantId] || 1) + 1,
+                                            }))
+                                        }
                                         className="p-2 bg-gray-300 rounded"
                                     >
                                         +
@@ -117,45 +218,92 @@ const CartPage = () => {
 
                 <div className="w-full lg:w-1/3 space-y-6">
                     <div className="bg-white p-6 rounded-md shadow-md">
-                        <h3 className="text-lg font-semibold mb-4">Calculated Shipping</h3>
-                        <select className="w-full p-2 mb-4 border rounded-md focus:outline-none">
-                            <option>Address</option>
-                        </select>
-                        <button className="w-full bg-gray-800 text-white py-2 rounded-md">Update</button>
-                    </div>
+                        <h3 className="text-lg font-semibold mb-4">Shipping and Payment</h3>
 
-                    <div className="bg-white p-6 rounded-md shadow-md">
-                        <h3 className="text-lg font-semibold mb-4">Voucher Code</h3>
-                        <p className="text-gray-500 text-sm mb-4">
-                            Enter your voucher code for discounts.
-                        </p>
+                        {/* Address Selection */}
+                        <label htmlFor="shippingAddress" className="block text-sm font-medium text-gray-700">
+                            Shipping Address
+                        </label>
+                        <select
+                            id="shippingAddress"
+                            className="w-full p-2 mb-4 border rounded-md focus:outline-none"
+                            onChange={(e) => {
+                                const selectedId = e.target.value;
+                                const selectedAddress = address.find((addr) => addr.addressId === selectedId);
+                                setChosenAddress(selectedAddress); // Pass the full address object to the state
+                            }}
+                        >
+                            <option value="">Select an Address</option>
+                            {address.map((addr) => (
+                                <option key={addr.addressId} value={addr.addressId}>
+                                    {addr.addressDetail}
+                                </option>
+                            ))}
+                        </select>
+
+                        {/* Shipping Option */}
+                        <button
+                            className="w-full bg-gray-800 text-white py-2 rounded-md mb-4"
+                            onClick={calculateShippingOptions}
+                        >
+                            Calculate Shipping
+                        </button>
+
+                        <label htmlFor="shippingOption" className="block text-sm font-medium text-gray-700">
+                            Shipping Option
+                        </label>
+                        <select
+                            id="shippingOption"
+                            className="w-full p-2 mb-4 border rounded-md focus:outline-none"
+                            disabled={!isShippingEnabled}
+                            onChange={(e) =>
+                                setSelectedShipping(
+                                    shippingOptions.find((option) => option.shipping_name === e.target.value) || null
+                                )
+                            }
+                        >
+                            <option value="">Select a Shipping Option</option>
+                            {shippingOptions.map((option, index) => (
+                                <option key={index} value={option.shipping_name}>
+                                    {option.shipping_name} - $ {option.grandtotal}
+                                </option>
+                            ))}
+                        </select>
+
+                        {/* Payment Method */}
+                        <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700">
+                            Payment Method
+                        </label>
+                        <select
+                            id="paymentMethod"
+                            className="w-full p-2 mb-4 border rounded-md focus:outline-none"
+                            onChange={(e) => setPaymentMethod(e.target.value)}
+                        >
+                            <option value="">Select a Payment Method</option>
+                            <option value="checkout-credit">Credit Card</option>
+                            <option value="checkout-qris">QRIS</option>
+                            <option value="checkout-va">Virtual Account</option>
+                        </select>
+
+                        {/* Voucher Input */}
+                        <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
+                            Voucher Code
+                        </label>
                         <input
                             type="text"
-                            placeholder="Voucher Code"
+                            id="voucher"
                             className="w-full p-2 mb-4 border rounded-md focus:outline-none"
+                            value={voucherCode}
+                            onChange={(e) => setVoucherCode(e.target.value)}
+                            placeholder="Enter Voucher Code"
                         />
-                        <button className="w-full bg-gray-800 text-white py-2 rounded-md">Apply</button>
-                    </div>
 
-                    <div className="bg-yellow-100 p-6 rounded-md shadow-md">
-                        <h3 className="text-lg font-semibold mb-4">Cart Total</h3>
-                        <div className="flex justify-between mb-2">
-                            <span>Cart Subtotal</span>
-                            <span>
-                                $ {data.reduce((total, item) => total + item.product_variant.productPrice * quantities[item.productVariantId], 0).toFixed(2)}
-                            </span>
-                        </div>
-                        <div className="flex justify-between mb-2">
-                            <span>Discount</span>
-                            <span className="text-green-500">-$4.00</span>
-                        </div>
-                        <div className="flex justify-between font-semibold text-xl">
-                            <span>Total</span>
-                            <span>
-                                $ {(data.reduce((total, item) => total + item.product_variant.productPrice * quantities[item.productVariantId], 0) - 4).toFixed(2)}
-                            </span>
-                        </div>
-                        <button className="w-full bg-yellow-500 text-white py-2 rounded-md mt-4">Checkout</button>
+                        <button
+                            className="w-full bg-blue-600 text-white py-2 rounded-md"
+                            onClick={checkOut}
+                        >
+                            Checkout
+                        </button>
                     </div>
                 </div>
             </div>

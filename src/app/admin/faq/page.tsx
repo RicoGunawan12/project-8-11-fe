@@ -1,61 +1,49 @@
 "use client"
 import React, { useState } from "react";
+import AdminNavigation from "../component/adminNavbar";
 import DataTable from "@/app/component/interactiveTable";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Loading from "@/app/utilities/loading";
-import { Categories } from "@/app/model/category";
 import { useDebounce } from "use-debounce";
 import { getTokenCookie } from "@/app/utilities/token";
+import { FAQ } from "@/app/model/faq";
 import { useRouter } from "next/navigation";
-import NavigationBar from "../component/navbar";
-import { UserAddress } from "../model/address";
 
-const AddressPage = () => {
+const AdminFAQPage = () => {
   const columns = [
-    { uid: "addressId", name: "ID" },
-    { uid: "addressCity", name: "City Name", sortable: true },
-    { uid: "addressDetail", name: "Address Detail", sortable: true },
-    { uid: "addresProvince", name: "Province Name", sortable: true },
-    { uid: "addressSubdistrict", name: "Subdistrict Address", sortable: true },
-    { uid: "komshipLabel", name: "Address Label", sortable: true },
-    { uid: "receiverName", name: "Receiver Name", sortable: true },
-    { uid: "receiverPhoneNumber", name: "Receiver Phone Number", sortable: true },
+    { uid: "faqId", name: "ID" },
+    { uid: "faqQuestion", name: "QUESTION", sortable: true },
+    { uid: "faqAnswer", name: "ANSWER"},
     { uid: "actions", name: "actions"}
   ];
 
-  const id = "addressId"
+  const id = "faqId"
 
-  const [data, setData] = useState<UserAddress[]>()
+  const [data, setData] = useState<FAQ[]>()
   const [shouldReload, setShouldReload] = useState(false)
   const [search, setSearch] = useState<string>("")
-  const router = useRouter()
 
   const [debouncedValue] = useDebounce(search, 3000)
+  const router = useRouter()
 
   React.useEffect(() => {
 
-    const clientToken = getTokenCookie();
-
-    if (!clientToken) {
-        router.push("/");
-        return;
-    }
     try {
       const FetchData = async() => {
 
-        const response = await fetch(`${process.env.ADDRESS}`, {
+        const response = await fetch(`${process.env.FAQ}`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${clientToken}`,
-        },
+            "Content-Type": "application/json",
+          }
         });
   
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.message);
         }
-        console.log(data)
-        setData(data)
+        console.log(data.allFAQ)
+        setData(data.allFAQ)
 
         toastSuccess(data.message);
       }
@@ -77,7 +65,7 @@ const AddressPage = () => {
         throw new Error("You are not authorized");
       }
 
-      const response = await fetch(`${process.env.ADDRESS}/${id}`, {
+      const response = await fetch(`${process.env.CATEGORIES}/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -113,11 +101,11 @@ const AddressPage = () => {
   };
 
   const CreateCategories = () => {
-    router.push("/address/create")
+    router.push("/admin/faq/create")
   }
 
   const UpdateCategories = () => {
-    router.push("/address/update")
+    router.push("/admin/faq/update")
   }
 
   if(!data){
@@ -128,14 +116,15 @@ const AddressPage = () => {
 
   return (
     <div className="w-screen h-screen bg-white flex justify-around items-center p-6">
-      <NavigationBar/>
-      <div className="w-3/4 h-3/4 mt-24 p-6 shadow-2xl rounded-2xl border-2 text-black">
+      <AdminNavigation />
+      <div className=" w-9/12 h-full p-6 shadow-2xl rounded-2xl border-2 text-black">
         <DataTable
           columns={columns}
           data={data}
           defaultVisibleColumns={[
-            "addressId",
-            "addressDetail",
+            "faqId",
+            "faqQuestion",
+            "faqAnswer",
             "actions",
           ]}
           renderActions={renderActions}
@@ -148,4 +137,4 @@ const AddressPage = () => {
   );
 };
 
-export default AddressPage;
+export default AdminFAQPage;
