@@ -1,40 +1,43 @@
-import Link from 'next/link'
-import React from 'react'
+import Link from "next/link";
+import React from "react";
 
 const Footer = () => {
   return (
     <div className="w-screen h-auto bg-black text-white py-6">
       <div className="flex w-full justify-around">
-        <div className="flex flex-col justify-center items-center w-1/5">
-          <h1 className='font-bold text-5xl'>TYESO</h1>
-          <div className='text-white w-full flex justify-center text-xs mt-1'>
-            © 2024 - TYESO
+        <div className="flex w-2/3 gap-6 px-6">
+          <div className="text-sm">
+            <h1 className="mb-6 text-xl font-bold">COMPANY</h1>
+            <div className="flex flex-col gap-y-1">
+              <Link href={"/about"}>About</Link>
+              <Link href={"/product"}>Product</Link>
+            </div>
+          </div>
+          <div>
+            <h1 className="mb-6 text-xl font-bold">SUPPORT</h1>
+            <div className="flex flex-col gap-y-1">
+              <Link href={"/faq"}>FAQ</Link>
+              <Link href={"/blog"}>Blog</Link>
+            </div>
           </div>
         </div>
-        <div className="flex flex-col w-1/5">
-          <h1 className='font-semibold text-lg'>HERE IS ANYWHERE</h1>
-          <span className='flex flex-wrap text-xs mt-4'>The TYESO brand is built on the principles of Quality, Life, and Health. We see quality as the foundation, life as the essence of our brand, and health as our pledge to you. Each product is crafted to perfectly balance these elements, ensuring an exceptional experience.</span>
+        <div className="w-1/3">
+          <h1 className="mb-6 text-xl font-bold">STAY IN TOUCH!</h1>
+          <div>
+            From new products to new ways to drink while on adventure, we’ll
+            take you along for the ride with the latest on everything Hydro
+            Flask.
+          </div>
         </div>
-        <div className="flex flex-col w-1/5">
-          <h1 className='font-semibold text-lg'>SUPPORT</h1>
-          <Link href={"#"} className='text-xs mt-3'>About Us</Link>
-          <Link href={"#"} className='text-xs mt-2'>Contact Us</Link>
-          <Link href={"#"} className='text-xs mt-2'>Blogs</Link>
-          <Link href={"#"} className='text-xs mt-2'>FAQs</Link>
-          <Link href={"#"} className='text-xs mt-2'>Shipping</Link>
-          <Link href={"#"} className='text-xs mt-2'>Privacy Policy</Link>
-          <Link href={"#"} className='text-xs mt-2'>Partner with us</Link>
-        </div>
-        <div className="flex flex-col w-1/5">
-          <h1 className='font-semibold text-lg'>Our Marketplace</h1>
-          <Link href={"#"} className='text-xs mt-3'>Tokopedia</Link>
-          <Link href={"#"} className='text-xs mt-2'>Shopee</Link>
-          <Link href={"#"} className='text-xs mt-2'>Tiktok</Link>
-          <Link href={"#"} className='text-xs mt-2'>Instagram</Link>
+      </div>
+      <div>
+        <div>TYESO</div>
+        <div>
+          
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default Footer
+export default Footer;

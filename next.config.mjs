@@ -15,7 +15,6 @@ const nextConfig = {
     CART: process.env.CART,
     ADDRESS: process.env.ADDRESS,
     FAQ: process.env.FAQ,
-    POST: process.env.POST,
     TRANSACTIONS: process.env.TRANSACTIONS
   },
   

@@ -162,6 +162,8 @@ const CreateProduct: React.FC = () => {
         formData.append("productImage", renamedFile);
       });
 
+      formData.append("defaultImage", images[Object.keys(images)[0]]);
+
       console.log(formData);
 
       const response = await fetch(`${process.env.PRODUCTS}`, {

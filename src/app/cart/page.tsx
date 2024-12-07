@@ -131,19 +131,7 @@ const CartPage = () => {
                 throw new Error(resp.message);
             }
 
-            await fetch(`${process.env.TRANSACTIONS}/${paymentMethod}`, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${clientToken}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    transactionId: resp.transaction.transactionId,
-                    amount : selectedShipping?.grandtotal
-                })
-            }).then(() => {
-                router.push(`/payment/${paymentMethod}/${resp.transaction.transactionId}`);
-            })
+            router.push(`/payment/${paymentMethod}/${resp.transaction.transactionId}`);
 
             toastSuccess(resp.message);
             
