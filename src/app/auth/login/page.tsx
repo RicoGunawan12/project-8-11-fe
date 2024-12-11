@@ -28,7 +28,7 @@ const LoginPage = () => {
     }));
   };
 
-  const login = async() => {
+  const login = async () => {
     try {
       const response = await fetch(`${process.env.USER_LOGIN}`, {
         method: "POST",
@@ -37,19 +37,38 @@ const LoginPage = () => {
         },
         body: JSON.stringify(userPayload),
       });
-
+  
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message);
       }
 
-      setTokenCookie(data.token)
+      setTokenCookie(data.token);
       toastSuccess(data.message);
-      router.push("/")
-    } catch (error : any) {
-      toastError(error.message)
+  
+      const sessionCart = localStorage.getItem("cartItem");
+      if (sessionCart) {
+        const cartItems = JSON.parse(sessionCart);
+        for (const item of cartItems) {
+          await fetch(`${process.env.CART}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${data.token}`,
+            },
+            body: JSON.stringify(item),
+          });
+        }
+        
+        localStorage.removeItem("cartItem");
+        toastSuccess("Cart items synced successfully!");
+      }
+  
+      router.push("/");
+    } catch (error: any) {
+      toastError(error.message);
     }
-  }
+  };
 
   return (
     <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">

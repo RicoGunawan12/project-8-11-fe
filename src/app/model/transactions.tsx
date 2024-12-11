@@ -18,7 +18,7 @@ interface Product {
   sku: string;
 }
 
-interface TransactionDetail {
+export interface TransactionDetail {
   paidProductPrice: number;
   productVariantId: string;
   product_variant: Product;
