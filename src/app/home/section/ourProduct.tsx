@@ -6,7 +6,7 @@ import {
   trendingProduct,
 } from "@/app/utilities/dummy_data";
 import React, { useState, useCallback, useMemo } from "react";
-import { Card, CardHeader, CardBody } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
 import { ProductCard } from "@/app/model/productCard";
 import Link from "next/link";
 import Image from "next/image";
@@ -38,8 +38,8 @@ const OurProductSection = () => {
 
   return (
     <div className="w-screen h-screen flex items-center flex-col">
-      <div className="mt-20 text-8xl font-bold text-black">Our Product</div>
-      <div className="flex text-black text-lg font-medium gap-10">
+      <div className="mt-20 text-5xl font-bold text-black">Our Product</div>
+      <div className="flex text-black text-md font-medium gap-10">
         <button onClick={() => handleProductChange("hot")}>HOT</button>
         <button onClick={() => handleProductChange("onSale")}>ON SALE</button>
         <button onClick={() => handleProductChange("trending")}>
@@ -55,21 +55,6 @@ const OurProductSection = () => {
             return (
               <Link href={`/product/${product.productId}`} key={idx}>
                 <Card className="py-4">
-                  <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                    <p className="text-tiny uppercase font-bold">
-                      {product.productName}
-                    </p>
-                    <small className="text-default-500">{renderStars(3)}</small>
-
-                    <div className="flex">
-                      {product.productDiscount ? (
-                        <h4 className="line-through text-gray-500 mr-2">
-                          $250000
-                        </h4>
-                      ) : null}
-                      <div>$200000</div>
-                    </div>
-                  </CardHeader>
                   <CardBody className="overflow-visible py-1">
                     <Image
                       alt="Card background"
@@ -79,6 +64,14 @@ const OurProductSection = () => {
                       height={220}
                     />
                   </CardBody>
+                  <CardFooter className="pb-0 pt-2 px-4 flex-col items-start">
+                    <p className="text-tiny uppercase font-bold">
+                      {product.productName}
+                    </p>
+                    <small className="text-default-500">{renderStars(3)}</small>
+
+                      <div>Rp. 200000</div>
+                  </CardFooter>
                 </Card>
               </Link>
             );

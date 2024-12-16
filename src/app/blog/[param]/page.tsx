@@ -42,9 +42,9 @@ const BlogDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen w-screen bg-gray-50">
       <NavigationBar />
-      <div className="mt-20">
+      <div className="mt-20 h-full">
         <Banner
           title={""}
           imagePath={`${process.env.BACK_BASE_URL}${data.postImage}`}

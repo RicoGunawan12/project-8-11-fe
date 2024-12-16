@@ -1,5 +1,5 @@
 export const setTokenCookie = (token: string) => {
-  document.cookie = `token=${token}; path=/; max-age=3600; secure; samesite=strict`;
+  document.cookie = `token=${token}; path=/; max-age=7200; secure; samesite=strict`;
 };
 
 export const getTokenCookie = () => {

@@ -58,11 +58,24 @@ const ProductDetailPage = () => {
         const existingItemIndex = cartItems.findIndex(
           (item: any) => item.productVariantId === payload.productVariantId
         );
-  
+
+        const fullVariantData = {
+          cartItemId: "",
+          productVariantId:
+            data?.product_variants[variantChosen].productVariantId,
+          quantity: payload.quantity,
+          product_variant: {
+            ...data?.product_variants[variantChosen],
+            product: {
+              productName: data?.productName,
+            },
+          },
+        };
+
         if (existingItemIndex !== -1) {
           cartItems[existingItemIndex].quantity += payload.quantity;
         } else {
-          cartItems.push(payload);
+          cartItems.push(fullVariantData);
         }
 
         localStorage.setItem("cartItem", JSON.stringify(cartItems));
@@ -94,10 +107,10 @@ const ProductDetailPage = () => {
   }
 
   return (
-    <div className="bg-white w-screen h-screen">
+    <div className="bg-white w-screen h-screen pt-20">
       <NavigationBar />
-      <div className="flex h-full">
-        <div className="w-1/12 h-full text-black overflow-y-auto pt-24">
+      <div className="flex flex-col md:flex-row h-full items-center">
+        <div className="w-full md:w-1/6 h-full text-black overflow-y-auto pt-4 md:pt-24 flex flex-col justify-center ">
           {data?.product_variants.map((product, idx) => (
             <div
               key={idx}
@@ -105,37 +118,43 @@ const ProductDetailPage = () => {
             >
               <Image
                 src={`${process.env.BACK_BASE_URL}${product.productImage}`}
-                width={200}
-                height={200}
+                width={150}
+                height={150}
                 alt="Not Found"
                 onClick={() => {
                   setVariantChosen(idx);
                 }}
+                className="cursor-pointer"
               />
             </div>
           ))}
         </div>
 
-        <div className="w-5/12 h-full flex justify-center items-center">
+        <div className="w-3/4 h-3/4 flex justify-center items-center mt-4 md:mt-0">
           <Image
             src={`${process.env.BACK_BASE_URL}${data?.product_variants[variantChosen].productImage}`}
-            width={500}
-            height={500}
-            style={{ objectFit: "contain" }}
+            width={400}
+            height={400}
+            style={{ objectFit: "fill" }}
             alt="Not Found"
-            layout="fixed"
+            layout="intrinsic"
+            className="border-2 p-20 w-2/3 aspect-square"
           />
         </div>
 
-        <div className="w-5/12 h-full text-black px-6 flex flex-col pt-24 pb-12">
+        {/* Right Column: Product Details */}
+        <div className="w-full md:w-5/12 h-full text-black px-6 flex flex-col pt-4 md:pt-24 pb-12">
           <div>
-            <h2 className="text-5xl font-bold">{data?.productName}</h2>
-            <div className="flex mt-2">
-              ${data?.product_variants[variantChosen].productPrice}
+            <h2 className="text-3xl md:text-5xl font-bold border-b-2 pb-2">
+              {data?.productName}
+            </h2>
+            <div className="flex mt-2 text-lg md:text-xl font-light border-b-8 pb-2 border-dotted">
+              Rp {data?.product_variants[variantChosen].productPrice}
             </div>
           </div>
-          <div>
-            <div className="flex items-center mt-4">
+          <div className="mt-2">
+            <span className="text-sm font-semibold">Quantity: </span>
+            <div className="flex items-center">
               <button
                 onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))} // Ensure quantity stays >= 1
                 className="px-4 py-2 border border-gray-300 rounded-l bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -151,18 +170,19 @@ const ProductDetailPage = () => {
               >
                 +
               </button>
+            <div className="ml-2 font-semibold">{data?.product_variants[variantChosen].productStock == "0" ? <div className="text-red-500">Out of Stock</div> : <div className="text-green-400">In Stock : {data?.product_variants[variantChosen].productStock}</div>}</div>
             </div>
-            <div className="mt-2 text-green-600">In Stock</div>
-
+              <div className="font-light text-sm mt-2">Subtotal : Rp. {quantity * Number(data?.product_variants[variantChosen].productPrice)}</div>
             <Button
               onClick={addToCart}
-              className="w-full bg-secondary text-white font-semibold text-lg mt-6"
+              className="w-full bg-secondary text-white font-semibold text-lg mt-6 py-2"
             >
               Add to Cart
             </Button>
           </div>
         </div>
       </div>
+
       <div className="flex space-x-4 mx-6 border-b-2">
         {TABS.map((tab, idx) => (
           <button

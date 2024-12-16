@@ -46,7 +46,7 @@ const ContactPage: React.FC = () => {
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner title="Contact Us" imagePath="/a.jpg" />
+        <Banner title="Contact Us" imagePath="/banner.jpg" />
 
         <div className="p-12">
           <h1 className="text-5xl font-bold mb-6 text-black text-center">

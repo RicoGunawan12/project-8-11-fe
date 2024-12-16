@@ -3,12 +3,13 @@ import NavigationBar from "@/app/component/navbar";
 import Loading from "@/app/utilities/loading";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import { getTokenCookie } from "@/app/utilities/token";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const CheckOutCreditCard = () => {
-  const router = useParams();
-  const id = router.id;
+  const router = useRouter()
+  const param = useParams();
+  const id = param.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [transaction, setTransaction] = useState<any>(null);
   const clientToken = getTokenCookie();
@@ -76,7 +77,8 @@ const CheckOutCreditCard = () => {
       if (!response.ok) {
         throw new Error(result.message || "Failed to process payment.");
       }
-
+      console.log(result)
+      window.location.href = result.response.actions[0].url;
       toastSuccess("Payment successful!");
     } catch (error: any) {
       toastError(error.message);

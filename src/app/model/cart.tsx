@@ -18,4 +18,7 @@ interface ProductVariant {
     productPromo: number;
     productPromoExpiry: string | null;
     ref_product_id: string;
+    product: {
+        productName : string
+    }
 }

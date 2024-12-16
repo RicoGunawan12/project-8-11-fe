@@ -41,7 +41,7 @@ const FAQPage: React.FC = () => {
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner title="Frequently Asked Questions" imagePath="/a.jpg" />
+        <Banner title="Frequently Asked Questions" imagePath="/banner.jpg" />
         <div className="my-20 flex flex-col items-center">
           <h1 className="text-3xl font-bold mb-6 text-black">
             Frequently Asked Questions

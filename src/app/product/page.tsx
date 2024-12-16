@@ -9,9 +9,10 @@ import NavigationBar from "../component/navbar";
 import Banner from "../component/banner";
 import { ExploreProduct } from "../model/product";
 import Footer from "../component/footer";
+import Loading from "../utilities/loading";
 
 const ProductPage = () => {
-  const [searchResults, setSearchResults] = useState<ExploreProduct[]>([]);
+  const [searchResults, setSearchResults] = useState<ExploreProduct[]>();
   const [limit, setLimit] = useState(40);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -42,7 +43,7 @@ const ProductPage = () => {
       }
 
       const countData = await countResponse.json();
-      // console.log(countData)
+      console.log(countData);
       setTotalPages(Math.ceil(countData.total / limit));
 
       const url = new URL(`${process.env.PRODUCTS}/paginate`);
@@ -91,25 +92,29 @@ const ProductPage = () => {
     fetchSearchResults();
   }, [currentPage]);
 
+  if(!searchResults){
+    return <Loading/>
+  }
+
   return (
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner title="Product" imagePath="/a.jpg" />
+        <Banner title="Product" imagePath="/banner.jpg" />
         {searchResults.length > 0 && (
-          <div className="grid grid-cols-4 w-full justify-items-center px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 w-full justify-items-center py-12 lg:px-12 px-4">
             {searchResults.map((result, index) => (
               <Link
                 href={`/product/${result.productId}`}
                 key={index}
                 className="w-11/12"
               >
-                <Card className="py-4 mt-6 h-[425px]">
+                <Card className="py-4 mt-6 lg:h-[425px]">
                   <CardBody className="overflow-visible flex justify-center items-center">
                     {result ? (
                       <Image
                         alt="Card background"
-                        className="object-cover rounded-xl w-[450px] h-[300px] py-6"
+                        className="object-cover rounded-xl w-[450px] lg:h-[300px] md:h-[250px] h-[200px] py-6"
                         src={`${process.env.BACK_BASE_URL}${result.product_variants[0].productImage}`}
                         width={300}
                         height={200}
@@ -117,9 +122,9 @@ const ProductPage = () => {
                     ) : (
                       <Image
                         alt="Card background"
-                        className="object-cover rounded-xl w-[200px] h-[200px]"
+                        className="object-cover rounded-xl w-[450px] h-[300px] md:h-[250px] sm:h-[200px] py-6"
                         src="/d.jpg"
-                        width={200}
+                        width={300}
                         height={200}
                       />
                     )}
@@ -129,7 +134,7 @@ const ProductPage = () => {
                       {result.productName}
                     </p>
                     <div className="flex">
-                      <div>${result.product_variants[0].productPrice}</div>
+                      <div>Rp. {result.product_variants[0].productPrice}</div>
                     </div>
                   </CardFooter>
                 </Card>
@@ -138,28 +143,37 @@ const ProductPage = () => {
           </div>
         )}
 
-
         {/* Pagination controls */}
-        <div className="flex justify-center my-6 text-black">
-          <button
-            className="px-4 py-2 mx-2 bg-gray-200 rounded-lg"
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <span className="px-4 py-2 mx-2">{`Page ${currentPage} of ${totalPages}`}</span>
-          <button
-            className="px-4 py-2 mx-2 bg-gray-200 rounded-lg"
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
-        <Footer/>
+        {totalPages == 1 ? null : (
+          <div className="flex justify-center text-black gap-6 mt-4">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded-lg ${
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-primary text-white"
+              }`}
+            >
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded-lg ${
+                currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-primary text-white"
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        )}
+        <Footer />
       </div>
     </div>
   );

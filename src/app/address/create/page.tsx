@@ -36,7 +36,6 @@ interface FormData {
     province: string;
     city: string;
     subdistrict: string;
-    postalCode: string;
     addressDetail: string;
 }
 
@@ -51,7 +50,6 @@ const AddressForm = () => {
         province: '',
         city: '',
         subdistrict: '',
-        postalCode: '',
         addressDetail: '',
     });
     
@@ -151,18 +149,23 @@ const AddressForm = () => {
         }
     };
 
-    const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+    const handleChange = (
+        e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement> 
+      ) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-
+        
         if (name === "province") {
-            setFormData(prev => ({ ...prev, city: "", subdistrict: "" }));
-            fetchCities(value);
+          let obj = JSON.parse(value);
+          setFormData((prev) => ({ ...prev, province: value, city: "", subdistrict: "" }));
+          fetchCities(obj.province_id);
         } else if (name === "city") {
-            setFormData(prev => ({ ...prev, subdistrict: "" }));
-            fetchSubdistricts(value);
+          let obj = JSON.parse(value);
+          setFormData((prev) => ({ ...prev, city: value, subdistrict: "" }));
+          fetchSubdistricts(obj.city_id);
+        } else {
+          setFormData((prev) => ({ ...prev, [name]: value}));
         }
-    };
+      };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -174,6 +177,19 @@ const AddressForm = () => {
             return;
         }
 
+        const [subdistrict_id, postal_code] = formData.subdistrict.split(',');
+        console.log(subdistrict_id)
+
+        const payLoad = {
+            receiverName: formData.receiverName,
+            receiverPhoneNumber: formData.receiverPhoneNumber,
+            province: JSON.parse(formData.province).province,
+            city: JSON.parse(formData.city).city_name,
+            subdistrict: subdistrict_id,
+            postalCode: postal_code,
+            addressDetail: formData.addressDetail,
+          }
+
         setIsLoading(true);
         try {
             const response = await fetch(`${process.env.ADDRESS}`, {
@@ -182,7 +198,7 @@ const AddressForm = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${clientToken}`,
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(payLoad),
             });
 
             const data = await response.json();
@@ -191,7 +207,7 @@ const AddressForm = () => {
             }
 
             toastSuccess("Address created successfully");
-            router.push("/address");
+            router.push("/profile");
         } catch (error) {
             toastError(error instanceof Error ? error.message : "Failed to create address");
         } finally {
@@ -200,6 +216,10 @@ const AddressForm = () => {
     };
 
     if (!clientToken) return null;
+
+    // window.addEventListener('click', () => {
+    //     console.log(formData)
+    // })
 
     return (
         <div className="w-screen h-screen bg-white flex items-center justify-center">
@@ -252,7 +272,7 @@ const AddressForm = () => {
                         >
                             <option value="">Select Province</option>
                             {provinces.map((province) => (
-                                <option key={province.province_id} value={province.province_id}>
+                                <option key={province.province_id} value={JSON.stringify(province)}>
                                     {province.province}
                                 </option>
                             ))}
@@ -271,7 +291,7 @@ const AddressForm = () => {
                         >
                             <option value="">Select City</option>
                             {cities.map((city) => (
-                                <option key={city.city_id} value={city.city_id}>
+                                <option key={city.city_id} value={JSON.stringify(city)}>
                                     {city.city_name}
                                 </option>
                             ))}
@@ -283,14 +303,24 @@ const AddressForm = () => {
                         <select
                             name="subdistrict"
                             value={formData.subdistrict}
-                            onChange={handleChange}
+                            onChange={(e) => {
+                                const [subdistrict_id, postal_code] = e.target.value.split(','); 
+                                const syntheticEvent = {
+                                  target: {
+                                    name: 'subdistrict',
+                                    value: `${subdistrict_id},${postal_code}`,
+                                  },
+                                } as React.ChangeEvent<HTMLSelectElement>;
+                
+                                handleChange(syntheticEvent);
+                              }}
                             required
                             disabled={isLoading || !formData.city}
                             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700"
                         >
                             <option value="">Select Subdistrict</option>
                             {subdistricts.map((subdistrict) => (
-                                <option key={subdistrict.subdistrict_id} value={subdistrict.subdistrict_id}>
+                                <option key={subdistrict.subdistrict_id} value={`${subdistrict.subdistrict_name},${subdistrict.postal_code}`}>
                                     {subdistrict.subdistrict_name}
                                 </option>
                             ))}
@@ -298,22 +328,8 @@ const AddressForm = () => {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Postal Code</label>
-                        <input
-                            type="text"
-                            name="postalCode"
-                            value={formData.postalCode}
-                            onChange={handleChange}
-                            required
-                            disabled={isLoading}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">Address Detail</label>
-                        <input
-                            type="text"
+                        <textarea
                             name="addressDetail"
                             value={formData.addressDetail}
                             onChange={handleChange}

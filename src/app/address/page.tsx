@@ -1,151 +1,233 @@
-"use client"
-import React, { useState } from "react";
-import DataTable from "@/app/component/interactiveTable";
-import { toastError, toastSuccess } from "@/app/utilities/toast";
-import Loading from "@/app/utilities/loading";
-import { Categories } from "@/app/model/category";
-import { useDebounce } from "use-debounce";
-import { getTokenCookie } from "@/app/utilities/token";
-import { useRouter } from "next/navigation";
+"use client";
+import React, { useEffect, useState } from "react";
 import NavigationBar from "../component/navbar";
-import { UserAddress } from "../model/address";
+import { getTokenCookie } from "../utilities/token";
+import { UserData } from "../model/user";
+import { Transaction } from "../model/transactions";
+import { toastSuccess } from "../utilities/toast";
 
-const AddressPage = () => {
-  const columns = [
-    { uid: "addressId", name: "ID" },
-    { uid: "addressCity", name: "City Name", sortable: true },
-    { uid: "addressDetail", name: "Address Detail", sortable: true },
-    { uid: "addresProvince", name: "Province Name", sortable: true },
-    { uid: "addressSubdistrict", name: "Subdistrict Address", sortable: true },
-    { uid: "komshipLabel", name: "Address Label", sortable: true },
-    { uid: "receiverName", name: "Receiver Name", sortable: true },
-    { uid: "receiverPhoneNumber", name: "Receiver Phone Number", sortable: true },
-    { uid: "actions", name: "actions"}
-  ];
+const ProfilePage = () => {
+  const [user, setUser] = useState<UserData>({
+    username: "",
+    email: "",
+  });
+  const [totalTransaction, setTotalTransaction] = useState<Transaction[]>([]);
+  const [addressData, setAddressData] = useState<any[]>([]); // State for address data
+  const [loading, setLoading] = useState(true);
+  const clientToken = getTokenCookie();
 
-  const id = "addressId"
-
-  const [data, setData] = useState<UserAddress[]>()
-  const [shouldReload, setShouldReload] = useState(false)
-  const [search, setSearch] = useState<string>("")
-  const router = useRouter()
-
-  const [debouncedValue] = useDebounce(search, 3000)
-
-  React.useEffect(() => {
-
-    const clientToken = getTokenCookie();
-
-    if (!clientToken) {
-        router.push("/");
-        return;
-    }
+  const fetchData = async () => {
     try {
-      const FetchData = async() => {
+      setLoading(true);
+      const userResponse = await fetch(`${process.env.USER}/data`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${clientToken}`,
+        },
+      });
 
-        const response = await fetch(`${process.env.ADDRESS}`, {
+      if (!userResponse.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      const userData = await userResponse.json();
+
+      const transactionResponse = await fetch(
+        `${process.env.TRANSACTIONS}/user`,
+        {
           method: "GET",
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${clientToken}`,
-        },
-        });
-  
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message);
+          },
         }
-        console.log(data)
-        setData(data)
+      );
 
-        toastSuccess(data.message);
+      if (!transactionResponse.ok) {
+        throw new Error("Failed to fetch transaction data");
       }
+      const transactionData = await transactionResponse.json();
 
-      FetchData()
-    } catch (error : any) {
-        toastError(error)
+      setUser(userData);
+      setTotalTransaction(transactionData.transactions);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldReload, debouncedValue])
-
-  const handleDelete = async (id : string) => {
+  const FetchData = async () => {
     try {
-
-      const token = getTokenCookie();
-
-      if (!token) {
-        throw new Error("You are not authorized");
-      }
-
-      const response = await fetch(`${process.env.ADDRESS}/${id}`, {
-        method: "DELETE",
+      const response = await fetch(`${process.env.ADDRESS}`, {
+        method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
-        }
+          Authorization: `Bearer ${clientToken}`,
+        },
       });
 
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message);
       }
-
+      setAddressData(data); // Save address data
       toastSuccess(data.message);
-      setShouldReload(!shouldReload)
-    } catch (error: any) {
-      toastError(error.message);
+    } catch (error) {
+      console.error("Error fetching address data:", error);
     }
   };
 
-  const renderActions = (data: any) => {
-    return (
-      <div className="flex  gap-2">
-        <button
-          className="text-yellow-500"
-          onClick={UpdateCategories}
-        >
-          Edit
-        </button>
-        <button className="text-red-500" onClick={() => handleDelete(data[id])}>
-          Delete
-        </button>
-      </div>
-    );
-  };
-
-  const CreateCategories = () => {
-    router.push("/address/create")
-  }
-
-  const UpdateCategories = () => {
-    router.push("/address/update")
-  }
-
-  if(!data){
-    return(
-      <Loading/>
-    )
-  }
+  useEffect(() => {
+    fetchData();
+    FetchData(); // Fetch address data
+  }, []);
 
   return (
-    <div className="w-screen h-screen bg-white flex justify-around items-center p-6">
-      <NavigationBar/>
-      <div className="w-3/4 h-3/4 mt-24 p-6 shadow-2xl rounded-2xl border-2 text-black">
-        <DataTable
-          columns={columns}
-          data={data}
-          defaultVisibleColumns={[
-            "addressId",
-            "addressDetail",
-            "actions",
-          ]}
-          renderActions={renderActions}
-          onAddNew={CreateCategories}
-          id={id}
-          changeSearch={setSearch}
-          />
+    <div className="w-screen h-screen bg-white flex flex-col">
+      <NavigationBar />
+      <div className="mt-20 h-full flex">
+        <div className="w-full h-full px-8 py-6 bg-white">
+          {loading ? (
+            <p className="text-center text-lg font-medium">Loading...</p>
+          ) : (
+            <div className="flex flex-col space-y-12">
+              {/* User Data */}
+              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold text-gray-700">
+                  User Details
+                </h2>
+                <p className="mt-2 text-gray-600">
+                  <strong>Name:</strong> {user?.username || "N/A"}
+                </p>
+                <p className="mt-2 text-gray-600">
+                  <strong>Email:</strong> {user?.email || "N/A"}
+                </p>
+              </div>
+
+              {/* Transactions Table */}
+              <div>
+                <h2 className="text-xl font-bold text-black">Order History</h2>
+                <div className="mt-4">
+                  {totalTransaction.length > 0 ? (
+                    <table className="min-w-full text-left border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-200">
+                          <th className="py-2 px-4 border-b">
+                            Komship Order Number
+                          </th>
+                          <th className="py-2 px-4 border-b">Date</th>
+                          <th className="py-2 px-4 border-b">Payment Method</th>
+                          <th className="py-2 px-4 border-b">Status</th>
+                          <th className="py-2 px-4 border-b">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {totalTransaction.map((transaction, index) => (
+                          <tr
+                            key={transaction.transactionId || index}
+                            className={`${
+                              index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                            } hover:bg-gray-100`}
+                          >
+                            <td className="py-2 px-4 border-b">
+                              {transaction.komshipOrderNumber}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {new Date(
+                                transaction.transactionDate
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {transaction.paymentMethod || "N/A"}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {transaction.status || "N/A"}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              Rp{" "}
+                              {transaction.totalPrice.toLocaleString("id-ID")}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p className="text-gray-600">
+                      No transactions available.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Address Table */}
+              <div>
+                <h2 className="text-xl font-bold text-black">Address</h2>
+                <div className="mt-4">
+                  {addressData.length > 0 ? (
+                    <table className="min-w-full text-left border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-200">
+                          <th className="py-2 px-4 border-b">ID</th>
+                          <th className="py-2 px-4 border-b">City Name</th>
+                          <th className="py-2 px-4 border-b">Address Detail</th>
+                          <th className="py-2 px-4 border-b">Province</th>
+                          <th className="py-2 px-4 border-b">Subdistrict</th>
+                          <th className="py-2 px-4 border-b">Label</th>
+                          <th className="py-2 px-4 border-b">Receiver</th>
+                          <th className="py-2 px-4 border-b">Phone</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {addressData.map((address, index) => (
+                          <tr
+                            key={address.addressId || index}
+                            className={`${
+                              index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                            } hover:bg-gray-100`}
+                          >
+                            <td className="py-2 px-4 border-b">
+                              {address.addressId}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {address.addressCity}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {address.addressDetail}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {address.addresProvince}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {address.addressSubdistrict}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {address.komshipLabel}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {address.receiverName}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {address.receiverPhoneNumber}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p className="text-gray-600">No addresses available.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default AddressPage;
+export default ProfilePage;

@@ -17,7 +17,9 @@ const nextConfig = {
     ADDRESS: process.env.ADDRESS,
     FAQ: process.env.FAQ,
     POSTS: process.env.POSTS,
-    TRANSACTIONS: process.env.TRANSACTIONS
+    TRANSACTIONS: process.env.TRANSACTIONS,
+    CONTACTS: process.env.CONTACTS,
+    PAGES: process.env.PAGES
   },
   
 };
