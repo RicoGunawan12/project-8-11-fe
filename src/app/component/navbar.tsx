@@ -5,6 +5,7 @@ import { Link } from "@nextui-org/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faSearch, faUser, faRightToBracket, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { ExploreProduct, Product } from "../model/product";
+import { useLocaleStore } from "./locale";
 
 const NavigationBar = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -17,6 +18,8 @@ const NavigationBar = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [fetchedPages, setFetchedPages] = useState<{ [key: number]: ExploreProduct[] }>({});
+  const {locale, change} = useLocaleStore()
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const clientToken = getTokenCookie();
@@ -25,6 +28,10 @@ const NavigationBar = () => {
 
   const toggleDropdown = () => {
     setIsDropdownVisible(!isDropdownVisible);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownVisible(false);
   };
 
   const toggleModal = () => {
@@ -102,6 +109,19 @@ const NavigationBar = () => {
     fetchSearchResults();
   }, [currentPage]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="w-screen bg-secondary h-20 p-6 fixed top-0 flex justify-between items-center shadow-md z-50">
   {/* Logo */}
@@ -116,7 +136,7 @@ const NavigationBar = () => {
     {["product", "blog", "FAQ", "contact", "about"].map((item) => (
       <Link
         key={item}
-        href={`/${item}`}
+        href={`/${item.toLowerCase()}`}
         className="text-lg font-semibold text-white hover:underline"
       >
         {item.charAt(0).toUpperCase() + item.slice(1)}
@@ -174,6 +194,12 @@ const NavigationBar = () => {
 
   {/* Actions */}
   <div className="hidden lg:flex items-center space-x-4">
+  <button
+    onClick={change}
+    className="w-8 h-8 aspect-square"
+>
+    {locale === "contentJSONEng" ? <img src="/icons/ID.png"/> : <img src="/icons/EN.png" /> }
+</button>
     <button onClick={toggleModal} className="text-white">
       <FontAwesomeIcon icon={faSearch} size="lg" />
     </button>
@@ -181,7 +207,7 @@ const NavigationBar = () => {
       <FontAwesomeIcon icon={faCartShopping} size="lg" />
     </Link>
     {token ? (
-      <div className="relative">
+      <div className="relative" ref={dropdownRef}>
         <button
           onClick={toggleDropdown}
           className="text-white font-semibold flex items-center"

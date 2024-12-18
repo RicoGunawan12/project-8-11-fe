@@ -13,7 +13,7 @@ export const mapPaymentMethod = (paymentMethod: string): string => {
         return "QRIS";
       case "checkout-va":
         return "Virtual Account";
-      case "checkout-credot":
+      case "checkout-credit":
         return "Credit Card";
       default:
         return paymentMethod; // In case an unknown payment method is found

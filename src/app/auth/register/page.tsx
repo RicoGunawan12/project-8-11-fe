@@ -43,7 +43,6 @@ const RegisterPage = () => {
         throw new Error(data.message);
       }
 
-      toastSuccess(data.message)
       router.push("/auth/login")
     } catch (error : any) {
       toastError(error.message)

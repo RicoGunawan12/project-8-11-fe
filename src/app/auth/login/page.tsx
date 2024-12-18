@@ -44,7 +44,6 @@ const LoginPage = () => {
       }
 
       setTokenCookie(data.token);
-      toastSuccess(data.message);
   
       const sessionCart = localStorage.getItem("cartItem");
       if (sessionCart) {
@@ -61,7 +60,6 @@ const LoginPage = () => {
         }
         
         localStorage.removeItem("cartItem");
-        toastSuccess("Cart items synced successfully!");
       }
   
       router.push("/");

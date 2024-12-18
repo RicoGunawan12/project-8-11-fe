@@ -4,7 +4,7 @@ import NavigationBar from "../component/navbar";
 import { getTokenCookie } from "../utilities/token";
 import { UserData } from "../model/user";
 import { Transaction } from "../model/transactions";
-import { toastSuccess } from "../utilities/toast";
+
 
 const ProfilePage = () => {
   const [user, setUser] = useState<UserData>({
@@ -70,8 +70,7 @@ const ProfilePage = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
-      setAddressData(data); // Save address data
-      toastSuccess(data.message);
+      setAddressData(data); 
     } catch (error) {
       console.error("Error fetching address data:", error);
     }

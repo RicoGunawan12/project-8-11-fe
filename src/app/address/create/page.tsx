@@ -83,7 +83,6 @@ const AddressForm = () => {
             const res = data.provinces
 
             setProvinces(res);
-            toastSuccess("Provinces loaded successfully");
         } catch (error) {
             toastError(error instanceof Error ? error.message : "Failed to fetch provinces");
         } finally {
@@ -206,7 +205,6 @@ const AddressForm = () => {
                 throw new Error(data.message);
             }
 
-            toastSuccess("Address created successfully");
             router.push("/profile");
         } catch (error) {
             toastError(error instanceof Error ? error.message : "Failed to create address");

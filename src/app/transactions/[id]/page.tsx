@@ -73,8 +73,6 @@ const TransactionPage = () => {
       const data = await response.json();
       console.log("Transaction canceled successfully:", data);
 
-      toastSuccess(data.message);
-
       setTransaction((prevTransaction) =>
         prevTransaction ? { ...prevTransaction, status: "Canceled" } : null
       );

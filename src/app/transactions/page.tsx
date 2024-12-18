@@ -27,7 +27,6 @@ const TransactionPage = () => {
         console.log(resp.transactions);
         setData(resp.transactions);
 
-        toastSuccess(resp.message);
       } catch (error: any) {
         toastError(error.message);
       }

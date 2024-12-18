@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@nextui-org/react";
 import Banner from "../component/banner";
 import Loading from "../utilities/loading";
+import { mapPaymentMethod } from "../utilities/converter";
 
 const ProfilePage = () => {
   const [user, setUser] = useState<UserData>({ username: "", email: "" });
@@ -21,6 +22,11 @@ const ProfilePage = () => {
   const router = useRouter();
 
   const fetchData = async () => {
+
+    if(!clientToken){
+      router.push("/auth/login")
+    }
+
     try {
       setLoading(true);
       const userResponse = await fetch(`${process.env.USER}/data`, {
@@ -55,7 +61,7 @@ const ProfilePage = () => {
       setUser(userData);
       setTotalTransaction(transactionData.transactions);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setLoading(false);
     }
@@ -168,7 +174,7 @@ const ProfilePage = () => {
                                 })}
                               </td>
                               <td className="py-2 px-4 border-b">
-                                {transaction.paymentMethod || "N/A"}
+                                {mapPaymentMethod(transaction.paymentMethod || "N/A")}
                               </td>
                               <td className="py-2 px-4 border-b">
                                 {transaction.status || "N/A"}
@@ -205,7 +211,6 @@ const ProfilePage = () => {
                     <p className="text-center text-lg font-medium">Loading...</p>
                   ) : (
                     <>
-                      <AnimatePresence>
                         {addressData.map((address: any) => (
                           <motion.div
                             key={address.addressId}
@@ -258,8 +263,7 @@ const ProfilePage = () => {
                             </AnimatePresence>
                           </motion.div>
                         ))}
-                      </AnimatePresence>
-                    </>
+                  </>
                   )}
                 </div>
               </div>

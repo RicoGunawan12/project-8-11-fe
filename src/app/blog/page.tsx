@@ -45,7 +45,7 @@ const BlogsPage: React.FC = () => {
       <NavigationBar />
       <div className="mt-20 h-full">
         <Banner title="Blog" imagePath="/banner.jpg" />
-        <div className="p-12 flex justify-center">
+        <div className="p-12 min-h-[27.5%] flex justify-center">
           <div className="grid grid-cols-2 w-3/4 lg:grid-cols-4 gap-6 h-full mt-12">
             {blogData?.map((blog) => (
               <Link

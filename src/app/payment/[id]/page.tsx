@@ -71,7 +71,6 @@ const CheckOutVirtualAccount = () => {
         throw new Error(result.message || "Failed to process payment.");
       }
 
-      toastSuccess("Virtual account created successfully!");
     } catch (error: any) {
       toastError(error.message);
     } finally {

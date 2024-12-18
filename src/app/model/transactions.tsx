@@ -86,3 +86,10 @@ export interface Transaction {
   user: User;
   voucherId: string | null;
 }
+
+export interface Payment {
+  totalPrice : number,
+  shippingFee : number,
+  voucher : number,
+  grandTotal : number
+}

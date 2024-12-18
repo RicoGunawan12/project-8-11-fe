@@ -9,7 +9,7 @@ const AboutUsPage = () => {
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner title="About Us" imagePath="/banner.jpg" />
+      <Banner page="About Page" text="About Us" />
         <div className="text-black flex flex-col items-center tracking-widest leading-[2]">
           <h1 className="font-bold text-5xl mt-12">
             Hello! We make water bottles

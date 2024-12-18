@@ -100,7 +100,7 @@ const ProductPage = () => {
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner title="Product" imagePath="/banner.jpg" />
+      <Banner page="Product Page" text="Product" />
         {searchResults.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 w-full justify-items-center py-12 lg:px-12 px-4">
             {searchResults.map((result, index) => (

@@ -79,7 +79,7 @@ const CheckOutCreditCard = () => {
       }
       console.log(result)
       window.location.href = result.response.actions[0].url;
-      toastSuccess("Payment successful!");
+
     } catch (error: any) {
       toastError(error.message);
     } finally {

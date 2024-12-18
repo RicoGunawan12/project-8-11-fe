@@ -9,6 +9,8 @@ import { Cart } from "../model/cart";
 import Loading from "../utilities/loading";
 import { UserAddress } from "../model/address";
 import { Shipping } from "../model/shipping";
+import { useDebounce } from "use-debounce";
+import { Payment } from "../model/transactions";
 
 const CartPage = () => {
   const router = useRouter();
@@ -25,6 +27,14 @@ const CartPage = () => {
   const [isShippingEnabled, setIsShippingEnabled] = useState(false);
   const [clientToken, setClientToken] = useState<string | null>();
   const [loading, setLoading] = useState(false)
+  const [debouncedChosenAddress] = useDebounce(chosenAddress, 3000);
+  const [debouncedQuantities] = useDebounce(quantities, 3000);
+  const [price, setPrice] = useState<Payment>({
+    totalPrice : 0,
+    shippingFee : 0,
+    voucher : 0,
+    grandTotal : 0
+  })
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -64,7 +74,6 @@ const CartPage = () => {
         );
         setAddress(addressData);
 
-        toastSuccess("Cart and address data loaded successfully");
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
       } finally {
@@ -93,49 +102,51 @@ const CartPage = () => {
   }, [router, clientToken]);
 
   const calculateShippingOptions = useCallback(async () => {
-    if (!chosenAddress) {
-      // toastError("Please select a shipping address.");
-      return;
-    }
-    setLoading(true)
+    if (!chosenAddress) return;
+  
+    setLoading(true);
+
+    // totalPrice : number,
+    // shippingFee : number,
+    // promo : number,
+    // voucher : number,
+  
     let totalWeight = 0;
+    console.log(data)
+    console.log(quantities)
     const cartTotal = data.reduce((total, item) => {
-      totalWeight +=
-        item.product_variant.productWeight * quantities[item.productVariantId];
-      return (
-        total +
-        item.product_variant.productPrice * quantities[item.productVariantId]
-      );
+      const quantity = quantities[item.productVariantId] || 1; // Fallback to 1
+      totalWeight += item.product_variant.productWeight * quantity;
+      return total + item.product_variant.productPrice * quantity;
     }, 0);
 
+    setPrice((prev) => ({ ...prev, totalPrice: cartTotal}))
+  
     const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${cartTotal}`;
-
+  
     try {
       const response = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Bearer ${clientToken}` },
       });
-
+  
       const resp = await response.json();
-      if (!response.ok) {
-        throw new Error(resp.message);
-      }
-      setLoading(false)
+      if (!response.ok) throw new Error(resp.message);
+  
       setShippingOptions(resp.calculationResult.data.calculate_reguler);
       setIsShippingEnabled(true);
     } catch (error: any) {
-      // toastError(error.message || "Failed to calculate shipping options");
+      console.error(error.message || "Failed to calculate shipping options");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }, [clientToken, data, quantities, chosenAddress]);
 
-  useEffect(()=> {
-    console.log("Dwas")
-    if(clientToken){
-      calculateShippingOptions()
+  useEffect(() => {
+    if (clientToken && debouncedChosenAddress && debouncedQuantities) {
+      calculateShippingOptions();
     }
-  },[quantities, chosenAddress])
+  }, [debouncedChosenAddress, debouncedQuantities, clientToken]);
 
   const checkOut = async () => {
     if (!selectedShipping || !paymentMethod) {
@@ -166,17 +177,55 @@ const CartPage = () => {
       if (!response.ok) {
         throw new Error(resp.message);
       }
-      console.log(resp)
 
       router.push(
         resp.payTransactionResponse.actions[0].url
       );
 
-      toastSuccess(resp.message);
     } catch (error: any) {
       toastError(error.message || "Failed to complete the checkout process");
     }
   };
+
+  const checkVoucher = async() => {
+    const url = new URL(`${process.env.VOUCHER}/getByCode`);
+
+      console.log(url)
+
+      url.searchParams.append("code", String(voucherCode));
+      const fetchData = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${clientToken}`  
+        },
+      })
+
+      const result = await fetchData.json()
+
+      let discount = 0
+
+      if(result.voucherType == "percentage"){
+        discount = (price.totalPrice + price.shippingFee) * result.discount / 100
+
+        if(discount > result.maxDiscount){
+          discount = result.maxDiscount
+        }
+      }
+      else{
+        discount = result.discount
+      }
+
+      console.log(result)
+      console.log(discount)
+      setPrice((prev) => ({ ...prev, voucher: discount}))
+
+      if(result.errors || result.message){
+        toastError(result.message || "Voucher not found")
+      } else {
+        toastSuccess("Voucher found")
+      }
+  }
 
   if (!data || loading) {
     return <Loading />;
@@ -274,33 +323,41 @@ const CartPage = () => {
                 Shipping and Payment
               </h3>
 
-              {/* Address Selection */}
-              <label
-                htmlFor="shippingAddress"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Shipping Address
-              </label>
-              <select
-                id="shippingAddress"
-                className="w-full p-2 mb-4 border rounded-md focus:outline-none"
-                onChange={(e) => {
-                  const selectedId = e.target.value;
-                  const selectedAddress = address.find(
-                    (addr) => addr.addressDetail === selectedId
-                  );
-                  setChosenAddress(selectedAddress); // Pass the full address object to the state
-                }}
-                disabled={data.length === 0} // Disable if cart is empty
-                value={chosenAddress?.addressDetail}
-              >
-                <option value="">Select an Address</option>
-                {address.map((addr) => (
-                  <option key={addr.addressId} value={addr.addressDetail}>
-                    {addr.addressDetail}
-                  </option>
-                ))}
-              </select>
+      {/* Show button if the address array is empty */}
+      {address.length === 0 ? (
+  <button
+    onClick={() => router.push('/address/create')}
+    className="w-full bg-secondary text-white py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all mb-2"
+  >
+    Create Address
+  </button>
+) : (
+  <div>
+    <label htmlFor="shippingAddress" className="block text-sm font-medium text-gray-700">
+      Shipping Address
+    </label>
+    <select
+      id="shippingAddress"
+      className="w-full p-2 mb-4 border rounded-md focus:outline-none"
+      onChange={(e) => {
+        const selectedId = e.target.value;
+        const selectedAddress = address.find(
+          (addr) => addr.addressDetail === selectedId
+        );
+        setChosenAddress(selectedAddress); // Pass the full address object to the state
+      }}
+      disabled={data.length === 0} // Disable if cart is empty
+      value={chosenAddress?.addressDetail}
+    >
+      <option value="">Select an Address</option>
+      {address.map((addr) => (
+        <option key={addr.addressId} value={addr.addressDetail}>
+          {addr.addressDetail}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
 
               <label
                 htmlFor="shippingOption"
@@ -312,12 +369,19 @@ const CartPage = () => {
                 id="shippingOption"
                 className="w-full p-2 mb-4 border rounded-md focus:outline-none"
                 disabled={!isShippingEnabled} // Enable only if shipping options are available
-                onChange={(e) =>
-                  setSelectedShipping(
-                    shippingOptions.find(
-                      (option) => option.shipping_name === e.target.value
-                    ) || null
-                  )
+                onChange={(e) =>{
+                  const selectedOption = shippingOptions.find(
+                    (option) => option.shipping_name === e.target.value
+                  );
+                  console.log(selectedOption)
+                
+                  if (selectedOption) {
+                    setSelectedShipping(selectedOption);
+                    setPrice((prev) => ({ ...prev, shippingFee: selectedOption.shipping_cost}))
+                  } else {
+                    setSelectedShipping(null); 
+                  }
+                }
                 }
               >
                 <option value="">Select a Shipping Option</option>
@@ -335,6 +399,7 @@ const CartPage = () => {
               >
                 Voucher Code
               </label>
+              <div className="flex gap-6">
               <input
                 type="text"
                 id="voucher"
@@ -343,13 +408,39 @@ const CartPage = () => {
                 onChange={(e) => setVoucherCode(e.target.value)}
                 placeholder="Enter Voucher Code"
               />
+              <button className="h-full p-2 bg-secondary flex justify-center items-center rounded-xl text-white font-semibold" onClick={checkVoucher}>Check</button>
+              </div>
 
-              <button
-                className="w-full bg-secondary text-white py-2 rounded-md"
-                onClick={checkOut}
-              >
-                Checkout
-              </button>
+              <div className="flex flex-col space-y-4">
+  <div className="flex justify-between w-full">
+    <span className="text-lg font-semibold">Total Price: </span><span className="font-light text-primary">{price.totalPrice}</span>
+  </div>
+
+  {selectedShipping && (
+    <div className="flex justify-between w-full">
+      <span className="text-lg font-semibold">Shipping Fee: </span><span className="font-light text-primary">{price.shippingFee}</span>
+    </div>
+  )}
+
+  {price.voucher !== 0 && (
+    <div className="flex justify-between w-full">
+      <span className="text-lg font-semibold">Voucher: </span><span className="font-light text-primary">-{price.voucher}</span>
+    </div>
+  )}
+
+  <div className="flex justify-between w-full">
+    <span className="text-xl font-semibold">Grand Total: </span><span className="font-light text-primary">{price.totalPrice + price.shippingFee - price.voucher}</span>
+  </div>
+
+  <button
+    className="w-full bg-secondary text-white py-3 mt-4 rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all"
+    onClick={checkOut}
+  >
+    Checkout
+  </button>
+</div>
+
+
             </div>
           ) : (
             <div className="bg-white p-6 rounded-md shadow-md h-full flex flex-col items-center justify-center">

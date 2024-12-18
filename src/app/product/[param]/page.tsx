@@ -79,7 +79,7 @@ const ProductDetailPage = () => {
         }
 
         localStorage.setItem("cartItem", JSON.stringify(cartItems));
-        toastSuccess("Item added to storage for later!");
+
         return;
       }
 
@@ -96,7 +96,7 @@ const ProductDetailPage = () => {
       if (!response.ok) {
         throw new Error(resp.message);
       }
-      toastSuccess(resp.message);
+
     } catch (error: any) {
       toastError(error.message);
     }
@@ -143,7 +143,7 @@ const ProductDetailPage = () => {
         </div>
 
         {/* Right Column: Product Details */}
-        <div className="w-full md:w-5/12 h-full text-black px-6 flex flex-col pt-4 md:pt-24 pb-12">
+        <div className="w-full md:w-5/12 h-full text-black pr-24 flex flex-col pt-4 md:pt-24 pb-12">
           <div>
             <h2 className="text-3xl md:text-5xl font-bold border-b-2 pb-2">
               {data?.productName}
