@@ -20,6 +20,9 @@ const nextConfig = {
     TRANSACTIONS: process.env.TRANSACTIONS,
     CONTACTS: process.env.CONTACTS,
     EMAILS: process.env.EMAILS
+    PAGES: process.env.PAGES,
+    VOUCHER: process.env.VOUCHER,
+    BANNERS: process.env.BANNERS
   },
   
 };

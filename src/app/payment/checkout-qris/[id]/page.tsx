@@ -50,7 +50,6 @@ const CheckOutQRIS = () => {
           qrResult.response.paymentMethod.qrCode.channelProperties.qrString
         );
 
-        toastSuccess("QR code generated successfully.");
       } catch (error: any) {
         toastError(error.message);
       }

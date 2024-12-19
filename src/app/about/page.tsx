@@ -9,9 +9,11 @@ const AboutUsPage = () => {
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner title="About Us" imagePath="/a.jpg"/>
-        <div className="text-black flex flex-col items-center p-12 tracking-widest leading-[2]">
-          <h1 className="font-bold text-5xl">Hello! We make water bottles</h1>
+      <Banner page="About Page" text="About Us" />
+        <div className="text-black flex flex-col items-center tracking-widest leading-[2]">
+          <h1 className="font-bold text-5xl mt-12">
+            Hello! We make water bottles
+          </h1>
           <h2 className="mt-12 font-semibold text-lg w-3/5">
             Why? Because we’re a passionate team of dreamers and designers with
             one simple motto: “Do more of what you love.” And for us, that means
@@ -35,11 +37,65 @@ const AboutUsPage = () => {
             love. What are you waiting for? Grab one, stay hydrated, and seize
             the day like a boss.
           </div>
-          <button className="mt-6 bg-secondary text-white font-medium border-2  transition duration-500 hover:bg-white hover:border-secondary hover:border-2 hover:text-secondary py-2 px-4 rounded-full">See Our Product</button>
+          <div className="w-full flex items-center flex-col bg-secondary mt-6 py-8">
+            <h1 className="text-white text-2xl font-semibold">Why you should choose TYESO?</h1>
+            <div className="flex w-full justify-center gap-6 my-6">
+              {/* Product 1 */}
+              <div className="flex flex-col items-center">
+                <img
+                  src="/a.jpg"
+                  alt="Product 1"
+                  className="w-32 h-32 object-cover rounded-lg shadow-md"
+                />
+                <p className="mt-4 text-white text-center text-xs font-light">
+                  Description for Product 1
+                </p>
+              </div>
+
+              {/* Product 2 */}
+              <div className="flex flex-col items-center">
+                <img
+                  src="/a.jpg"
+                  alt="Product 2"
+                  className="w-32 h-32 object-cover rounded-lg shadow-md"
+                />
+                <p className="mt-4 text-white text-center text-xs font-light">
+                  Description for Product 2
+                </p>
+              </div>
+
+              {/* Product 3 */}
+              <div className="flex flex-col items-center">
+                <img
+                  src="/a.jpg"
+                  alt="Product 3"
+                  className="w-32 h-32 object-cover rounded-lg shadow-md"
+                />
+                <p className="mt-4 text-white text-center text-xs font-light">
+                  Description for Product 3
+                </p>
+              </div>
+
+              {/* Product 4 */}
+              <div className="flex flex-col items-center">
+                <img
+                  src="/a.jpg"
+                  alt="Product 4"
+                  className="w-32 h-32 object-cover rounded-lg shadow-md"
+                />
+                <p className="mt-4 text-white text-center text-xs font-light">
+                  Description for Product 4
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button className="mt-6 bg-secondary text-white font-medium border-2  transition duration-500 hover:bg-white hover:border-secondary hover:border-2 hover:text-secondary py-2 px-4 rounded-full">
+            See Our Product
+          </button>
         </div>
-        <Footer/>
+        <Footer />
       </div>
-      
     </div>
   );
 };

@@ -24,11 +24,7 @@ const FAQPage: React.FC = () => {
         if (!response.ok) {
           throw new Error(resp.message);
         }
-
-        console.log(resp);
         setData(resp.allFAQ);
-
-        toastSuccess(resp.message);
       } catch (error: any) {
         toastError(error.message);
       }
@@ -41,8 +37,8 @@ const FAQPage: React.FC = () => {
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner title="Frequently Asked Questions" imagePath="/a.jpg" />
-        <div className="my-20 flex flex-col items-center">
+        <Banner page="FaQ Page" text="Frequently Asked Questions" />
+        <div className="p-12 min-h-[27.5%] flex flex-col items-center">
           <h1 className="text-3xl font-bold mb-6 text-black">
             Frequently Asked Questions
           </h1>

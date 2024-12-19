@@ -1,16 +1,48 @@
 "use client";
+import { useLocaleStore } from "@/app/component/locale";
+import { Page } from "@/app/model/page";
+import { toastError } from "@/app/utilities/toast";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Banner = () => {
+
+  const [page, setPages] = useState<Page[]>();
+  const {locale, change} = useLocaleStore()
+
+  useEffect(()=> {
+
+    try {
+      
+      const fetchData = async() => {
+
+        const req = await fetch(`${process.env.PAGES}`, {
+          method: "GET"
+        })
+
+        const res = await req.json()
+
+        console.log(res.pages)
+        setPages(res.pages)
+
+      }
+
+      fetchData()
+
+    } catch (error:any) {
+toastError(error.message)
+    }
+
+  }, [])
+
   return (
     <div className="flex flex-col lg:flex-row w-screen h-screen justify-center items-center gap-24 bg-gradient-radial from-yellow-200 via-yellow-300 to-amber-500 p-6">
       <div className="lg:w-2/5 pt-20 lg:pt-0">
-        <h1 className="text-black text-4xl lg:text-8xl font-bold">
-          Find The Best Cup For Your
+        <h1 className="text-black text-xl lg:text-5xl font-bold">
+        {page && page[0]?.[locale]?.[0]?.title || "No Title Available"}
         </h1>
         <p className="text-black mt-6 text-md">
-          Upgrade your hydration with our stylish, eco-friendly cups and bottles! Designed to keep drinks hot or cold for hours, they’re perfect for any adventure. Available in a variety of colors and sizes, there’s a match for everyone. Sip in style—get yours today!
+        {page && page[0]?.[locale]?.[0]?.content || "No Content Available"}
         </p>
         <div className="mt-2">
           <button className="bg-black text-white py-2 px-10">

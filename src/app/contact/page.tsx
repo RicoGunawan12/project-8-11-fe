@@ -103,8 +103,8 @@ const ContactPage: React.FC = () => {
   if (isLoad) return <div></div>
   else {
     return (
-      <div className="h-screen">
-        <Banner imagePath="/a.jpg" title="Contact Us" />
+      <div className="w-screen h-screen bg-white">
+        <Banner page="Contact Page" text="Contact Us"/>
         <form className="flex flex-col min-h-screen">
           {/* Navbar */}
           <NavigationBar />
