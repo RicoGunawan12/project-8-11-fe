@@ -19,7 +19,7 @@ const nextConfig = {
     POSTS: process.env.POSTS,
     TRANSACTIONS: process.env.TRANSACTIONS,
     CONTACTS: process.env.CONTACTS,
-    EMAILS: process.env.EMAILS
+    EMAILS: process.env.EMAILS,
     PAGES: process.env.PAGES,
     VOUCHER: process.env.VOUCHER,
     BANNERS: process.env.BANNERS
