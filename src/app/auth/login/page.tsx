@@ -13,18 +13,18 @@ const LoginPage = () => {
   const router = useRouter()
 
   const [userPayload, setUserPayload] = useState<UserLogin>({
-    email : "",
-    password : ""
+    email: "",
+    password: ""
   });
 
   const handleChanges = (e: React.FocusEvent<Element>) => {
     const target = e.target as HTMLInputElement
     const name = target.name
-    const value = target.value 
+    const value = target.value
 
     setUserPayload((prevData) => ({
-      ...prevData, 
-      [name]: value, 
+      ...prevData,
+      [name]: value,
     }));
   };
 
@@ -37,34 +37,43 @@ const LoginPage = () => {
         },
         body: JSON.stringify(userPayload),
       });
-  
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
 
-      setTokenCookie(data.token);
-      toastSuccess(data.message);
-  
-      const sessionCart = localStorage.getItem("cartItem");
-      if (sessionCart) {
-        const cartItems = JSON.parse(sessionCart);
-        for (const item of cartItems) {
-          await fetch(`${process.env.CART}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${data.token}`,
-            },
-            body: JSON.stringify(item),
-          });
+      // const data = await response.json();
+      // if (!response.ok) {
+      //   throw new Error(data.message);
+      // }
+      const data = await response.json().then(async (data) => {
+        const firstError = data.errors[0]?.msg;
+
+        // Display the first error if it exists
+        if (firstError) {
+          toastError(firstError);
+        } else {
+          setTokenCookie(data.token);
+          toastSuccess(data.message);
+
+          const sessionCart = localStorage.getItem("cartItem");
+          if (sessionCart) {
+            const cartItems = JSON.parse(sessionCart);
+            for (const item of cartItems) {
+              await fetch(`${process.env.CART}`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${data.token}`,
+                },
+                body: JSON.stringify(item),
+              });
+            }
+
+            localStorage.removeItem("cartItem");
+            toastSuccess("Cart items synced successfully!");
+          }
+
+          router.push("/");
         }
-        
-        localStorage.removeItem("cartItem");
-        toastSuccess("Cart items synced successfully!");
-      }
-  
-      router.push("/");
+      })
+
     } catch (error: any) {
       toastError(error.message);
     }
@@ -74,14 +83,14 @@ const LoginPage = () => {
     <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
       <div className="shadow-2xl w-fit flex border rounded-2xl">
         <div className="w-1/2 rounded-l-2xl p-36">
-          <div className="text-black text-7xl font-bold text-center">
+          <div className="text-black text-4xl font-bold text-center">
             Login
           </div>
           <div className="w-full">
             <Input
               type="email"
               label="Email"
-              size="lg"
+              size="sm"
               labelPlacement="inside"
               isClearable
               className="mt-6 w-full border-3 rounded-2xl shadow-xl"
@@ -91,30 +100,31 @@ const LoginPage = () => {
             <Input
               type="password"
               label="Password"
-              size="lg"
+              size="sm"
               labelPlacement="inside"
               isClearable
-              className="mt-6 w-full border-3 rounded-2xl shadow-xl"  
+              className="mt-6 w-full border-3 rounded-2xl shadow-xl"
               name="password"
               onBlur={handleChanges}
             />
           </div>
           <div className="flex justify-center mt-6 w-full">
-            <Button onClick={login} className="w-full bg-secondary text-white font-semibold text-lg">Login</Button>
+            <Button onClick={login} className="w-full px-12 py-6 bg-secondary text-white font-semibold text-sm">Login</Button>
           </div>
-          <div className="text-sm">
+          <div className="text-sm mt-3">
             Do not have an account? <Link href={"/auth/register"} className="text-blue-500 font-bold">Click here</Link>
           </div>
         </div>
-        <div className="w-1/2">
+        <div className="w-1/2 h-full">
           <Image
             alt="Card background"
-            className="object-cover rounded-r-2xl"
+            className="object-cover rounded-r-2xl h-full"
             src="/a.jpg"
             width={650}
             height={220}
           />
         </div>
+
       </div>
     </div>
   );

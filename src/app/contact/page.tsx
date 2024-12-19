@@ -1,169 +1,232 @@
 "use client";
-import React, { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import NavigationBar from "../component/navbar";
 import Banner from "../component/banner";
 import Footer from "../component/footer";
+import Image from "next/image";
+import { toastError } from "../utilities/toast";
+import { Contact } from "../model/contact";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
+    topic: "",
+    orderNumber: "",
+    customTopic: ""
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async () => {
+
+  const router = useRouter()
+  const [socMed, setSocMed] = useState<Contact[]>([
+  ])
+  const [isLoad, setIsLoad] = useState(true)
+  React.useEffect(() => {
+
+    const FetchData = async () => {
+
+      try {
+        const response = await fetch(`${process.env.CONTACTS}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        setSocMed(data.contacts);
+        console.log("socmed", socMed)
+        if (!Array.isArray(data))   throw new Error('Data is not an array');
+      } catch (error: any) {
+        toastError(error);
+      } finally {
+        setIsLoad(false);
+      }
+    };
+
+    FetchData();
+
+  }, [isLoad])
+
+  const handleSubmit = async ()=> {
+  
+    const data = {
+      name: formData.name,
+      topic: formData.topic === 'Other' ? formData.customTopic : formData.topic,
+      email: formData.email,
+      orderNumber: formData.orderNumber === '' ? null : formData.orderNumber,
+      message: formData.message,
+    };
+  
     try {
-      const response = await fetch("YOUR_API_ENDPOINT_HERE", {
-        method: "POST",
+      const response = await fetch(`${process.env.EMAILS}`, {
+        method: "POST", 
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),  
       });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const result = await response.json();
-      console.log("Success:", result);
+  
+      // if (!response.ok) {
+      //   throw new Error("Network response was not ok");
+      // }
+      await response.json().then((data) => {
+        const firstError = data.errors[0]?.msg;
+        
+        if (firstError) {
+          console.log(firstError)
+          toastError(firstError);
+        }else{
+          router.refresh()
+        }
+      })
+      
     } catch (error) {
       console.error("Error:", error);
     }
   };
+  
 
-  return (
-    <div className="w-screen h-screen bg-white">
-      <NavigationBar />
-      <div className="mt-20 h-full">
-        <Banner title="Contact Us" imagePath="/a.jpg" />
+  if (isLoad) return <div></div>
+  else {
+    return (
+      <div className="h-screen">
+        <Banner imagePath="/a.jpg" title="Contact Us" />
+        <form className="flex flex-col min-h-screen">
+          {/* Navbar */}
+          <NavigationBar />
 
-        <div className="p-12">
-          <h1 className="text-5xl font-bold mb-6 text-black text-center">
-            Contact Us
-          </h1>
-          <p className="mb-4 text-black">
-            We’d love to hear from you! Whether you have questions, feedback, or
-            just want to say hello, there are many ways to reach us.
-          </p>
-
-          <h2 className="text-black text-xl font-semibold mt-6 mb-4">
-            Reach Us By:
-          </h2>
-
-          <ul className="mb-6 space-y-2">
-            <li className="text-black">
-              <strong>Phone:</strong> +62 812 8239 8242
-            </li>
-            <li className="text-black">
-              <strong>Email:</strong>{" "}
-              <a
-                href="mailto:tyeso@gmail.com"
-                className="text-blue-500 hover:underline"
-              >
-                tyeso@gmail.com
-              </a>
-            </li>
-            <li className="text-black">
-              <strong>Address:</strong> Tyeso Road
-            </li>
-            <li className="text-black">
-              <strong>Follow us on Social Media:</strong>
-              <ul className="mt-2 space-y-1">
-                <li>
-                  <a
-                    href="https://facebook.com"
-                    className="text-blue-500 hover:underline"
-                  >
-                    Facebook
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://twitter.com"
-                    className="text-blue-500 hover:underline"
-                  >
-                    Twitter
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://instagram.com"
-                    className="text-blue-500 hover:underline"
-                  >
-                    Instagram
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-
-          <h2 className="text-black text-xl font-semibold mt-6 mb-4">
-            Send Us a Message:
-          </h2>
-          <p className="mb-4 text-black">
-            Use the form below to send us a message directly.
-          </p>
-
-          <form className="space-y-4">
-            <div>
-              <label className="block text-black" htmlFor="name">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+          {/* Main Content */}
+          <div className="flex flex-1 p-24 mt-20">
+            {/* Left Section */}
+            <div className="w-1/3 bg-secondary text-white px-24 flex items-center justify-start rounded rounded-tl-2xl rounded-bl-2xl">
+              <div>
+                <h1 className="text-3xl font-bold mb-6">Social Media</h1>
+                <ul className="space-y-6">
+                  {/* <li className="flex flex-row my-5">
+                    <Image
+                      src="/icons/location.svg"
+                      alt="Location Icon"
+                      width={24}
+                      height={24}
+                      className="filter invert hover:invert-0 mr-3"
+                    />
+                    <label>Unit 1002, 10/F Perfect
+                      CommBLDG 20 Austin Avenue
+                      TST Hong Kong</label>
+                  </li> */}
+                  {!isLoad && socMed && socMed.map((src, index) => (
+                    <li key={index} className="flex flex-row my-5">
+                      <Image
+                        src={'/icons/location.svg'}
+                        alt="Acc Icon"
+                        width={24}
+                        height={24}
+                        className="filter invert hover:invert-0 mr-3"
+                      />
+                      {/* <label>{src.contactAccount}</label> */}
+                      <Link href={src.contactAccount} target="_blank" className="hover:underline">{src.contact}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <div>
-              <label className="block text-black" htmlFor="email">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+
+            {/* Right Section */}
+            <div className="w-2/3 bg-white px-32 flex items-center justify-center rounded rounded-tr-2xl rounded-br-2xl">
+              <form className="space-y-4 w-full justify-between">
+                <div>
+                  <h2 className="text-3xl font-bold mb-4">Need Help ?</h2>
+                  <p className="text-gray-500 mb-8">{"We're here for you. Search our FAQs or get in touch with our customer team."}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    placeholder="Name"
+                    onChange={handleChange}
+                    className="border border-gray-300 p-3 rounded-md w-full"
+                  />
+                  <input
+                    type="text"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email"
+                    className="border border-gray-300 p-3 rounded-md w-full"
+                  />
+                </div>
+                <select
+                  name="topic"
+                  value={formData.topic}
+                  onChange={handleChange}
+                  required
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-400"
+                >
+                  <option className="text-gray-400" value="" disabled>Select A Topic</option>
+                  <option className="text-gray-400" value="Cancel Order">Cancel Order</option>
+                  <option className="text-gray-400" value="Modify Order">Modify Order</option>
+                  <option className="text-gray-400" value="Tracking Order">Tracking Order</option>
+                  <option className="text-gray-400" value="Return Or Exchange Items">Return Or Exchange Items</option>
+                  <option className="text-gray-400" value="Become a Reseller">Become a Reseller</option>
+                  <option className="text-gray-400" value="Partnership">Partnership</option>
+                  <option className="text-gray-400" value="Other">Other</option>
+                </select>
+
+                <input
+                  type="text"
+                  name="customTopic"
+                  placeholder="Topic"
+                  value={formData.customTopic}
+                  onChange={handleChange}
+                  className="border border-gray-300 p-3 rounded-md w-full"
+                  hidden={formData.topic !== 'Other'}
+                />
+                <input
+                  type="text"
+                  name="orderNumber"
+                  value={formData.orderNumber}
+                  onChange={handleChange}
+                  placeholder="Order Number (optional)"
+                  className="border border-gray-300 p-3 rounded-md w-full"
+                />
+                <textarea
+                  placeholder="Message"
+                  name="message"
+                  rows={4}
+                  value={formData.message}
+                  onChange={handleChange
+                  }
+                  className="border border-gray-300 p-3 rounded-md w-full"
+                ></textarea>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="bg-secondary text-white py-3 px-6 mt-5 rounded-md shadow-md hover:bg-white hover:text-secondary border border-secondary w-full"
+                >
+                  Send Message
+                </button>
+              </form>
             </div>
-            <div>
-              <label className="block text-black" htmlFor="message">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                required
-                rows={4}
-                className="w-full p-2 border border-gray-300 rounded"
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              className="bg-black text-white py-2 px-4 rounded"
-            >
-              Send Message
-            </button>
-          </form>
-        </div>
-        <Footer/>
+          </div>
+        </form>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default ContactPage;
