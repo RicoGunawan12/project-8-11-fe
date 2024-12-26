@@ -6,7 +6,6 @@ import Image from "next/image";
 import { toastSuccess, toastError } from '../../utilities/toast';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import PhoneInput from 'react-phone-input-2'
 const RegisterPage = () => {
 
   const router = useRouter()
@@ -20,7 +19,7 @@ const RegisterPage = () => {
   const handlePhoneNumber = (e: any) => {
     setNewUserData((prevData) => ({
       ...prevData,
-      ['phoneNumber']: e.target.value,
+      ['phoneNumber']: '+62' + e.target.value,
     }));
   };
 
@@ -45,23 +44,13 @@ const RegisterPage = () => {
         body: JSON.stringify(newUserData),
       });
 
-      // const data = await response.json();
-      // if (!response.ok) {
-      //   throw new Error(data.message);
-      // }
-      
-      const data = await response.json().then((data) => {
-        const firstError = data.errors[0]?.msg;
-        
-        // Display the first error if it exists
-        if (firstError) {
-          toastError(firstError);
-        }else{
-
-          toastSuccess(data.message)
-          router.push("/auth/login")
-        }
-      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      toastSuccess(data.message)
+      router.push("/auth/login")
+      ;
     } catch (error: any) {
       toastError(error.message)
     }
@@ -70,7 +59,7 @@ const RegisterPage = () => {
   return (
     <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
       <div className="shadow-2xl w-fit flex border rounded-2xl">
-        <div className="w-1/2 h-full">
+        <div className="hidden md:flex w-1/2 h-full">
           <Image
             alt="Card background"
             className="object-cover rounded-l-2xl h-full"
@@ -79,7 +68,7 @@ const RegisterPage = () => {
             height={220}
           />
         </div>
-        <div className="w-1/2 rounded-r-2xl p-24">
+        <div className="w-full md:w-1/2 rounded-r-2xl p-24">
           <div className="text-black text-4xl font-bold text-center">
             REGISTER
           </div>

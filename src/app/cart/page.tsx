@@ -105,20 +105,23 @@ const CartPage = () => {
     if (!chosenAddress) return;
   
     setLoading(true);
-
-    // totalPrice : number,
-    // shippingFee : number,
-    // promo : number,
-    // voucher : number,
   
     let totalWeight = 0;
     console.log(data)
     console.log(quantities)
     const cartTotal = data.reduce((total, item) => {
-      const quantity = quantities[item.productVariantId] || 1; // Fallback to 1
+      const quantity = quantities[item.productVariantId] || 1; 
       totalWeight += item.product_variant.productWeight * quantity;
       return total + item.product_variant.productPrice * quantity;
     }, 0);
+
+    const response = await fetch(`${process.env.ADDRESS}`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${clientToken}` },
+    });
+
+    const resp = await response.json();
+    if (!response.ok) throw new Error(resp.message);
 
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal}))
   
@@ -232,7 +235,7 @@ const CartPage = () => {
   }
 
   return (
-    <div className="bg-gray-100 h-screen text-black pt-24">
+    <div className="bg-gray-100 min-h-screen text-black pt-24">
       <NavigationBar />
       <div className="flex flex-col lg:flex-row gap-8 px-4">
         <div className="flex-1 bg-white p-6 rounded-2xl shadow-md">

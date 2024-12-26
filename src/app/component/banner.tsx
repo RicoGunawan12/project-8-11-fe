@@ -28,7 +28,7 @@ const Banner: React.FC<BannerProps> = ({ page, text }) => {
         const selectedBanner = data.find((banner: BannerData) => banner.page === page);
         console.log(selectedBanner)
         console.log(`${process.env.BACK_BASE_URL}${selectedBanner.image}`)
-        setBanner(selectedBanner || null);
+        setBanner(selectedBanner || page);
       } catch (error) {
         // console.error("Failed to fetch banners:", error);
       }

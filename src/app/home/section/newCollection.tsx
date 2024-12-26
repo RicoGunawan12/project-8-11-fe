@@ -1,6 +1,6 @@
 "use client";
 import { useLocaleStore } from "@/app/component/locale";
-import { Page } from "@/app/model/page";
+import  Page  from "@/app/model/pageModel";
 import { toastError } from "@/app/utilities/toast";
 import Image from "next/image";
 import Link from "next/link";

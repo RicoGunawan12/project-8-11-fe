@@ -6,7 +6,7 @@ import { ExploreProduct} from "@/app/model/product";
 import { toastError } from "@/app/utilities/toast";
 import Link from "next/link";
 import { useLocaleStore } from "@/app/component/locale";
-import { Page } from "@/app/model/page";
+import  Page  from "@/app/model/pageModel";
 
 const BestSellerProduct = () => {
 

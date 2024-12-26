@@ -34,14 +34,11 @@ const FAQPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white">
       <NavigationBar />
-      <div className="mt-20 h-full">
-        <Banner page="FaQ Page" text="Frequently Asked Questions" />
+      <div className="mt-20 flex-grow">
+        {/* <Banner page="FaQ Page" text="Frequently Asked Questions" /> */}
         <div className="p-12 min-h-[27.5%] flex flex-col items-center">
-          <h1 className="text-3xl font-bold mb-6 text-black">
-            Frequently Asked Questions
-          </h1>
           <div className="space-y-4 w-1/2">
             {data?.map((item, index) => (
               <FAQItem
@@ -53,8 +50,8 @@ const FAQPage: React.FC = () => {
             ))}
           </div>
         </div>
-        <Footer/>
       </div>
+        <Footer/>
     </div>
   );
 };

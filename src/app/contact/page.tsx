@@ -80,19 +80,11 @@ const ContactPage: React.FC = () => {
         body: JSON.stringify(data),  
       });
   
-      // if (!response.ok) {
-      //   throw new Error("Network response was not ok");
-      // }
-      await response.json().then((data) => {
-        const firstError = data.errors[0]?.msg;
-        
-        if (firstError) {
-          console.log(firstError)
-          toastError(firstError);
-        }else{
-          router.refresh()
-        }
-      })
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json()
+      console.log(result)
       
     } catch (error) {
       console.error("Error:", error);
@@ -112,7 +104,7 @@ const ContactPage: React.FC = () => {
           {/* Main Content */}
           <div className="flex flex-1 p-24 mt-20">
             {/* Left Section */}
-            <div className="w-1/3 bg-secondary text-white px-24 flex items-center justify-start rounded rounded-tl-2xl rounded-bl-2xl">
+            <div className="hidden w-full md:w-1/3 bg-secondary text-white px-24 md:flex items-center justify-start rounded rounded-tl-2xl rounded-bl-2xl">
               <div>
                 <h1 className="text-3xl font-bold mb-6">Social Media</h1>
                 <ul className="space-y-6">
@@ -146,7 +138,7 @@ const ContactPage: React.FC = () => {
             </div>
 
             {/* Right Section */}
-            <div className="w-2/3 bg-white px-32 flex items-center justify-center rounded rounded-tr-2xl rounded-br-2xl">
+            <div className="w-2/3 bg-white px-32 text-black flex items-center justify-center rounded rounded-tr-2xl rounded-br-2xl">
               <form className="space-y-4 w-full justify-between">
                 <div>
                   <h2 className="text-3xl font-bold mb-4">Need Help ?</h2>
@@ -175,16 +167,16 @@ const ContactPage: React.FC = () => {
                   value={formData.topic}
                   onChange={handleChange}
                   required
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-400"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-black"
                 >
-                  <option className="text-gray-400" value="" disabled>Select A Topic</option>
-                  <option className="text-gray-400" value="Cancel Order">Cancel Order</option>
-                  <option className="text-gray-400" value="Modify Order">Modify Order</option>
-                  <option className="text-gray-400" value="Tracking Order">Tracking Order</option>
-                  <option className="text-gray-400" value="Return Or Exchange Items">Return Or Exchange Items</option>
-                  <option className="text-gray-400" value="Become a Reseller">Become a Reseller</option>
-                  <option className="text-gray-400" value="Partnership">Partnership</option>
-                  <option className="text-gray-400" value="Other">Other</option>
+                  <option className="text-black" value="" disabled>Select A Topic</option>
+                  <option className="text-black" value="Cancel Order">Cancel Order</option>
+                  <option className="text-black" value="Modify Order">Modify Order</option>
+                  <option className="text-black" value="Tracking Order">Tracking Order</option>
+                  <option className="text-black" value="Return Or Exchange Items">Return Or Exchange Items</option>
+                  <option className="text-black" value="Become a Reseller">Become a Reseller</option>
+                  <option className="text-black" value="Partnership">Partnership</option>
+                  <option className="text-black" value="Other">Other</option>
                 </select>
 
                 <input
@@ -224,6 +216,7 @@ const ContactPage: React.FC = () => {
             </div>
           </div>
         </form>
+        <Footer/>
       </div>
     );
   }

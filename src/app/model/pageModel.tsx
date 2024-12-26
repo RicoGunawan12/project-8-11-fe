@@ -5,7 +5,7 @@ interface PageContent{
     title : string
 }
 
-export interface Page{
+export default interface Page{
     contentJSONEng : PageContent[],
     contentJSONIndo : PageContent[],
     [key: string]: PageContent[];

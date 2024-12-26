@@ -46,8 +46,8 @@ const BlogDetail = () => {
       <NavigationBar />
       <div className="mt-20 h-full">
         <Banner
-          title={""}
-          imagePath={`${process.env.BACK_BASE_URL}${data.postImage}`}
+          text=""
+          page={`${process.env.BACK_BASE_URL}${data.postImage}`}
         />
 
         <div className="container mx-auto p-6">

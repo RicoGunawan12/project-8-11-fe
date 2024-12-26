@@ -36,15 +36,17 @@ const BlogsPage: React.FC = () => {
     fetchData();
   }, []);
 
-  if(!blogData){
-    return <Loading/>
+  if (!blogData) {
+    return <Loading />;
   }
 
   return (
-    <div className="w-screen h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white">
+      {/* Navbar */}
       <NavigationBar />
-      <div className="mt-20 h-full">
-        <Banner title="Blog" imagePath="/banner.jpg" />
+
+      {/* Content */}
+      <div className="flex-grow mt-20">
         <div className="p-12 min-h-[27.5%] flex justify-center">
           <div className="grid grid-cols-2 w-3/4 lg:grid-cols-4 gap-6 h-full mt-12">
             {blogData?.map((blog) => (
@@ -68,7 +70,9 @@ const BlogsPage: React.FC = () => {
                       </h2>
                       <p className="mt-2 text-sm text-gray-700 flex justify-between">
                         <span>{formatDate(blog.createdAt)}</span>
-                        <span className="text-secondary text-md font-semibold">Read more &gt; &gt;</span>
+                        <span className="text-secondary text-md font-semibold">
+                          Read more &gt; &gt;
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -77,8 +81,10 @@ const BlogsPage: React.FC = () => {
             ))}
           </div>
         </div>
-        <Footer />
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

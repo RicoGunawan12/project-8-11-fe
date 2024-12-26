@@ -38,41 +38,30 @@ const LoginPage = () => {
         body: JSON.stringify(userPayload),
       });
 
-      // const data = await response.json();
-      // if (!response.ok) {
-      //   throw new Error(data.message);
-      // }
-      const data = await response.json().then(async (data) => {
-        const firstError = data.errors[0]?.msg;
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
 
-        // Display the first error if it exists
-        if (firstError) {
-          toastError(firstError);
-        } else {
-          setTokenCookie(data.token);
-          toastSuccess(data.message);
-
-          const sessionCart = localStorage.getItem("cartItem");
-          if (sessionCart) {
-            const cartItems = JSON.parse(sessionCart);
-            for (const item of cartItems) {
-              await fetch(`${process.env.CART}`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${data.token}`,
-                },
-                body: JSON.stringify(item),
-              });
-            }
-
-            localStorage.removeItem("cartItem");
-            toastSuccess("Cart items synced successfully!");
-          }
-
-          router.push("/");
+      const sessionCart = localStorage.getItem("cartItem");
+      if (sessionCart) {
+        const cartItems = JSON.parse(sessionCart);
+        for (const item of cartItems) {
+          await fetch(`${process.env.CART}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${data.token}`,
+            },
+            body: JSON.stringify(item),
+          });
         }
-      })
+
+        localStorage.removeItem("cartItem");
+        toastSuccess("Cart items synced successfully!");
+      }
+      setTokenCookie(data.token)
+      router.push("/");
 
     } catch (error: any) {
       toastError(error.message);
@@ -81,8 +70,8 @@ const LoginPage = () => {
 
   return (
     <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
-      <div className="shadow-2xl w-fit flex border rounded-2xl">
-        <div className="w-1/2 rounded-l-2xl p-36">
+      <div className="shadow-2xl w-fit flex justify-center border rounded-2xl">
+        <div className="w-full md:w-1/2 rounded-l-2xl p-12 md:p-36 flex flex-col">
           <div className="text-black text-4xl font-bold text-center">
             Login
           </div>
@@ -115,7 +104,7 @@ const LoginPage = () => {
             Do not have an account? <Link href={"/auth/register"} className="text-blue-500 font-bold">Click here</Link>
           </div>
         </div>
-        <div className="w-1/2 h-full">
+        <div className="hidden md:flex md:w-1/2 h-full">
           <Image
             alt="Card background"
             className="object-cover rounded-r-2xl h-full"
