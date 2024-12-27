@@ -65,7 +65,6 @@ const CartPage = () => {
         }
 
         setData(cartData);
-        console.log(cartData);
         setQuantities(
           cartData.reduce((acc: { [key: string]: number }, item: Cart) => {
             acc[item.productVariantId] = item.quantity || 1;
@@ -107,8 +106,6 @@ const CartPage = () => {
     setLoading(true);
   
     let totalWeight = 0;
-    console.log(data)
-    console.log(quantities)
     const cartTotal = data.reduce((total, item) => {
       const quantity = quantities[item.productVariantId] || 1; 
       totalWeight += item.product_variant.productWeight * quantity;
@@ -193,8 +190,6 @@ const CartPage = () => {
   const checkVoucher = async() => {
     const url = new URL(`${process.env.VOUCHER}/getByCode`);
 
-      console.log(url)
-
       url.searchParams.append("code", String(voucherCode));
       const fetchData = await fetch(url, {
         method: "GET",
@@ -219,8 +214,6 @@ const CartPage = () => {
         discount = result.discount
       }
 
-      console.log(result)
-      console.log(discount)
       setPrice((prev) => ({ ...prev, voucher: discount}))
 
       if(result.errors || result.message){
@@ -376,7 +369,6 @@ const CartPage = () => {
                   const selectedOption = shippingOptions.find(
                     (option) => option.shipping_name === e.target.value
                   );
-                  console.log(selectedOption)
                 
                   if (selectedOption) {
                     setSelectedShipping(selectedOption);

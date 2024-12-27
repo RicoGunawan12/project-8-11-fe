@@ -136,9 +136,7 @@ const AddressForm = () => {
             if (!response.ok) {
                 throw new Error(data.message);
             }
-            console.log(data)
             const res = data.subdistrict.rajaongkir.results
-            console.log(res)
 
             setSubdistricts(res);
         } catch (error) {
@@ -177,7 +175,6 @@ const AddressForm = () => {
         }
 
         const [subdistrict_id, postal_code] = formData.subdistrict.split(',');
-        console.log(subdistrict_id)
 
         const payLoad = {
             receiverName: formData.receiverName,
@@ -214,10 +211,6 @@ const AddressForm = () => {
     };
 
     if (!clientToken) return null;
-
-    // window.addEventListener('click', () => {
-    //     console.log(formData)
-    // })
 
     return (
         <div className="w-screen h-screen bg-white flex items-center justify-center">

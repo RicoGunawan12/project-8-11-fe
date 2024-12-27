@@ -24,7 +24,7 @@ const TransactionPage = () => {
         if (!response.ok) {
           throw new Error(resp.message);
         }
-        console.log(resp.transactions);
+
         setData(resp.transactions);
 
       } catch (error: any) {

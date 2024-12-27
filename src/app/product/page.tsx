@@ -21,9 +21,8 @@ const ProductPage = () => {
   }>({});
 
   const fetchSearchResults = async () => {
-    console.log("asd");
+
     if (fetchedPages[currentPage]) {
-      console.log("back");
       setSearchResults(fetchedPages[currentPage]);
       return;
     }
@@ -43,7 +42,7 @@ const ProductPage = () => {
       }
 
       const countData = await countResponse.json();
-      console.log(countData);
+
       setTotalPages(Math.ceil(countData.total / limit));
 
       const url = new URL(`${process.env.PRODUCTS}/paginate`);
@@ -62,7 +61,7 @@ const ProductPage = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
-      console.log(data);
+
 
       setFetchedPages((prev) => ({
         ...prev,

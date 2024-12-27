@@ -141,9 +141,7 @@ const AddressForm = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
-      console.log(data);
       const res = data.subdistrict.rajaongkir.results;
-      console.log(res);
 
       setSubdistricts(res);
     } catch (error) {
@@ -195,7 +193,6 @@ const AddressForm = () => {
       addressDetail: formData.addressDetail,
     }
 
-    console.log(payLoad)
 
     try {
       const response = await fetch(`${process.env.ADDRESS}/${id}`, {

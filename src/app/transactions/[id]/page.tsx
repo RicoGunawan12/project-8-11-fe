@@ -29,7 +29,7 @@ const TransactionPage = () => {
     if (!id) return;
 
     const fetchTransaction = async () => {
-      console.log(token);
+
       try {
         const response = await fetch(`${process.env.TRANSACTIONS}/${id}`, {
           method: "GET",
@@ -44,7 +44,7 @@ const TransactionPage = () => {
         }
 
         const data = await response.json();
-        console.log(data.transaction);
+
         setTransaction(data.transaction);
       } catch (err: any) {
         setError("Error fetching data: " + err.message);
@@ -71,7 +71,6 @@ const TransactionPage = () => {
       }
 
       const data = await response.json();
-      console.log("Transaction canceled successfully:", data);
 
       setTransaction((prevTransaction) =>
         prevTransaction ? { ...prevTransaction, status: "Canceled" } : null
@@ -89,7 +88,7 @@ const TransactionPage = () => {
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner title="Transaction Details" imagePath="/banner.jpg" />
+        <Banner text="Transaction Details" page="Transaction Page"/>
         <div className="text-black p-12">
           <div className="flex justify-center items-center flex-col gap-6">
             <div className="p-6 border-2 w-3/4 rounded-md shadow-2xl bg-gray-50">

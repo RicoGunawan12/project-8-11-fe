@@ -1,82 +1,107 @@
 "use client";
-import {
-  hotProduct,
-  newArrivalProduct,
-  onSaleProduct,
-  trendingProduct,
-} from "@/app/utilities/dummy_data";
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
-import { ProductCard } from "@/app/model/productCard";
 import Link from "next/link";
 import Image from "next/image";
-import { renderStars } from "@/app/utilities/icons";
+import { toastError } from "@/app/utilities/toast";
+import Loading from "@/app/utilities/loading";
 
 const OurProductSection = () => {
-  type ProductCategory = "hot" | "onSale" | "trending" | "newArrival";
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null); // State for active tab
 
-  const PRODUCT_CATEGORIES = useMemo(
-    () => ({
-      hot: hotProduct,
-      onSale: onSaleProduct,
-      trending: trendingProduct,
-      newArrival: newArrivalProduct,
-    }),
-    []
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${process.env.PRODUCTS}/category`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
-  const [products, setProducts] = useState<ProductCard[]>(
-    PRODUCT_CATEGORIES.hot
-  );
+        const data = await response.json();
+        setProducts(data.products);
 
-  const handleProductChange = useCallback(
-    (category: ProductCategory) => {
-      setProducts(PRODUCT_CATEGORIES[category]);
-    },
-    [PRODUCT_CATEGORIES]
+        // Set the first category as active by default
+        if (data.products.length > 0) {
+          setActiveCategoryId(data.products[0].productCategoryId);
+        }
+      } catch (error: any) {
+        toastError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // If loading, show loading spinner
+  if (loading) {
+    return <Loading />;
+  }
+
+  // Get the products of the active category
+  const activeCategory = products.find(
+    (category) => category.productCategoryId === activeCategoryId
   );
 
   return (
-    <div className="w-screen h-screen flex items-center flex-col">
-      <div className="mt-20 text-5xl font-bold text-black">Our Product</div>
-      <div className="flex text-black text-md font-medium gap-10">
-        <button onClick={() => handleProductChange("hot")}>HOT</button>
-        <button onClick={() => handleProductChange("onSale")}>ON SALE</button>
-        <button onClick={() => handleProductChange("trending")}>
-          TRENDING NOW
-        </button>
-        <button onClick={() => handleProductChange("newArrival")}>
-          NEW ARRIVAL
-        </button>
-      </div>
-      <div className="mt-4">
-        <div className="grid-cols-4 grid-rows-2 grid w-full justify-items-center gap-6">
-          {products.map((product, idx) => {
-            return (
-              <Link href={`/product/${product.productId}`} key={idx}>
-                <Card className="py-4">
-                  <CardBody className="overflow-visible py-1">
-                    <Image
-                      alt="Card background"
-                      className="object-cover rounded-xl h-[200px]"
-                      src={product.productImage}
-                      width={200}
-                      height={220}
-                    />
-                  </CardBody>
-                  <CardFooter className="pb-0 pt-2 px-4 flex-col items-start">
-                    <p className="text-tiny uppercase font-bold">
-                      {product.productName}
-                    </p>
-                    <small className="text-default-500">{renderStars(3)}</small>
+    <div className="w-screen flex flex-col items-center py-20">
+      <div className=" text-3xl font-bold text-black">Our Product</div>
 
-                      <div>Rp. 200000</div>
+      {/* Category Tabs */}
+      <div className="mt-8 w-full px-10">
+        <div className="flex gap-8 mb-8">
+          {products.map((category) => (
+            <button
+              key={category.productCategoryId}
+              onClick={() => setActiveCategoryId(category.productCategoryId)}
+              className={`text-md font-semibold p-2 rounded ${
+                activeCategoryId === category.productCategoryId
+                  ? "bg-secondary text-white"
+                  : "bg-gray-200 text-black"
+              }`}
+            >
+              {category.productCategoryName}
+            </button>
+          ))}
+        </div>
+
+        {/* Products of the active category */}
+        {activeCategory ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {activeCategory.products.map((product: any) => (
+                <Card key={product.productId}>
+                  <CardHeader>
+                    <Image
+                      src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
+                      alt={product.productName}
+                      width={200}
+                      height={200}
+                      className="rounded-md"
+                    />
+                  </CardHeader>
+                  <CardBody>
+                    <div className="text-lg font-semibold">{product.productName}</div>
+                    <p className="text-sm text-gray-500">{product.productDescription}</p>
+                  </CardBody>
+                  <CardFooter>
+                    <Link href={`/product/${product.productId}`} className="text-secondary font-semibold">
+                      <span>View Details {">>"} </span>
+                    </Link>
                   </CardFooter>
                 </Card>
-              </Link>
-            );
-          })}
-        </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="text-gray-500">No products available in this category</div>
+        )}
       </div>
     </div>
   );

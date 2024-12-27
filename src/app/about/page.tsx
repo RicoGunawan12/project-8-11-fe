@@ -25,7 +25,6 @@ const AboutUsPage = () => {
 
         const result = await response.json()
 
-        console.log(result)
         setPage(result.response)
 
       } catch (error: any) {

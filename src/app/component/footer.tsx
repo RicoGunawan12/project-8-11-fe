@@ -26,7 +26,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <div className="w-screen h-auto bg-secondary text-white mt-12 pt-12">
+    <div className="w-screen h-auto bg-secondary text-white  pt-12">
       <div className="flex w-full justify-around px-12">
         <div className="flex w-3/4 gap-12 px-6">
           <div className="text-sm">

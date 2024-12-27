@@ -25,7 +25,6 @@ const BestSellerProduct = () => {
 
         const result = await req.json()
 
-        console.log(result)
 
         setProducts(result.bestSellerProduct)
 
@@ -35,7 +34,6 @@ const BestSellerProduct = () => {
 
         const res = await reqs.json()
 
-        console.log(res.pages)
         setPages(res.pages)
       }
 

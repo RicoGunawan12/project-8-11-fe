@@ -48,7 +48,6 @@ const ContactPage: React.FC = () => {
         }
 
         setSocMed(data.contacts);
-        console.log("socmed", socMed)
         if (!Array.isArray(data))   throw new Error('Data is not an array');
       } catch (error: any) {
         toastError(error);
@@ -84,7 +83,6 @@ const ContactPage: React.FC = () => {
         throw new Error("Network response was not ok");
       }
       const result = await response.json()
-      console.log(result)
       
     } catch (error) {
       console.error("Error:", error);

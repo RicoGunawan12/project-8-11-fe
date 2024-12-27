@@ -20,14 +20,9 @@ const Banner: React.FC<BannerProps> = ({ page, text }) => {
     // Fetch banners from the API (using a mock API response for now)
     const fetchBanner = async () => {
       try {
-        console.log(process.env.BANNERS)
-        console.log(page)
         const response = await fetch(`${process.env.BANNERS}`); // Adjust the API endpoint as needed
         const data = (await response.json()).banners;
-        console.log(data)
         const selectedBanner = data.find((banner: BannerData) => banner.page === page);
-        console.log(selectedBanner)
-        console.log(`${process.env.BACK_BASE_URL}${selectedBanner.image}`)
         setBanner(selectedBanner || page);
       } catch (error) {
         // console.error("Failed to fetch banners:", error);

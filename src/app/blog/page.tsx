@@ -26,7 +26,6 @@ const BlogsPage: React.FC = () => {
           throw new Error(result.message);
         }
 
-        console.log(result.posts);
         setBlogData(result.posts);
       } catch (error: any) {
         toastError(error.message);

@@ -23,7 +23,6 @@ const NewCollection = () => {
 
         const res = await req.json()
 
-        console.log(res.pages)
         setPages(res.pages)
 
       }
