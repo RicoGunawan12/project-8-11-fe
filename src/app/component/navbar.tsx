@@ -24,7 +24,7 @@ const NavigationBar = () => {
 
   const options = [
     { value: "contentJSONEng", label: "EN", icon: "/icons/EN.png" },
-    { value: "contentJSONID", label: "ID", icon: "/icons/ID.png" },
+    { value: "contentJSONIndo", label: "ID", icon: "/icons/ID.png" },
   ];
 
   const selectedOption = options.find((option) => option.value === locale);
