@@ -38,31 +38,31 @@ const NewCollection = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row w-full lg:w-2/3 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
-        <Link href={"#"} className="w-full lg:w-[300px]">
+        <Link href={"#"} className="w-full lg:w-[300px] flex justify-center">
           <Image
             src="/a.jpg"
             width={400}
             height={400}
             alt="logo pic"
-            className="aspect-square w-full h-auto lg:w-[400px] lg:h-[400px] object-cover"
+            className="aspect-square w-1/2 h-auto lg:w-[400px] lg:h-[400px] object-cover"
           />
         </Link>
-        <Link href={"#"} className="w-full lg:w-[300px]">
+        <Link href={"#"} className="w-full lg:w-[300px] flex justify-center">
           <Image
             src="/a.jpg"
             width={400}
             height={400}
             alt="logo pic"
-            className="aspect-square w-full h-auto lg:w-[400px] lg:h-[400px] object-cover"
+            className="aspect-square w-1/2 h-auto lg:w-[400px] lg:h-[400px] object-cover"
           />
         </Link>
-        <Link href={"#"} className="w-full lg:w-[300px]">
+        <Link href={"#"} className="w-full lg:w-[300px] flex justify-center">
           <Image
             src="/a.jpg"
             width={400}
             height={400}
             alt="logo pic"
-            className="aspect-square w-full h-auto lg:w-[400px] lg:h-[400px] object-cover"
+            className="aspect-square w-1/2 h-auto lg:w-[400px] lg:h-[400px] object-cover"
           />
         </Link>
       </div>
