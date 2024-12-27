@@ -189,13 +189,13 @@ const NavigationBar = () => {
                 className="text-white flex items-center hover:underline h-6"
               >
                 <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
-                <span className="text-md">Search</span>
+                <span className="text-medium h-full">Search</span>
               </button>
 
               {/* Cart */}
               <Link href="/cart" className="text-white flex items-center h-6 hover:underline">
                 <FontAwesomeIcon icon={faCartShopping} size="sm" className="mr-2" />
-                <span>Cart</span>
+                <span className="text-md">Cart</span>
               </Link>
 
               {/* User Account */}

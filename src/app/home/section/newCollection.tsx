@@ -33,7 +33,7 @@ const NewCollection = () => {
       <div className="text-black text-4xl lg:text-6xl font-bold text-center">
         {page && page[0]?.[locale]?.[1]?.title || "Loading"}
       </div>
-      <div className="text-black text-justify text-sm pt-2 lg:mt-6">
+      <div className="text-black text-justify text-sm pt-2 px-6 lg:mt-6">
         {page && page[0]?.[locale]?.[1]?.content || "Loading"}
       </div>
 
