@@ -26,9 +26,9 @@ const Footer = () => {
   }, []);
 
   return (
-    <div className="w-screen h-auto bg-secondary text-white  pt-12">
-      <div className="flex w-full justify-around px-12">
-        <div className="flex w-3/4 gap-12 px-6">
+    <div className="w-full bg-secondary text-white pt-12">
+      <div className="flex flex-col lg:flex-row w-full justify-between px-6 lg:px-12">
+        <div className="flex flex-col lg:flex-row w-full lg:w-3/4 gap-6 lg:gap-12 px-6">
           <div className="text-sm">
             <h1 className="mb-6 text-xl font-bold">COMPANY</h1>
             <div className="flex flex-col gap-y-1">
@@ -45,40 +45,37 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="w-1/4">
+
+        <div className="flex flex-col items-center lg:items-start w-full lg:w-1/4 mt-6 lg:mt-0">
           <div className="flex items-center gap-6">
             <Link href="/" className="text-3xl font-bold text-white">
               TYESO
             </Link>
           </div>
-          <div className="flex gap-4 mt-6">
+          <div className="flex gap-4 mt-6 justify-center lg:justify-start">
             {/* Social Media Icons */}
-            {contacts?.map((contact, idx) => {
-              return (
-                <a
-                  key={contact.contactId}
-                  href={`${contact.contactAccount}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className=""
-                >
-                  <Image
-                    src={`${process.env.BACK_BASE_URL}/assets/contact/${contact.contact}.png`}
-                    alt={`${contact.contact}`}
-                    width={24}
-                    height={24}
-                    className="filter grayscale brightness-150"
-                  />
-                </a>
-              );
-            })}
+            {contacts?.map((contact, idx) => (
+              <a
+                key={contact.contactId}
+                href={`${contact.contactAccount}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={`${process.env.BACK_BASE_URL}/assets/contact/${contact.contact}.png`}
+                  alt={`${contact.contact}`}
+                  width={24}
+                  height={24}
+                  className="filter grayscale brightness-150"
+                />
+              </a>
+            ))}
           </div>
         </div>
       </div>
+
       <div className="flex flex-col items-center justify-center mt-12 bg-secondary border-t-2 border-white">
-        <span className="text-white text-md flex align-middle my-4">
-          © TYESO, 2025. All rights reserved.
-        </span>
+        <span className="text-white text-md my-4">© TYESO, 2025. All rights reserved.</span>
       </div>
     </div>
   );
