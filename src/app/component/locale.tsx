@@ -4,19 +4,16 @@ import { persist } from 'zustand/middleware';
 
 interface LocaleState {
     locale: string;
-    change: () => void;
+    change: (newLocale : string) => void;
 }
 
 export const useLocaleStore = create<LocaleState>()(
     persist(
         (set) => ({
             locale: "contentJSONEng",
-            change: () =>
-                set((state) => ({
-                    locale:
-                        state.locale === "contentJSONEng"
-                            ? "contentJSONIndo"
-                            : "contentJSONEng",
+            change: (newLocale : string) =>
+                set(() => ({
+                    locale: newLocale
                 })),
         }),
         {

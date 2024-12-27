@@ -39,10 +39,10 @@ toastError(error.message)
   return (
     <div className="w-screen h-screen flex flex-col items-center pt-10 lg:pt-20">
       <div className="text-black text-6xl lg:text-5xl font-bold text-center">
-      {page && page[0]?.[locale]?.[1]?.title || "No Title Available"}
+      {page && page[0]?.[locale]?.[1]?.title || "Loading"}
       </div>
       <div className="text-black text-center text-sm pt-2 lg:mt-6 px-2 lg:px-0">
-      {page && page[0]?.[locale]?.[1]?.content || "No Content Available"}
+      {page && page[0]?.[locale]?.[1]?.content || "Loading"}
       </div>
       <div className="flex flex-col lg:flex-row h-3/5 w-2/3 items-center lg:justify-around mt-6">
         <Link href={"#"}>

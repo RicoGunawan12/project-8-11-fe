@@ -68,8 +68,8 @@ const RegisterPage = () => {
             height={220}
           />
         </div>
-        <div className="w-full md:w-1/2 rounded-r-2xl p-24">
-          <div className="text-black text-4xl font-bold text-center">
+        <div className="w-full md:w-1/2 rounded-r-2xl p-24 text-black ">
+          <div className="text-4xl font-bold text-center">
             REGISTER
           </div>
           <div className="w-full">

@@ -50,16 +50,16 @@ const AboutUsPage = () => {
   <h2 className="mt-12 font-semibold text-lg w-3/5">
     {page && (locale === "contentJSONEng" 
       ? page[0]?.titleEng 
-      : page[0]?.titleIndo) || "No Content Available"}
+      : page[0]?.titleIndo) || "Loading"}
   </h2>
   <div className="mt-6 w-3/5">
   {page && (locale === "contentJSONEng" 
       ? page[0]?.contentEng 
-      : page[0]?.contentIndo) || "No Content Available"}
+      : page[0]?.contentIndo) || "Loading"}
   </div>
   <div className="w-full flex items-center flex-col bg-secondary mt-6 py-8">
   <h1 className="text-white text-2xl font-semibold">Why you should choose TYESO?</h1>
-  <div className="flex w-full justify-center flex-wrap gap-12 my-6">
+  <div className="flex w-full justify-center flex-wrap gap-12 my-6 px-6">
     {/* Product 1 */}
     <div className="flex flex-col items-center max-w-xs">
       <img

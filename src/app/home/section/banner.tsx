@@ -39,10 +39,10 @@ toastError(error.message)
     <div className="flex flex-col lg:flex-row w-screen h-screen justify-center items-center gap-24 bg-gradient-radial from-yellow-200 via-yellow-300 to-amber-500 p-6">
       <div className="lg:w-2/5 pt-20 lg:pt-0">
         <h1 className="text-black text-xl lg:text-5xl font-bold">
-        {page && page[0]?.[locale]?.[0]?.title || "No Title Available"}
+        {page && page[0]?.[locale]?.[0]?.title || "Loading"}
         </h1>
         <p className="text-black mt-6 text-md">
-        {page && page[0]?.[locale]?.[0]?.content || "No Content Available"}
+        {page && page[0]?.[locale]?.[0]?.content || "Loading"}
         </p>
         <div className="mt-2">
           <button className="bg-black text-white py-2 px-10">

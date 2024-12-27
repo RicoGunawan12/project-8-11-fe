@@ -53,11 +53,11 @@ const BestSellerProduct = () => {
         <div className="flex gap-6 overflow-x-auto pl-12 pr-12">
           {/* Content container */}
           <div className="w-2/5">
-            <div className="text-white text-8xl font-bold">
-            {page && page[0]?.[locale]?.[3]?.title || "No Title Available"}
+            <div className="text-white text-4xl font-bold">
+            {page && page[0]?.[locale]?.[3]?.title || "Loading"}
             </div>
-            <div className="text-lg mt-4 text-white">
-            {page && page[0]?.[locale]?.[3]?.content || "No Content Available"}
+            <div className="text-md mt-4 text-white">
+            {page && page[0]?.[locale]?.[3]?.content || "Loading"}
             </div>
             <div className="border-white text-white border w-fit px-6 py-2 mt-4">
               <button>click here</button>

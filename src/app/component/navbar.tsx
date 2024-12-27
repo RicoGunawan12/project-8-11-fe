@@ -20,6 +20,14 @@ const NavigationBar = () => {
   const [fetchedPages, setFetchedPages] = useState<{ [key: number]: ExploreProduct[] }>({});
   const {locale, change} = useLocaleStore()
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const options = [
+    { value: "contentJSONEng", label: "EN", icon: "/icons/EN.png" },
+    { value: "contentJSONID", label: "ID", icon: "/icons/ID.png" },
+  ];
+
+  const selectedOption = options.find((option) => option.value === locale);
 
   useEffect(() => {
     const clientToken = getTokenCookie();
@@ -194,12 +202,36 @@ const NavigationBar = () => {
 
   {/* Actions */}
   <div className="hidden lg:flex items-center space-x-4">
-  <button
-    onClick={change}
-    className="w-8 h-8 aspect-square"
->
-    {locale === "contentJSONEng" ? <img src="/icons/ID.png"/> : <img src="/icons/EN.png" /> }
-</button>
+  <div className="relative inline-block text-secondary">
+      {/* Selected Option */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-20 h-8 bg-white border border-gray-300 rounded-lg text-xs flex items-center justify-between px-2"
+      >
+        <img src={selectedOption?.icon} alt={selectedOption?.label} className="w-4 h-4 mr-2" />
+        {selectedOption?.label}
+        <span className="ml-2">&#x25BC;</span>
+      </button>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-md">
+          {options.map((option) => (
+            <div
+              key={option.value}
+              className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-100 text-xs"
+              onClick={() => {
+                change(option.value);
+                setIsOpen(false);
+              }}
+            >
+              <img src={option.icon} alt={option.label} className="w-4 h-4 mr-2" />
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
     <button onClick={toggleModal} className="text-white">
       <FontAwesomeIcon icon={faSearch} size="lg" />
     </button>
@@ -244,7 +276,7 @@ const NavigationBar = () => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white text-black rounded-lg shadow-lg w-4/5 h-[95%] p-6 relative">
         <button
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          className="absolute top-2 right-2 text-gray-500 text-3xl hover:text-gray-700"
           onClick={toggleModal}
         >
           &times;
