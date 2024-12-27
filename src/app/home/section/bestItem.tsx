@@ -34,6 +34,21 @@ const BestItem = () => {
         <div className="text-black text-sm text-justify mt-2 lg:mt-10">
           {page && page[0]?.[locale]?.[2]?.content || "Loading"}
         </div>
+        {/* stats sections when */}
+        <div className="hidden lg:flex bg-white text-black lg:w-fit shadow-2xl justify-between rounded-lg py-3 px-12 mt-6">
+        <div className="border-r-2 pr-2 lg:pr-6 my-4 lg:my-6 border-black flex flex-col items-center">
+          <div className="text-sm lg:text-3xl font-semibold">8900+</div>
+          <div className="text-xs lg:text-sm">Interact</div>
+        </div>
+        <div className="px-2 lg:px-6 my-4 lg:my-6 flex flex-col items-center">
+          <div className="text-sm lg:text-3xl font-semibold">3105+</div>
+          <div className="text-xs lg:text-sm">Purchase</div>
+        </div>
+        <div className="border-l-2 pl-2 lg:pl-6 my-4 lg:my-6 border-black flex flex-col items-center">
+          <div className="text-sm lg:text-3xl font-semibold">2014</div>
+          <div className="text-xs lg:text-sm">Reviews</div>
+        </div>
+      </div>
       </div>
 
       {/* Image Section */}
@@ -48,7 +63,7 @@ const BestItem = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="flex bg-white text-black absolute bottom-6 left-4 right-4 lg:bottom-40 lg:left-0 lg:right-auto lg:w-2/5 shadow-2xl justify-between rounded-lg p-3 lg:p-4 w-[90%] md:w-fit">
+      <div className=" lg:hidden flex bg-white text-black absolute bottom-8 left-1/2 transform -translate-x-1/2 py-3 px-6 justify-between rounded-lg shadow-2xl">
         <div className="border-r-2 pr-2 lg:pr-6 my-4 lg:my-6 border-black flex flex-col items-center">
           <div className="text-sm lg:text-3xl font-semibold">8900+</div>
           <div className="text-xs lg:text-sm">Interact</div>

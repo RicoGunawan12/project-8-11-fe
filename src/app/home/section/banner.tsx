@@ -43,7 +43,7 @@ const Banner = () => {
         </div>
       </div>
 
-      <div className="w-full lg:w-2/5 h-auto lg:h-5/6 flex justify-center lg:justify-end pt-6 lg:pt-0">
+      <div className="w-full lg:w-2/5 h-auto lg:h-5/6 flex justify-center lg:items-center pt-6 lg:pt-0">
         <Image
           src="/a.jpg"
           width={500}
