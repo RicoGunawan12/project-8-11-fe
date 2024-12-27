@@ -8,6 +8,7 @@ import { ProductCard } from "@/app/model/productCard";
 import Loading from "@/app/utilities/loading";
 import { getTokenCookie } from "@/app/utilities/token";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
+import Footer from "@/app/component/footer";
 
 const TABS = ["Product Descriptions", "Product Detail"];
 
@@ -258,6 +259,7 @@ const ProductDetailPage = () => {
           }
         })()}
       </div>
+      <Footer/>
     </div>
   );
 };

@@ -96,10 +96,10 @@ const ProductPage = () => {
   }
 
   return (
-    <div className="w-screen h-screen bg-white">
+    <div className="w-screen min-h-screen bg-white">
       <NavigationBar />
-      <div className="mt-20 h-full">
-      <Banner page="Product Page" text="Product" />
+      <div className="mt-20 flex-grow">
+        <Banner page="Product Page" text="Product" />
         {searchResults.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 w-full justify-items-center py-12 lg:px-12 px-4">
             {searchResults.map((result, index) => (
@@ -143,7 +143,7 @@ const ProductPage = () => {
         )}
 
         {/* Pagination controls */}
-        {totalPages == 1 ? null : (
+        {totalPages <= 1 ? null : (
           <div className="flex justify-center text-black gap-6 mt-4">
             <button
               onClick={handlePrevPage}

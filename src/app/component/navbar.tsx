@@ -228,7 +228,7 @@ const NavigationBar = () => {
         <div className="relative inline-block text-secondary">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-20 h-8 bg-white border border-gray-300 rounded-lg text-xs flex items-center justify-between px-2"
+            className="w-20 h-8 text-white rounded-lg text-xs flex items-center justify-between px-2"
           >
             <img
               src={selectedOption?.icon}

@@ -55,7 +55,7 @@ const OurProductSection = () => {
 
       {/* Category Tabs */}
       <div className="mt-8 w-full px-10">
-        <div className="flex gap-8 mb-8">
+        <div className="flex gap-8 mb-8 w-full justify-center">
           {products.map((category) => (
             <button
               key={category.productCategoryId}
