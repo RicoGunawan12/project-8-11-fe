@@ -6,15 +6,19 @@ import Image from "next/image";
 import { toastSuccess, toastError } from '../../utilities/toast';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ErrorMessage } from '../../model/error';
 const RegisterPage = () => {
 
+  const [errors, setErrors] = useState<Array<ErrorMessage>>([]);
   const router = useRouter()
+  const [customErr, setCustomErr] = useState('')
 
   const [newUserData, setNewUserData] = useState<UserRegister>({
     username: "",
     email: "",
     password: "",
-    phoneNumber:""
+    phoneNumber: "",
+    confirmPassword: ""
   });
   const handlePhoneNumber = (e: any) => {
     setNewUserData((prevData) => ({
@@ -23,7 +27,7 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleChanges = (e: React.FocusEvent<Element> ) => {
+  const handleChanges = (e: React.FocusEvent<Element>) => {
     const target = e.target as HTMLInputElement
     const name = target.name
     const value = target.value
@@ -46,12 +50,17 @@ const RegisterPage = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message);
+        if (data.errors) setErrors(data.errors)
+        else {
+          setErrors([])
+          setCustomErr(data.message)
+        }
+      } else {
+        toastSuccess(data.message)
+        router.push("/auth/login")
       }
-      toastSuccess(data.message)
-      router.push("/auth/login")
-      ;
     } catch (error: any) {
+      setCustomErr(error.message)
       toastError(error.message)
     }
   }
@@ -78,53 +87,99 @@ const RegisterPage = () => {
               label="Username"
               size="sm"
               labelPlacement="inside"
-              isClearable
-              className="mt-6 w-full border-3 rounded-2xl shadow-xl"
+              isClearable={false}
+              className={`mt-6 w-full border-3 rounded-xl shadow-xl ${errors?.find(e => e.path == 'username') ? "border-red-300" : "border-gray-300"
+                }`}
               name="username"
               onBlur={handleChanges}
+
             />
+            <p hidden={!errors?.find(e => e.path === 'username')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'username')?.msg}</p>
+
+
             <Input
               type="email"
               label="Email"
               size="sm"
               labelPlacement="inside"
-              isClearable
-              className="mt-6 w-full border-3 rounded-2xl shadow-xl"
+              isClearable={false}
+              className={`mt-6 w-full border-3 !border-red-300 rounded-xl shadow-xl ${errors?.find(e => e.path === 'email') ? '!border-red-300' : '!border-gray-300'
+                }`}
               name="email"
               onBlur={handleChanges}
             />
-            <Input
-              type="password"
-              label="Password"
-              size="sm"
-              labelPlacement="inside"
-              isClearable
-              className="mt-6 w-full border-3 rounded-2xl shadow-xl"
-              name="password"
-              onBlur={handleChanges}
-            />
-            <div className="flex flex-row mt-6 h-full  bg-gray-50">
-              <div className="min-h-full align-middle flex items-center px-3 border-3 border-r-1 border-y rounded-l-xl border-gray-200">
+
+            <p hidden={!errors?.find(e => e.path === 'email')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'email')?.msg}</p>
+            <div className={`flex flex-row mt-6 h-full  bg-gray-100  border-3 rounded-xl shadow-xl ${errors?.find(e => e.path === 'phoneNumber') ? '!border-red-300' : '!border-gray-300'}`}>
+              <div className="min-h-full align-middle flex items-center px-3 border-r-1  border-gray-200">
                 <Image
                   src="/icons/id.svg"
                   alt="Indonesia Icon"
                   width={24}
                   height={24} />
               </div>
-              <div className=" hover:bg-gray-200 min-h-full align-middle flex items-center px-3 border-3 border-y border-l-1 border-gray-200 w-full rounded-r-2xl shadow-xl">
-                <div className="min-h-full align-middle flex items-center bg-transparent">
+              <div className={`min-h-full align-middle flex items-center w-full rounded-r-2xl shadow-xl  mr-0 `}>
+                <div className="min-h-full align-middle flex items-center bg-transparent px-3">
                   <label className="text-sm text-gray-500">+62</label>
                 </div>
-                <div className="p-3 w-full">
+                <Input
+                  type="phone"
+                  label="Phone Number"
+                  size="sm"
+                  labelPlacement="inside"
+                  isClearable={false}
+                  color={'default'}
+                  className="h-full w-full bg-transparent p-0 m-0 text-sm font-normal text-gray-500 focus-visible:outline-none rounded-l-1"
+                  name="phoneNumber"
+                  onBlur={handlePhoneNumber}
+                  classNames={{
+                    input: "p-0 m-0 bg-transparent",
+                    inputWrapper: "rounded-l-none"
+                  }}
+                />
+
+                {/* <div className="">
                   <input onChange={handlePhoneNumber} placeholder="Phone Number" name="phoneNumber" className="h-full w-full bg-transparent  text-sm font-normal text-gray-500 focus-visible:outline-none " >
                   </input>
-                </div>
+                  
+                </div> */}
               </div>
 
             </div>
+            <p hidden={!errors?.find(e => e.path === 'phoneNumber')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'phoneNumber')?.msg}</p>
+            <Input
+              type="password"
+              label="Password"
+              size="sm"
+              labelPlacement="inside"
+              isClearable={false}
+              className={`mt-6 w-full border-3 rounded-xl shadow-xl bg-rounded ${errors?.find(e => e.path == 'password') ? "border-red-300" : "border-gray-300"
+                }`}
+              name="password"
+              onBlur={handleChanges}
+            />
+            <p hidden={!errors?.find(e => e.path === 'password')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'password')?.msg}</p>
+
+            <Input
+              type="password"
+              label="Confirm Password"
+              size="sm"
+              labelPlacement="inside"
+              isClearable={false}
+              className={`mt-6 w-full border-3 border-transparent rounded-xl shadow-xl ${errors?.find(e => e.path == 'confirmPassword') ? "border-red-300" : "border-gray-300"
+                }`}
+
+              name="confirmPassword"
+              onBlur={handleChanges}
+            />
+            <p hidden={!errors?.find(e => e.path === 'confirmPassword')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'confirmPassword')?.msg}</p>
+
+
           </div>
-          <div className="flex justify-center mt-6 w-full">
-            <Button onClick={register} className="px-12 py-6 w-full bg-secondary text-white font-semibold text-sm">Register</Button>
+
+          <div className="flex justify-center mt-6 w-full flex-col">
+            <Button onClick={register} className="px-12 py-6 w-full bg-secondary text-white font-semibold text-sm">Register</Button>    
+            <p hidden={!(customErr.length >= 1)} className="text-red-500 mt-2 text-center text-sm">{customErr}</p>
           </div>
           <div className="text-sm  mt-3">
             Already have an account? <Link href={"/auth/login"} className="text-blue-500 font-bold">Click here</Link>

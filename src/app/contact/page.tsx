@@ -4,12 +4,14 @@ import NavigationBar from "../component/navbar";
 import Banner from "../component/banner";
 import Footer from "../component/footer";
 import Image from "next/image";
-import { toastError } from "../utilities/toast";
+import { toastError, toastSuccess } from "../utilities/toast";
 import { Contact } from "../model/contact";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ErrorMessage } from "../model/error";
 
 const ContactPage: React.FC = () => {
+  const [errors, setErrors] = useState<Array<ErrorMessage>>([]);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -48,7 +50,7 @@ const ContactPage: React.FC = () => {
         }
 
         setSocMed(data.contacts);
-        if (!Array.isArray(data))   throw new Error('Data is not an array');
+        if (!Array.isArray(data)) throw new Error('Data is not an array');
       } catch (error: any) {
         toastError(error);
       } finally {
@@ -60,41 +62,46 @@ const ContactPage: React.FC = () => {
 
   }, [isLoad])
 
-  const handleSubmit = async ()=> {
-  
-    const data = {
+  const handleSubmit = async () => {
+
+    const toSend = {
       name: formData.name,
       topic: formData.topic === 'Other' ? formData.customTopic : formData.topic,
       email: formData.email,
       orderNumber: formData.orderNumber === '' ? null : formData.orderNumber,
       message: formData.message,
     };
-  
+
     try {
       const response = await fetch(`${process.env.EMAILS}`, {
-        method: "POST", 
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),  
+        body: JSON.stringify(toSend),
       });
-  
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        setErrors(data.errors)
+        console.log(errors)
+      } else {
+        toastSuccess(data.message)
+        router.refresh()
       }
       const result = await response.json()
-      
+
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  
+
 
   if (isLoad) return <div></div>
   else {
     return (
       <div className="w-screen h-screen bg-white">
-        <Banner page="Contact Page" text="Contact Us"/>
+        <Banner page="Contact Page" text="Contact Us" />
         <form className="flex flex-col min-h-screen">
           {/* Navbar */}
           <NavigationBar />
@@ -121,7 +128,7 @@ const ContactPage: React.FC = () => {
                   {!isLoad && socMed && socMed.map((src, index) => (
                     <li key={index} className="flex flex-row my-5">
                       <Image
-                        src={'/icons/location.svg'}
+                        src={`${process.env.BACK_BASE_URL}/assets/contact/${src.contact}.png`}
                         alt="Acc Icon"
                         width={24}
                         height={24}
@@ -143,29 +150,35 @@ const ContactPage: React.FC = () => {
                   <p className="text-gray-500 mb-8">{"We're here for you. Search our FAQs or get in touch with our customer team."}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    placeholder="Name"
-                    onChange={handleChange}
-                    className="border border-gray-300 p-3 rounded-md w-full"
-                  />
-                  <input
-                    type="text"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Email"
-                    className="border border-gray-300 p-3 rounded-md w-full"
-                  />
+                  <div className="flex flex-col">
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      placeholder="Name"
+                      onChange={handleChange}
+                      className={`border border-gray-300 p-3 rounded-md w-full ${errors?.find(e => e.path == 'name') ? "border-red-300" : "border-gray-300"}`}
+                    />
+                    <p className="text-red-500 mt-2  text-sm text-left">{errors?.find((e) => e.path === 'name')?.msg}</p>
+                  </div>
+                  <div className="flex flex-col">
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Email"
+                      className={`border border-gray-300 p-3 rounded-md w-full ${errors?.find(e => e.path == 'email') ? "border-red-300" : "border-gray-300"}`}
+                    />
+                    <p className="text-red-500 mt-2  text-sm text-left">{errors?.find((e) => e.path === 'email')?.msg}</p>
+                  </div>
                 </div>
                 <select
                   name="topic"
                   value={formData.topic}
                   onChange={handleChange}
                   required
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-black"
+                  className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-black ${errors?.find(e => e.path == 'topic' && formData.topic!== 'Other') ? "border-red-300" : "border-gray-300"}`}
                 >
                   <option className="text-black" value="" disabled>Select A Topic</option>
                   <option className="text-black" value="Cancel Order">Cancel Order</option>
@@ -176,6 +189,12 @@ const ContactPage: React.FC = () => {
                   <option className="text-black" value="Partnership">Partnership</option>
                   <option className="text-black" value="Other">Other</option>
                 </select>
+                <p
+                  hidden={!errors?.find(e => e.path === 'topic' && formData.topic !== 'Other')}
+                  className="text-red-500 !mt-2 text-sm text-left" 
+                >
+                  {errors?.find((e) => e.path === 'topic')?.msg}
+                </p>
 
                 <input
                   type="text"
@@ -183,9 +202,15 @@ const ContactPage: React.FC = () => {
                   placeholder="Topic"
                   value={formData.customTopic}
                   onChange={handleChange}
-                  className="border border-gray-300 p-3 rounded-md w-full"
+                  className={`border border-gray-300 p-3 rounded-md w-full ${errors?.find(e => e.path == 'topic' ) ? "border-red-300" : "border-gray-300"}`}
                   hidden={formData.topic !== 'Other'}
                 />
+                <p
+                  hidden={!errors?.find(e => e.path === 'topic' && formData.topic == 'Other')}
+                  className="text-red-500 !mt-2 text-sm text-left"
+                >
+                  {errors?.find((e) => e.path === 'topic')?.msg}
+                </p>
                 <input
                   type="text"
                   name="orderNumber"
@@ -201,8 +226,14 @@ const ContactPage: React.FC = () => {
                   value={formData.message}
                   onChange={handleChange
                   }
-                  className="border border-gray-300 p-3 rounded-md w-full"
+                  className={`border border-gray-300 p-3 rounded-md w-full ${errors?.find(e => e.path == 'topic' ) ? "border-red-300" : "border-gray-300"}`}
                 ></textarea>
+                <p
+                  hidden={!errors?.find(e => e.path === 'message' )}
+                  className="text-red-500 !mt-1 text-sm text-left"
+                >
+                  {errors?.find((e) => e.path === 'message' )?.msg}
+                </p>
                 <button
                   type="button"
                   onClick={handleSubmit}
@@ -214,7 +245,7 @@ const ContactPage: React.FC = () => {
             </div>
           </div>
         </form>
-        <Footer/>
+        <Footer />
       </div>
     );
   }
