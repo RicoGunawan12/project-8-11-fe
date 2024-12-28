@@ -84,7 +84,7 @@ const LoginPage = () => {
     <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
       <div className="absolute top-4 left-4">
         <button
-          onClick={() => window.history.back()}
+          onClick={() => router.push('/')}
           className="p-3 bg-secondary text-black rounded-full shadow-md"
         >
           <Image
