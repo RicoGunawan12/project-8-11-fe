@@ -14,7 +14,7 @@ const RegisterPage = () => {
   const [customErr, setCustomErr] = useState('')
 
   const [newUserData, setNewUserData] = useState<UserRegister>({
-    username: "",
+    fullName: "",
     email: "",
     password: "",
     phoneNumber: "",
@@ -87,17 +87,17 @@ const RegisterPage = () => {
           <div className="w-full">
             <Input
               type="text"
-              label="Username"
+              label="Full Name"
               size="sm"
               labelPlacement="inside"
               isClearable={false}
-              className={`mt-6 w-full border-3 rounded-xl shadow-xl ${errors?.find(e => e.path == 'username') ? "border-red-300" : "border-gray-300"
+              className={`mt-6 w-full border-3 rounded-xl shadow-xl ${errors?.find(e => e.path == 'fullName') ? "border-red-300" : "border-gray-300"
                 }`}
-              name="username"
+              name="fullName"
               onBlur={handleChanges}
 
             />
-            <p hidden={!errors?.find(e => e.path === 'username')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'username')?.msg}</p>
+            <p hidden={!errors?.find(e => e.path === 'fullName')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'fullName')?.msg}</p>
 
 
             <Input

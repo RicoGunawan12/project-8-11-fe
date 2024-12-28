@@ -8,7 +8,7 @@ import { Transaction } from "../model/transactions";
 
 const ProfilePage = () => {
   const [user, setUser] = useState<UserData>({
-    username: "",
+    fullName: "",
     email: "",
   });
   const [totalTransaction, setTotalTransaction] = useState<Transaction[]>([]);
@@ -96,7 +96,7 @@ const ProfilePage = () => {
                   User Details
                 </h2>
                 <p className="mt-2 text-gray-600">
-                  <strong>Name:</strong> {user?.username || "N/A"}
+                  <strong>Name:</strong> {user?.fullName || "N/A"}
                 </p>
                 <p className="mt-2 text-gray-600">
                   <strong>Email:</strong> {user?.email || "N/A"}

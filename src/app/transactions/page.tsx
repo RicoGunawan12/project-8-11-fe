@@ -52,7 +52,7 @@ const TransactionPage = () => {
                   Transaction ID: {transaction.transactionId}
                 </h2>
                 <p>
-                  <strong>User:</strong> {transaction.user?.username}
+                  <strong>User:</strong> {transaction.user?.fullName}
                 </p>
                 <p>
                   <strong>Email:</strong> {transaction.user?.email}

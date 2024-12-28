@@ -7,7 +7,7 @@ import { toastSuccess, toastError } from '../../utilities/toast';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ErrorMessage } from "@/app/model/error";
-import { setTokenCookie } from "@/app/utilities/test";
+import { setTokenCookie } from "@/app/utilities/setToken";
 
 const LoginPage = () => {
 

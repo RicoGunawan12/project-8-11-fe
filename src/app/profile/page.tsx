@@ -12,7 +12,7 @@ import Loading from "../utilities/loading";
 import { mapPaymentMethod } from "../utilities/converter";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState<UserData>({ username: "", email: "" });
+  const [user, setUser] = useState<UserData>({ fullName: "", email: "" });
   const [totalTransaction, setTotalTransaction] = useState<Transaction[]>([]);
   const [addressData, setAddressData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -126,10 +126,10 @@ const ProfilePage = () => {
               <div className="bg-gray-100 p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-bold text-gray-700">User Details</h2>
                 <p className="mt-2 text-gray-600">
-                  <strong>Name:</strong> {user?.username || "N/A"}
+                  <strong>Full Name :</strong> {user?.fullName || "N/A"}
                 </p>
                 <p className="mt-2 text-gray-600">
-                  <strong>Email:</strong> {user?.email || "N/A"}
+                  <strong>Email :</strong> {user?.email || "N/A"}
                 </p>
               </div>
 
