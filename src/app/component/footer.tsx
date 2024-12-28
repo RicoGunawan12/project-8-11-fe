@@ -62,7 +62,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Image
-                  src={`${process.env.BACK_BASE_URL}/assets/contact/${contact.contact}.png`}
+                  src={`${process.env.BACK_BASE_URL}${contact.contactImage}`}
                   alt={`${contact.contact}`}
                   width={24}
                   height={24}
