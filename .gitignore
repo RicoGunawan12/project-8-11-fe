@@ -40,3 +40,8 @@ next-env.d.ts
 
 #nextjs config
 next.config.mjs
+
+# environment files
+.env
+.env.development
+.env.production
