@@ -37,7 +37,7 @@ const FAQPage: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 flex-grow">
-        {/* <Banner page="FaQ Page" text="Frequently Asked Questions" /> */}
+        <Banner page="FAQ Page" text="Frequently Asked Questions" />
         <div className="p-12 min-h-[27.5%] flex flex-col items-center">
           <div className="space-y-4 w-1/2">
             {data?.map((item, index) => (

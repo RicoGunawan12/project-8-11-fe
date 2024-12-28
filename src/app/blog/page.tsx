@@ -46,6 +46,7 @@ const BlogsPage: React.FC = () => {
 
       {/* Content */}
       <div className="flex-grow mt-20">
+      <Banner page="Blog Page" text="Blog" />
         <div className="p-12 min-h-[27.5%] flex justify-center">
           <div className="grid grid-cols-2 w-3/4 lg:grid-cols-4 gap-6 h-full mt-12">
             {blogData?.map((blog) => (

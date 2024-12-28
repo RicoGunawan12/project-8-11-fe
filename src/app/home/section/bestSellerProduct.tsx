@@ -47,10 +47,10 @@ const BestSellerProduct = () => {
             <div className="text-white text-3xl lg:text-4xl font-bold">
               {page && page[0]?.[locale]?.[3]?.title || "Loading"}
             </div>
-            <div className="text-md mt-4 text-white text-justify">
+            <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
               {page && page[0]?.[locale]?.[3]?.content || "Loading"}
             </div>
-            <div className="border-white text-white border w-fit px-6 py-2 mt-4 mx-auto lg:mx-0">
+            <div className="border-white text-white border w-fit py-6 px-16 text-lg mt-4 mx-auto lg:mx-0">
               <button>click here</button>
             </div>
           </div>
@@ -60,7 +60,7 @@ const BestSellerProduct = () => {
             {products?.map((product, idx) => (
               <Link
                 key={idx}
-                className="flex-shrink-0 w-full sm:w-[200px] lg:w-[300px] max-w-[300px]"
+                className="flex-shrink-0 w-full sm:w-[200px] lg:w-[400px]"
                 href={`/product/${product.productId}`}
               >
                 <Image
@@ -68,7 +68,7 @@ const BestSellerProduct = () => {
                   width={400}
                   height={550}
                   alt="logo pic"
-                  className="rounded-t-3xl w-full h-[450px] object-cover"
+                  className="w-full h-[450px] object-cover"
                 />
                 <div className="bg-white py-6 px-10">
                   {/* <div className="text-black">{renderStars(product.)}</div> */}
