@@ -140,7 +140,7 @@ const ProductPage = () => {
       <div className="mt-20 flex-grow">
         <Banner page="Product Page" text="Product" />
 
-        <div className="flex gap-8 mb-2 w-full justify-center">
+        <div className="flex gap-8 mt-6 mb-2 w-full justify-center">
           <button
             onClick={() => setActiveCategory("All")}
             className={`text-md text-secondary font-semibold p-2 rounded ${
