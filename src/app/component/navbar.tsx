@@ -153,22 +153,28 @@ const NavigationBar = () => {
       </div>
 
       {/* Mobile Menu Button */}
-      <div className="lg:hidden">
-        <button
-          onClick={toggleMobileMenu}
-          aria-label="Toggle Mobile Menu"
-          className="text-white"
-        >
-          <FontAwesomeIcon icon={isMobileMenuVisible ? faTimes : faBars} size="lg" />
-        </button>
+      <div className="flex items-center gap-4 lg:hidden">
+        <Link href="/cart" className="text-white flex items-center h-6 hover:underline lg:hidden">
+          <FontAwesomeIcon icon={faCartShopping} size="lg" className="mr-2" />
+        </Link>
+        <div className="lg:hidden">
+          <button
+            onClick={toggleMobileMenu}
+            aria-label="Toggle Mobile Menu"
+            className="text-white"
+          >
+            <FontAwesomeIcon icon={isMobileMenuVisible ? faTimes : faBars} size="lg" />
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
+      {/* Cart */}
       {isMobileMenuVisible && (
         <div className="absolute top-20 left-0 w-full bg-secondary shadow-lg z-50 lg:hidden text-xs">
           <div className="flex flex-col items-center gap-4 py-4">
             {/* Navigation Links */}
-            {["product", "blog", "faq", "contact", "about"].map((item) => (
+            {["product", "blog", "FAQ", "contact", "about"].map((item) => (
               <Link
                 key={item}
                 href={`/${item}`}
@@ -191,12 +197,6 @@ const NavigationBar = () => {
                 <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
                 <span className="text-medium h-full">Search</span>
               </button>
-
-              {/* Cart */}
-              <Link href="/cart" className="text-white flex items-center h-6 hover:underline">
-                <FontAwesomeIcon icon={faCartShopping} size="sm" className="mr-2" />
-                <span className="text-md">Cart</span>
-              </Link>
 
               {/* User Account */}
               {token ? (

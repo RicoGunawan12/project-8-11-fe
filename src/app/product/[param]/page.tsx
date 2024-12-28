@@ -80,10 +80,10 @@ const ProductDetailPage = () => {
         }
 
         localStorage.setItem("cartItem", JSON.stringify(cartItems));
-
+        toastSuccess("Product added to cart!");
         return;
       }
-
+      
       const response = await fetch(`${process.env.CART}`, {
         method: "POST",
         headers: {
@@ -92,12 +92,13 @@ const ProductDetailPage = () => {
         },
         body: JSON.stringify(payload),
       });
-
+      
       const resp = await response.json();
       if (!response.ok) {
         throw new Error(resp.message);
       }
-
+      
+      toastSuccess("Product added to cart!");
     } catch (error: any) {
       toastError(error.message);
     }
