@@ -42,7 +42,10 @@ const LoginPage = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        if (data.errors) setErrors(data.errors)
+        if (data.errors) {
+          setCustomErr('')
+          setErrors(data.errors)
+        }
         else {
           setErrors([])
           setCustomErr(data.message)

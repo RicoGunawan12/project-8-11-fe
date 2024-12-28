@@ -50,7 +50,10 @@ const RegisterPage = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        if (data.errors) setErrors(data.errors)
+        if (data.errors) {
+          setCustomErr('')
+          setErrors(data.errors)
+        }
         else {
           setErrors([])
           setCustomErr(data.message)
@@ -178,7 +181,7 @@ const RegisterPage = () => {
           </div>
 
           <div className="flex justify-center mt-6 w-full flex-col">
-            <Button onClick={register} className="px-12 py-6 w-full bg-secondary text-white font-semibold text-sm">Register</Button>    
+            <Button onClick={register} className="px-12 py-6 w-full bg-secondary text-white font-semibold text-sm">Register</Button>
             <p hidden={!(customErr.length >= 1)} className="text-red-500 mt-2 text-center text-sm">{customErr}</p>
           </div>
           <div className="text-sm  mt-3">
