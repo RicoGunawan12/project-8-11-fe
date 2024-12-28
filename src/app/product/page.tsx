@@ -167,7 +167,10 @@ const ProductPage = () => {
             ))
           }
         </div>
-
+        {
+          searchResults.length == 0 &&
+          <div className="text-center h-20 my-20">There is no product in {activeCategory} category</div>
+        }
         {searchResults.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 w-full justify-items-center py-12 lg:px-12 px-4">
             {searchResults.map((result, index) => (

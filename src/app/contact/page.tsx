@@ -119,13 +119,13 @@ const ContactPage: React.FC = () => {
                       TST Hong Kong</label>
                   </li> */}
                   {!isLoad && socMed && socMed.map((src, index) => (
-                    <li key={index} className="flex flex-row my-5">
+                    <li key={index} className="flex flex-row my-5 gap-2">
                       <Image
-                        src={'/icons/location.svg'}
-                        alt="Acc Icon"
+                        src={`${process.env.BACK_BASE_URL}/assets/contact/${src.contact}.png`}
+                        alt={`${src.contact}`}
                         width={24}
                         height={24}
-                        className="filter invert hover:invert-0 mr-3"
+                        className="filter grayscale brightness-150"
                       />
                       {/* <label>{src.contactAccount}</label> */}
                       <Link href={src.contactAccount} target="_blank" className="hover:underline">{src.contact}</Link>
