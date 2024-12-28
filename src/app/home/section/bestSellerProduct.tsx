@@ -63,6 +63,12 @@ const BestSellerProduct = () => {
         );
         
         bestSellerDescriptionComponent.classList.add(printedClass);
+
+        if (printedToClass === 100) {
+          bestSellerDescriptionComponent.classList.add('z-10');
+        } else if (bestSellerProductsComponent.classList.contains('z-10')) {
+          bestSellerDescriptionComponent.classList.remove('z-10');
+        }
       }
     }
 
@@ -133,7 +139,7 @@ const BestSellerProduct = () => {
           </div>
 
           {/* Product display */}
-          <div className="w-full lg:w-3/5 flex flex-wrap lg:flex-nowrap justify-center lg:justify-start gap-6 lg:gap-12 z-10">
+          <div className="w-full lg:w-3/5 flex flex-wrap lg:flex-nowrap justify-center lg:justify-start gap-6 lg:gap-12">
               {/* Dummy Data */}
               {/* Starts Here */}
 
