@@ -228,12 +228,12 @@ const NavigationBar = () => {
         <div className="relative inline-block text-secondary">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-20 h-8 text-white rounded-lg text-xs flex items-center justify-between px-2"
+            className="w-20 h-8 text-white rounded-lg text-md flex items-center justify-between px-2"
           >
             <img
               src={selectedOption?.icon}
               alt={selectedOption?.label}
-              className="w-4 h-4 mr-2"
+              className="w-6 h-6 mr-2"
             />
             {selectedOption?.label}
             <span className="ml-2">&#x25BC;</span>

@@ -40,23 +40,23 @@ const BestSellerProduct = () => {
   return (
     <div className="relative flex w-full h-auto lg:h-screen bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-10">
       {/* Fade effect container */}
-      <div className="relative w-full before:absolute before:top-0 before:bottom-0 before:left-0 before:w-12 before:bg-gradient-to-r before:from-stone-800 before:to-transparent before:pointer-events-none after:absolute after:top-0 after:bottom-0 after:right-0 after:w-12 after:bg-gradient-to-l after:from-stone-800 after:to-transparent after:pointer-events-none">
+      <div className="relative w-full">
         <div className="flex flex-col lg:flex-row gap-6 overflow-x-auto pl-4 lg:pl-12 pr-4 lg:pr-12">
           {/* Content container */}
-          <div className="w-full lg:w-2/5 text-center lg:text-left">
-            <div className="text-white text-3xl lg:text-4xl font-bold">
+          <div className="w-full sm:w-3/5 lg:w-2/5 text-center sm:text-left">
+            <div className="text-white text-3xl sm:text-4xl font-bold">
               {page && page[0]?.[locale]?.[3]?.title || "Loading"}
             </div>
             <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
               {page && page[0]?.[locale]?.[3]?.content || "Loading"}
             </div>
-            <div className="border-white text-white border w-fit py-6 px-16 text-lg mt-4 mx-auto lg:mx-0">
+            <div className="border-white text-white border w-fit py-4 px-8 text-lg mt-4 mx-auto sm:mx-0">
               <button>click here</button>
             </div>
           </div>
 
           {/* Product display */}
-          <div className="w-full lg:w-3/5 flex flex-wrap justify-center lg:justify-start gap-6 lg:gap-12">
+          <div className="w-full lg:w-3/5 flex flex-wrap lg:flex-nowrap justify-center lg:justify-start gap-6 lg:gap-12">
             {products?.map((product, idx) => (
               <Link
                 key={idx}
