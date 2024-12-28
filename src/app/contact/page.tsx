@@ -106,14 +106,14 @@ const ContactPage: React.FC = () => {
           {/* Navbar */}
           <NavigationBar />
 
-          {/* Main Content */}
-          <div className="flex flex-1 p-24 mt-20">
-            {/* Left Section */}
-            <div className="hidden w-full md:w-1/3 bg-secondary text-white px-24 md:flex items-center justify-start rounded rounded-tl-2xl rounded-bl-2xl">
-              <div>
-                <h1 className="text-3xl font-bold mb-6">Social Media</h1>
-                <ul className="space-y-6">
-                  {/* <li className="flex flex-row my-5">
+            {/* Main Content */}
+            <div className="flex flex-1 p-24 mt-20">
+              {/* Left Section */}
+              <div className="hidden w-full md:w-1/3 bg-secondary text-white px-24 md:flex items-center justify-start rounded rounded-tl-2xl rounded-bl-2xl">
+                <div>
+                  <h1 className="text-3xl font-bold mb-6">Social Media</h1>
+                  <ul className="space-y-6">
+                    {/* <li className="flex flex-row my-5">
                     <Image
                       src="/icons/location.svg"
                       alt="Location Icon"

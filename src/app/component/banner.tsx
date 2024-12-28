@@ -4,7 +4,7 @@ import Loading from "../utilities/loading";
 
 interface BannerProps {
   page: string;
-  text: string
+  text: string;
 }
 
 interface BannerData {
@@ -23,7 +23,10 @@ const Banner: React.FC<BannerProps> = ({ page, text }) => {
         const response = await fetch(`${process.env.BANNERS}`); // Adjust the API endpoint as needed
         const data = (await response.json()).banners;
         const selectedBanner = data.find((banner: BannerData) => banner.page === page);
-        setBanner(selectedBanner || page);
+        console.log(selectedBanner, page)
+        setBanner(selectedBanner || {
+          image : page
+        });
       } catch (error) {
         // console.error("Failed to fetch banners:", error);
       }
@@ -33,11 +36,11 @@ const Banner: React.FC<BannerProps> = ({ page, text }) => {
   }, [page]);
 
   if (!banner) {
-    return <Loading/>
+    return <Loading />;
   }
 
   return (
-    <div className="relative w-screen h-[40%]">
+    <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px]">
       <Image
         src={`${process.env.BACK_BASE_URL}${banner.image}`}
         alt={banner.page}
@@ -46,7 +49,7 @@ const Banner: React.FC<BannerProps> = ({ page, text }) => {
         className="w-full h-full object-cover brightness-50"
       />
       <div className="absolute inset-0 flex items-center justify-center">
-        <h1 className="text-white text-5xl font-bold px-4 py-2 rounded-md">
+        <h1 className="text-white text-3xl md:text-5xl font-bold px-4 py-2 rounded-md">
           {text}
         </h1>
       </div>

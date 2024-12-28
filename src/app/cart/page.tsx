@@ -228,231 +228,222 @@ const CartPage = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen text-black pt-24">
-      <NavigationBar />
-      <div className="flex flex-col lg:flex-row gap-8 px-4">
-        <div className="flex-1 bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-2xl font-semibold mb-2">Shopping Bag</h2>
-          <p className="text-gray-500 mb-6">{data.length} items in your bag</p>
-          {data.length > 0 ? (
-            <div>
-              {" "}
-              <div className="space-y-4">
-                {data.map((item) => (
-                  <div
-                    key={item.productVariantId}
-                    className="flex items-center p-4 bg-gray-50 rounded-2xl shadow-sm"
-                  >
-                    <Image
-                      src={`${process.env.BACK_BASE_URL}${item.product_variant.productImage}`}
-                      alt="Product"
-                      className="w-24 h-24 rounded-2xl object-cover"
-                      width={200}
-                      height={200}
-                    />
-                    <div className="ml-4 flex-1">
-                      <h3 className="text-lg font-semibold">
-                        {item.product_variant.product.productName}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Color: {item.product_variant.productColor} | Size:{" "}
-                        {item.product_variant.productSize}
-                      </p>
-                    </div>
-                    <div className="text-gray-800 font-bold">
-                      Rp.{" "}
-                      {item.product_variant.productPrice *
-                        quantities[item.productVariantId]}
-                    </div>
-                    <div className="flex items-center ml-4">
-                      <button
-                        onClick={() =>
-                          setQuantities((prev) => ({
-                            ...prev,
-                            [item.productVariantId]: Math.max(
-                              (prev[item.productVariantId] || 1) - 1,
-                              1
-                            ),
-                          }))
-                        }
-                        className="p-2 bg-gray-300 rounded"
-                      >
-                        -
-                      </button>
-                      <span className="px-4">
-                        {quantities[item.productVariantId]}
-                      </span>
-                      <button
-                        onClick={() =>
-                          setQuantities((prev) => ({
-                            ...prev,
-                            [item.productVariantId]:
-                              (prev[item.productVariantId] || 1) + 1,
-                          }))
-                        }
-                        className="p-2 bg-gray-300 rounded"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                ))}
+<div className="bg-gray-100 min-h-screen text-black pt-24">
+  <NavigationBar />
+  <div className="flex flex-col lg:flex-row gap-8 px-4 sm:px-6 lg:px-8">
+    {/* Shopping Bag Section */}
+    <div className="flex-1 bg-white p-6 rounded-2xl shadow-md">
+      <h2 className="text-xl sm:text-2xl font-semibold mb-2">Shopping Bag</h2>
+      <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} items in your bag</p>
+      {data.length > 0 ? (
+        <div className="space-y-4">
+          {data.map((item) => (
+            <div
+              key={item.productVariantId}
+              className="flex flex-col sm:flex-row items-center p-4 bg-gray-50 rounded-2xl shadow-sm"
+            >
+              <Image
+                src={`${process.env.BACK_BASE_URL}${item.product_variant.productImage}`}
+                alt="Product"
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
+                width={200}
+                height={200}
+              />
+              <div className="mt-4 sm:mt-0 sm:ml-4 flex-1 text-center sm:text-left">
+                <h3 className="text-sm sm:text-lg font-semibold">
+                  {item.product_variant.product.productName}
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Color: {item.product_variant.productColor} | Size:{" "}
+                  {item.product_variant.productSize}
+                </p>
+              </div>
+              <div className="text-gray-800 font-bold mt-2 sm:mt-0">
+                Rp.{" "}
+                {item.product_variant.productPrice * quantities[item.productVariantId]}
+              </div>
+              <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
+                <button
+                  onClick={() =>
+                    setQuantities((prev) => ({
+                      ...prev,
+                      [item.productVariantId]: Math.max(
+                        (prev[item.productVariantId] || 1) - 1,
+                        1
+                      ),
+                    }))
+                  }
+                  className="p-2 bg-gray-300 rounded"
+                >
+                  -
+                </button>
+                <span className="px-4">{quantities[item.productVariantId]}</span>
+                <button
+                  onClick={() =>
+                    setQuantities((prev) => ({
+                      ...prev,
+                      [item.productVariantId]:
+                        (prev[item.productVariantId] || 1) + 1,
+                    }))
+                  }
+                  className="p-2 bg-gray-300 rounded"
+                >
+                  +
+                </button>
               </div>
             </div>
-          ) : (
-
-            <div className="w-full h-min-96 flex justify-center items-center">
-              <button
-                onClick={() => router.push("/product")}
-                className="bg-secondary p-4 rounded-xl text-white"
-              >
-                Explore Our Products
-              </button>{" "}
-            </div>
-          )}
+          ))}
         </div>
+      ) : (
+        <div className="w-full h-64 flex justify-center items-center">
+          <button
+            onClick={() => router.push("/product")}
+            className="bg-secondary py-2 px-4 rounded-xl text-white text-sm sm:text-base"
+          >
+            Explore Our Products
+          </button>
+        </div>
+      )}
+    </div>
 
-        <div className="w-full lg:w-1/3 space-y-6">
-          {clientToken ? (
-            <div className="bg-white p-6 rounded-md shadow-md">
-              <h3 className="text-lg font-semibold mb-4">
-                Shipping and Payment
-              </h3>
-
-      {/* Show button if the address array is empty */}
-      {address.length === 0 ? (
-  <button
-    onClick={() => router.push('/address/create')}
-    className="w-full bg-secondary text-white py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all mb-2"
-  >
-    Create Address
-  </button>
-) : (
-  <div>
-    <label htmlFor="shippingAddress" className="block text-sm font-medium text-gray-700">
-      Shipping Address
-    </label>
-    <select
-      id="shippingAddress"
-      className="w-full p-2 mb-4 border rounded-md focus:outline-none"
-      onChange={(e) => {
-        const selectedId = e.target.value;
-        const selectedAddress = address.find(
-          (addr) => addr.addressDetail === selectedId
-        );
-        setChosenAddress(selectedAddress); // Pass the full address object to the state
-      }}
-      disabled={data.length === 0} // Disable if cart is empty
-      value={chosenAddress?.addressDetail}
-    >
-      <option value="">Select an Address</option>
-      {address.map((addr) => (
-        <option key={addr.addressId} value={addr.addressDetail}>
-          {addr.addressDetail}
-        </option>
-      ))}
-    </select>
-  </div>
-)}
-
-              <label
-                htmlFor="shippingOption"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Shipping Option
+    {/* Shipping and Payment Section */}
+    <div className="w-full lg:w-1/3 space-y-6">
+      {clientToken ? (
+        <div className="bg-white p-6 rounded-md shadow-md">
+          <h3 className="text-lg font-semibold mb-4">Shipping and Payment</h3>
+          {address.length === 0 ? (
+            <button
+              onClick={() => router.push("/address/create")}
+              className="w-full bg-secondary text-white py-2 rounded-md mb-2 text-sm sm:text-base"
+            >
+              Create Address
+            </button>
+          ) : (
+            <div>
+              <label htmlFor="shippingAddress" className="block text-sm font-medium text-gray-700">
+                Shipping Address
               </label>
               <select
-                id="shippingOption"
+                id="shippingAddress"
                 className="w-full p-2 mb-4 border rounded-md focus:outline-none"
-                disabled={!isShippingEnabled} // Enable only if shipping options are available
-                onChange={(e) =>{
-                  const selectedOption = shippingOptions.find(
-                    (option) => option.shipping_name === e.target.value
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  const selectedAddress = address.find(
+                    (addr) => addr.addressDetail === selectedId
                   );
-                
-                  if (selectedOption) {
-                    setSelectedShipping(selectedOption);
-                    setPrice((prev) => ({ ...prev, shippingFee: selectedOption.shipping_cost}))
-                  } else {
-                    setSelectedShipping(null); 
-                  }
-                }
-                }
+                  setChosenAddress(selectedAddress);
+                }}
+                disabled={data.length === 0}
+                value={chosenAddress?.addressDetail || ""}
               >
-                <option value="">Select a Shipping Option</option>
-                {shippingOptions.map((option, index) => (
-                  <option key={index} value={option.shipping_name}>
-                    {option.shipping_name} - Rp. {option.grandtotal}
+                <option value="">Select an Address</option>
+                {address.map((addr) => (
+                  <option key={addr.addressId} value={addr.addressDetail}>
+                    {addr.addressDetail}
                   </option>
                 ))}
               </select>
-
-              {/* Voucher Input */}
-              <label
-                htmlFor="voucher"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Voucher Code
-              </label>
-              <div className="flex gap-6">
-              <input
-                type="text"
-                id="voucher"
-                className="w-full p-2 mb-4 border rounded-md focus:outline-none"
-                value={voucherCode}
-                onChange={(e) => setVoucherCode(e.target.value)}
-                placeholder="Enter Voucher Code"
-              />
-              <button className="h-full p-2 bg-secondary flex justify-center items-center rounded-xl text-white font-semibold" onClick={checkVoucher}>Check</button>
-              </div>
-
-              <div className="flex flex-col space-y-4">
-  <div className="flex justify-between w-full">
-    <span className="text-lg font-semibold">Total Price: </span><span className="font-light text-primary">{price.totalPrice}</span>
-  </div>
-
-  {selectedShipping && (
-    <div className="flex justify-between w-full">
-      <span className="text-lg font-semibold">Shipping Fee: </span><span className="font-light text-primary">{price.shippingFee}</span>
-    </div>
-  )}
-
-  {price.voucher !== 0 && (
-    <div className="flex justify-between w-full">
-      <span className="text-lg font-semibold">Voucher: </span><span className="font-light text-primary">-{price.voucher}</span>
-    </div>
-  )}
-
-  <div className="flex justify-between w-full">
-    <span className="text-xl font-semibold">Grand Total: </span><span className="font-light text-primary">{price.totalPrice + price.shippingFee - price.voucher}</span>
-  </div>
-
-  <button
-    className="w-full bg-secondary text-white py-3 mt-4 rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all"
-    onClick={checkOut}
-  >
-    Checkout
-  </button>
-</div>
-
-
-            </div>
-          ) : (
-            <div className="bg-white p-6 rounded-md shadow-md h-full flex flex-col items-center justify-center">
-              <p className="text-gray-600 mb-6">
-                You need to register first to access this feature.
-              </p>
-              <button
-                onClick={() => (window.location.href = "/auth/register")}
-                className="bg-secondary text-white py-2 px-4 rounded-md  transition-colors"
-              >
-                Register Now
-              </button>
             </div>
           )}
+
+          <label htmlFor="shippingOption" className="block text-sm font-medium text-gray-700">
+            Shipping Option
+          </label>
+          <select
+            id="shippingOption"
+            className="w-full p-2 mb-4 border rounded-md focus:outline-none"
+            onChange={(e) => {
+              const selectedOption = shippingOptions.find(
+                (option) => option.shipping_name === e.target.value
+              );
+              if (selectedOption) {
+                setSelectedShipping(selectedOption);
+                setPrice((prev) => ({
+                  ...prev,
+                  shippingFee: selectedOption.shipping_cost,
+                }));
+              } else {
+                setSelectedShipping(null);
+              }
+            }}
+          >
+            <option value="">Select a Shipping Option</option>
+            {shippingOptions.map((option, index) => (
+              <option key={index} value={option.shipping_name}>
+                {option.shipping_name} - Rp. {option.grandtotal}
+              </option>
+            ))}
+          </select>
+
+          {/* Voucher Section */}
+          <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
+            Voucher Code
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              id="voucher"
+              className="w-full p-2 border rounded-md focus:outline-none"
+              value={voucherCode}
+              onChange={(e) => setVoucherCode(e.target.value)}
+              placeholder="Enter Voucher Code"
+            />
+            <button
+              className="p-2 bg-secondary rounded-md text-white text-sm sm:text-base"
+              onClick={checkVoucher}
+            >
+              Check
+            </button>
+          </div>
+
+          {/* Price Summary */}
+          <div className="flex flex-col space-y-2 mt-6">
+            <div className="flex justify-between">
+              <span className="text-sm sm:text-lg font-semibold">Total Price:</span>
+              <span className="font-light text-primary">{price.totalPrice}</span>
+            </div>
+            {selectedShipping && (
+              <div className="flex justify-between">
+                <span className="text-sm sm:text-lg font-semibold">Shipping Fee:</span>
+                <span className="font-light text-primary">{price.shippingFee}</span>
+              </div>
+            )}
+            {price.voucher !== 0 && (
+              <div className="flex justify-between">
+                <span className="text-sm sm:text-lg font-semibold">Voucher:</span>
+                <span className="font-light text-primary">- {price.voucher}</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span className="text-lg sm:text-xl font-semibold">Grand Total:</span>
+              <span className="font-light text-primary">
+                {price.totalPrice + price.shippingFee - price.voucher}
+              </span>
+            </div>
+          </div>
+
+          <button
+            className="w-full bg-secondary text-white py-2 sm:py-3 mt-4 rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all"
+            onClick={checkOut}
+          >
+            Checkout
+          </button>
         </div>
-      </div>
+      ) : (
+        <div className="bg-white p-6 rounded-md shadow-md h-full flex flex-col items-center justify-center">
+          <p className="text-gray-600 mb-6">You need to register first to access this feature.</p>
+          <button
+            onClick={() => (window.location.href = "/auth/register")}
+            className="bg-secondary text-white py-2 px-4 rounded-md"
+          >
+            Register Now
+          </button>
+        </div>
+      )}
     </div>
+  </div>
+</div>
+
   );
 };
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Contact } from "../model/contact";
-import { toastError, toastSuccess } from "../utilities/toast";
+import { toastError } from "../utilities/toast";
 
 const Footer = () => {
   const [contacts, setContacts] = useState<Contact[]>();
@@ -30,25 +30,25 @@ const Footer = () => {
       <div className="flex flex-col lg:flex-row w-full justify-between px-6 lg:px-12">
         <div className="flex flex-col lg:flex-row w-full lg:w-3/4 gap-6 lg:gap-12 px-6">
           <div className="text-sm">
-            <h1 className="mb-6 text-xl font-bold">COMPANY</h1>
+            <h1 className="mb-6 text-xl font-semibold">COMPANY</h1>
             <div className="flex flex-col gap-y-1">
-              <Link href={"/about"}>About</Link>
-              <Link href={"/product"}>Product</Link>
-              <Link href={"/contact"}>Contact</Link>
+              <Link href={"/about"} className="hover:text-primary">About</Link>
+              <Link href={"/product"} className="hover:text-primary">Product</Link>
+              <Link href={"/contact"} className="hover:text-primary">Contact</Link>
             </div>
           </div>
           <div>
-            <h1 className="mb-6 text-xl font-bold">SUPPORT</h1>
+            <h1 className="mb-6 text-xl font-semibold">SUPPORT</h1>
             <div className="flex flex-col gap-y-1">
-              <Link href={"/faq"}>FAQ</Link>
-              <Link href={"/blog"}>Blog</Link>
+              <Link href={"/faq"} className="hover:text-primary">FAQ</Link>
+              <Link href={"/blog"} className="hover:text-primary">Blog</Link>
             </div>
           </div>
         </div>
 
         <div className="flex flex-col items-center lg:items-start w-full lg:w-1/4 mt-6 lg:mt-0">
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-3xl font-bold text-white">
+            <Link href="/" className="text-3xl font-semibold text-white">
               TYESO
             </Link>
           </div>
@@ -62,11 +62,11 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Image
-                  src={`${process.env.BACK_BASE_URL}/assets/contact/${contact.contact}.png`}
+                  src={`${process.env.BACK_BASE_URL}${contact.contactImage}`}
                   alt={`${contact.contact}`}
                   width={24}
                   height={24}
-                  className="filter grayscale brightness-150"
+                  className="filter grayscale brightness-150 hover:brightness-100 transition-all"
                 />
               </a>
             ))}
@@ -74,8 +74,10 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center mt-12 bg-secondary border-t-2 border-white">
-        <span className="text-white text-md my-4">© TYESO, 2025. All rights reserved.</span>
+      <div className="flex flex-col items-center justify-center mt-12 bg-secondary border-t-2 border-white py-4">
+        <span className="text-white text-md">
+          © TYESO, {new Date().getFullYear()}. All rights reserved.
+        </span>
       </div>
     </div>
   );

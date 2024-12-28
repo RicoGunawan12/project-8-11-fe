@@ -115,7 +115,8 @@ const ProfilePage = () => {
     <div className="w-screen h-screen bg-white text-black flex flex-col">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner imagePath="/banner.jpg" title="Profile" />
+      <Banner page="Profile Page" text="Profile" />
+        {/* <Banner imagePath="/banner.jpg" title="Profile" /> */}
         <div className="w-full flex justify-center h-full px-8 py-6 bg-white">
           {loading ? (
             <p className="text-center text-lg font-medium">Loading...</p>

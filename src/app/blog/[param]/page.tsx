@@ -28,6 +28,7 @@ const BlogDetail = () => {
           throw new Error(result.message || "Failed to fetch blog details");
         }
         setData(result.post);
+        console.log(result.post)
       } catch (error) {
         console.error("Error fetching blog details:", error);
       }
@@ -44,15 +45,16 @@ const BlogDetail = () => {
     <div className="h-screen w-screen bg-gray-50">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner
-          text=""
-          page={`${process.env.BACK_BASE_URL}${data.postImage}`}
+         <Banner
+          text="Blog"
+          page={`${data.postBanner}`}
         />
 
         <div className="container mx-auto p-6">
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="text-left mb-6">
               <h1 className="text-4xl font-bold text-gray-800 uppercase">{data.postTitle}</h1>
+              {/* <h1 className="text-4xl font-bold text-gray-800 uppercase">{data.postBanner}</h1> */}
               <p className="text-sm text-gray-500 mt-2">
                 Published on {new Date(data.createdAt).toLocaleDateString()}
               </p>

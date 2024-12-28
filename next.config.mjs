@@ -6,6 +6,14 @@ const nextConfig = {
         protocol: 'http',
         hostname: 'localhost',
       },
+      {
+        protocol: 'http',
+        hostname: process.env.BACK_IP_ADDR ?? 'localhost'
+      },
+      {
+        protocol: 'https',
+        hostname: process.env.BACK_IP_ADDR ?? 'localhost'
+      }
     ],
   },
   env: {
@@ -25,6 +33,7 @@ const nextConfig = {
     PAGES: process.env.PAGES,
     VOUCHER: process.env.VOUCHER,
     BANNERS: process.env.BANNERS,
+    RATINGS: process.env.RATINGS,
   },
   eslint: {
     ignoreDuringBuilds: true, 

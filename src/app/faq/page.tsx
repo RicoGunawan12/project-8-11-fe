@@ -37,9 +37,9 @@ const FAQPage: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 flex-grow">
-        {/* <Banner page="FaQ Page" text="Frequently Asked Questions" /> */}
-        <div className="p-12 min-h-[27.5%] flex flex-col items-center">
-          <div className="space-y-4 w-1/2">
+        <Banner page="FAQ Page" text="F.A.Q" />
+        <div className="p-6 md:p-12 min-h-[27.5%] flex flex-col items-center">
+          <div className="space-y-4 w-full md:w-2/3">
             {data?.map((item, index) => (
               <FAQItem
                 key={index}
@@ -51,7 +51,7 @@ const FAQPage: React.FC = () => {
           </div>
         </div>
       </div>
-        <Footer/>
+      <Footer />
     </div>
   );
 };
@@ -62,7 +62,7 @@ const FAQItem: React.FC<FAQ> = ({ faqId, faqQuestion, faqAnswer }) => {
   return (
     <div className="border-b-2 pb-2">
       <button
-        className="w-full text-left text-2xl font-semibold text-gray-800 focus:outline-none flex justify-between items-center"
+        className="w-full text-left text-lg md:text-2xl font-semibold text-gray-800 focus:outline-none flex justify-between items-center"
         onClick={() => setIsOpen(!isOpen)}
       >
         {faqQuestion}
@@ -79,7 +79,9 @@ const FAQItem: React.FC<FAQ> = ({ faqId, faqQuestion, faqAnswer }) => {
             transition={{ duration: 0.3 }}
             className="overflow-hidden mt-2"
           >
-            <p className="text-gray-600 font-light">{faqAnswer}</p>
+            <p className="text-gray-600 font-light line-clamp-3 hover:line-clamp-none cursor-pointer">
+              {faqAnswer}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>

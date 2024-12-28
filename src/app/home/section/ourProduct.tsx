@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { toastError } from "@/app/utilities/toast";
 import Loading from "@/app/utilities/loading";
+import { ProductCard } from "@/app/model/productCard";
 
 const OurProductSection = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -60,11 +61,10 @@ const OurProductSection = () => {
             <button
               key={category.productCategoryId}
               onClick={() => setActiveCategoryId(category.productCategoryId)}
-              className={`text-md font-semibold p-2 rounded ${
-                activeCategoryId === category.productCategoryId
-                  ? "bg-secondary text-white"
-                  : "bg-gray-200 text-black"
-              }`}
+              className={`text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === category.productCategoryId
+                  ? "border-secondary border-b-2"
+                  : null
+                }`}
             >
               {category.productCategoryName}
             </button>
@@ -74,28 +74,21 @@ const OurProductSection = () => {
         {/* Products of the active category */}
         {activeCategory ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {activeCategory.products.map((product: any) => (
-                <Card key={product.productId}>
-                  <CardHeader>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16">
+              {activeCategory.products.map((product: ProductCard) => (
+                <Link key={product.productId} href={`/product/${product.productId}`}>
+                  <div>
                     <Image
                       src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
                       alt={product.productName}
                       width={200}
                       height={200}
-                      className="rounded-md"
+                      className="w-full"
                     />
-                  </CardHeader>
-                  <CardBody>
-                    <div className="text-lg font-semibold">{product.productName}</div>
-                    <p className="text-sm text-gray-500">{product.productDescription}</p>
-                  </CardBody>
-                  <CardFooter>
-                    <Link href={`/product/${product.productId}`} className="text-secondary font-semibold">
-                      <span>View Details {">>"} </span>
-                    </Link>
-                  </CardFooter>
-                </Card>
+                    <div className="text-lg font-semibold text-black w-full text-center mt-6">{product.productName}</div>
+                    <p className="text-sm text-black w-full text-center">Rp. {product.product_variants[0].productPrice}</p>
+                  </div>
+                </Link>
               ))}
             </div>
           </>
