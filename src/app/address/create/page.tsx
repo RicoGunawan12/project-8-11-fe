@@ -1,5 +1,6 @@
 "use client";
 import NavigationBar from '@/app/component/navbar';
+import { ErrorMessage } from '@/app/model/error';
 import { toastError, toastSuccess } from '@/app/utilities/toast';
 import { getTokenCookie } from '@/app/utilities/token';
 import { Button } from '@nextui-org/react';
@@ -32,8 +33,8 @@ interface SubdistrictOption {
 }
 
 interface FormData {
-    receiverName: string; 
-    receiverPhoneNumber: string;    
+    receiverName: string;
+    receiverPhoneNumber: string;
     province: string;
     city: string;
     subdistrict: string;
@@ -45,15 +46,17 @@ const AddressForm = () => {
     const [cities, setCities] = useState<CityOption[]>([]);
     const [subdistricts, setSubdistricts] = useState<SubdistrictOption[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState<Array<ErrorMessage>>([]);
+    const [customErr, setCustomErr] = useState('')
     const [formData, setFormData] = useState<FormData>({
-        receiverName: '',      
-        receiverPhoneNumber: '',     
+        receiverName: '',
+        receiverPhoneNumber: '',
         province: '',
         city: '',
         subdistrict: '',
         addressDetail: '',
     });
-    
+
     const router = useRouter();
     const [clientToken, setClientToken] = useState<string | null>(null);
 
@@ -93,7 +96,7 @@ const AddressForm = () => {
 
     const fetchCities = async (provinceId: string) => {
         if (!provinceId || !clientToken) return;
-        
+
         setIsLoading(true);
         try {
             const response = await fetch(
@@ -121,7 +124,7 @@ const AddressForm = () => {
 
     const fetchSubdistricts = async (cityId: string) => {
         if (!cityId || !clientToken) return;
-        
+
         setIsLoading(true);
         try {
             const response = await fetch(
@@ -148,44 +151,44 @@ const AddressForm = () => {
     };
 
     const handleChange = (
-        e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement> 
-      ) => {
+        e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         const { name, value } = e.target;
-        
+
         if (name === "province") {
-          let obj = JSON.parse(value);
-          setFormData((prev) => ({ ...prev, province: value, city: "", subdistrict: "" }));
-          fetchCities(obj.province_id);
+            let obj = JSON.parse(value);
+            setFormData((prev) => ({ ...prev, province: value, city: "", subdistrict: "" }));
+            fetchCities(obj.province_id);
         } else if (name === "city") {
-          let obj = JSON.parse(value);
-          setFormData((prev) => ({ ...prev, city: value, subdistrict: "" }));
-          fetchSubdistricts(obj.city_id);
+            let obj = JSON.parse(value);
+            setFormData((prev) => ({ ...prev, city: value, subdistrict: "" }));
+            fetchSubdistricts(obj.city_id);
         } else {
-          setFormData((prev) => ({ ...prev, [name]: value}));
+            setFormData((prev) => ({ ...prev, [name]: value }));
         }
-      };
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (!clientToken) return;
 
-        const phoneRegex = /^[0-9]{10,13}$/;
-        if (!phoneRegex.test(formData.receiverPhoneNumber)) {
-            toastError("Please enter a valid phone number (10-13 digits)");
-            return;
-        }
+        // const phoneRegex = /^[0-9]{10,13}$/;
+        // if (!phoneRegex.test(formData.receiverPhoneNumber)) {
+        //     toastError("Please enter a valid phone number (10-13 digits)");
+        //     return;
+        // }
 
         const [subdistrict_id, postal_code] = formData.subdistrict.split(',');
 
         const payLoad = {
             receiverName: formData.receiverName,
             receiverPhoneNumber: formData.receiverPhoneNumber,
-            province: JSON.parse(formData.province).province,
-            city: JSON.parse(formData.city).city_name,
+            province: formData.province ? JSON.parse(formData.province).province ?? '' : '',
+            city: formData.city ? JSON.parse(formData.city).city_name ?? '' : '',
             subdistrict: subdistrict_id,
             postalCode: postal_code,
             addressDetail: formData.addressDetail,
-          }
+        };
 
         setIsLoading(true);
         try {
@@ -200,10 +203,18 @@ const AddressForm = () => {
 
             const data = await response.json();
             if (!response.ok) {
-                throw new Error(data.message);
+                if (data.errors) {
+                    setCustomErr('')
+                    setErrors(data.errors)
+                }
+                else {
+                    setErrors([])
+                    setCustomErr(data.message)
+                }
+            } else {
+                router.push("/profile");
             }
 
-            router.push("/profile");
         } catch (error) {
             toastError(error instanceof Error ? error.message : "Failed to create address");
         } finally {
@@ -228,12 +239,13 @@ const AddressForm = () => {
                             name="receiverName"
                             value={formData.receiverName}
                             onChange={handleChange}
-                            required
                             disabled={isLoading}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700"
+                            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'receiverName') ? "border-red-300" : "border-gray-300"
+                            }`}
                             placeholder="Enter receiver's name"
                         />
                     </div>
+                    <p hidden={!errors?.find(e => e.path === 'receiverName')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'receiverName')?.msg}</p>
 
                     {/* New Receiver Phone Field */}
                     <div className="space-y-2">
@@ -243,14 +255,15 @@ const AddressForm = () => {
                             name="receiverPhoneNumber"
                             value={formData.receiverPhoneNumber}
                             onChange={handleChange}
-                            required
                             disabled={isLoading}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700"
+                            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'receiverPhoneNumber') ? "border-red-300" : "border-gray-300"
+                            }`}
                             placeholder="Enter receiver's phone number"
                             pattern="[0-9]{10,13}"
                             title="Phone number must be between 10 and 13 digits"
                         />
                     </div>
+                    <p hidden={!errors?.find(e => e.path === 'receiverPhoneNumber')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'receiverPhoneNumber')?.msg}</p>
 
                     <div className="space-y-2 text-gray-700">
                         <label className="block text-sm font-medium text-gray-700">Province</label>
@@ -258,10 +271,10 @@ const AddressForm = () => {
                             name="province"
                             value={formData.province}
                             onChange={handleChange}
-                            required
                             disabled={isLoading}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2"
+                            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'province') ? "border-red-300" : "border-gray-300"}`}
                         >
+                            
                             <option value="">Select Province</option>
                             {provinces.map((province) => (
                                 <option key={province.province_id} value={JSON.stringify(province)}>
@@ -270,6 +283,7 @@ const AddressForm = () => {
                             ))}
                         </select>
                     </div>
+                    <p hidden={!errors?.find(e => e.path === 'province')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'province')?.msg}</p>
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">City</label>
@@ -277,9 +291,8 @@ const AddressForm = () => {
                             name="city"
                             value={formData.city}
                             onChange={handleChange}
-                            required
                             disabled={isLoading || !formData.province}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700"
+                            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'city') ? "border-red-300" : "border-gray-300"}`}
                         >
                             <option value="">Select City</option>
                             {cities.map((city) => (
@@ -289,6 +302,7 @@ const AddressForm = () => {
                             ))}
                         </select>
                     </div>
+                    <p hidden={!errors?.find(e => e.path === 'city')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'city')?.msg}</p>
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">Subdistrict</label>
@@ -296,19 +310,18 @@ const AddressForm = () => {
                             name="subdistrict"
                             value={formData.subdistrict}
                             onChange={(e) => {
-                                const [subdistrict_id, postal_code] = e.target.value.split(','); 
+                                const [subdistrict_id, postal_code] = e.target.value.split(',');
                                 const syntheticEvent = {
-                                  target: {
-                                    name: 'subdistrict',
-                                    value: `${subdistrict_id},${postal_code}`,
-                                  },
+                                    target: {
+                                        name: 'subdistrict',
+                                        value: `${subdistrict_id},${postal_code}`,
+                                    },
                                 } as React.ChangeEvent<HTMLSelectElement>;
-                
+
                                 handleChange(syntheticEvent);
-                              }}
-                            required
+                            }}
                             disabled={isLoading || !formData.city}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700"
+                            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'subdistrict') ? "border-red-300" : "border-gray-300"}`}
                         >
                             <option value="">Select Subdistrict</option>
                             {subdistricts.map((subdistrict) => (
@@ -318,6 +331,7 @@ const AddressForm = () => {
                             ))}
                         </select>
                     </div>
+                    <p hidden={!errors?.find(e => e.path === 'subdistrict')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'subdistrict')?.msg}</p>
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">Address Detail</label>
@@ -325,11 +339,11 @@ const AddressForm = () => {
                             name="addressDetail"
                             value={formData.addressDetail}
                             onChange={handleChange}
-                            required
                             disabled={isLoading}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700"
+                            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'addressDetail') ? "border-red-300" : "border-gray-300"}`}
                         />
                     </div>
+                    <p hidden={!errors?.find(e => e.path === 'addressDetail')} className="text-red-500 text-sm !mt-0">{errors?.find((e) => e.path === 'addressDetail')?.msg}</p>
 
                     <Button
                         type="submit"
@@ -338,6 +352,7 @@ const AddressForm = () => {
                     >
                         {isLoading ? "Creating..." : "Create Address"}
                     </Button>
+                    <p hidden={!(customErr.length >= 1)} className="text-red-500 mt-2 text-center text-sm">{customErr}</p>
                 </form>
             </div>
         </div>

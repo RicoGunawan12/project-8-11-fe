@@ -30,10 +30,10 @@ const CartPage = () => {
   const [debouncedChosenAddress] = useDebounce(chosenAddress, 3000);
   const [debouncedQuantities] = useDebounce(quantities, 3000);
   const [price, setPrice] = useState<Payment>({
-    totalPrice : 0,
-    shippingFee : 0,
-    voucher : 0,
-    grandTotal : 0
+    totalPrice: 0,
+    shippingFee: 0,
+    voucher: 0,
+    grandTotal: 0
   })
 
   useEffect(() => {
@@ -72,7 +72,8 @@ const CartPage = () => {
           }, {})
         );
         setAddress(addressData);
-
+        const cartTotal = data.reduce((total, item) => total + item.product_variant.productPrice * item.quantity, 0);
+        setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
       } finally {
@@ -100,14 +101,27 @@ const CartPage = () => {
     }
   }, [router, clientToken]);
 
+  const recalculateTotalPrice = () => {
+    console.log(quantities)
+    const cartTotal = data.reduce((total, item) => {
+      const quantity = quantities[item.productVariantId] || 1;
+      return total + item.product_variant.productPrice * quantity;
+    }, 0);
+    setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
+  }
+
+  useEffect(() => {
+    recalculateTotalPrice();
+  }, [quantities,data]);
+
   const calculateShippingOptions = useCallback(async () => {
     if (!chosenAddress) return;
-  
+
     setLoading(true);
-  
+
     let totalWeight = 0;
     const cartTotal = data.reduce((total, item) => {
-      const quantity = quantities[item.productVariantId] || 1; 
+      const quantity = quantities[item.productVariantId] || 1;
       totalWeight += item.product_variant.productWeight * quantity;
       return total + item.product_variant.productPrice * quantity;
     }, 0);
@@ -120,19 +134,19 @@ const CartPage = () => {
     const resp = await response.json();
     if (!response.ok) throw new Error(resp.message);
 
-    setPrice((prev) => ({ ...prev, totalPrice: cartTotal}))
-  
+    setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
+
     const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${cartTotal}`;
-  
+
     try {
       const response = await fetch(url, {
         method: "GET",
         headers: { Authorization: `Bearer ${clientToken}` },
       });
-  
+
       const resp = await response.json();
       if (!response.ok) throw new Error(resp.message);
-  
+
       setShippingOptions(resp.calculationResult.data.calculate_reguler);
       setIsShippingEnabled(true);
     } catch (error: any) {
@@ -169,7 +183,7 @@ const CartPage = () => {
           deliveryFee: selectedShipping?.grandtotal,
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
-          voucherCode : voucherCode
+          voucherCode: voucherCode
         }),
       });
 
@@ -187,40 +201,40 @@ const CartPage = () => {
     }
   };
 
-  const checkVoucher = async() => {
+  const checkVoucher = async () => {
     const url = new URL(`${process.env.VOUCHER}/getByCode`);
 
-      url.searchParams.append("code", String(voucherCode));
-      const fetchData = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${clientToken}`  
-        },
-      })
+    url.searchParams.append("code", String(voucherCode));
+    const fetchData = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${clientToken}`
+      },
+    })
 
-      const result = await fetchData.json()
+    const result = await fetchData.json()
 
-      let discount = 0
+    let discount = 0
 
-      if(result.voucherType == "percentage"){
-        discount = (price.totalPrice + price.shippingFee) * result.discount / 100
+    if (result.voucherType == "percentage") {
+      discount = (price.totalPrice + price.shippingFee) * result.discount / 100
 
-        if(discount > result.maxDiscount){
-          discount = result.maxDiscount
-        }
+      if (discount > result.maxDiscount) {
+        discount = result.maxDiscount
       }
-      else{
-        discount = result.discount
-      }
+    }
+    else {
+      discount = result.discount
+    }
 
-      setPrice((prev) => ({ ...prev, voucher: discount}))
+    setPrice((prev) => ({ ...prev, voucher: discount }))
 
-      if(result.errors || result.message){
-        toastError(result.message || "Voucher not found")
-      } else {
-        toastSuccess("Voucher found")
-      }
+    if (result.errors || result.message) {
+      toastError(result.message || "Voucher not found")
+    } else {
+      toastSuccess("Voucher found")
+    }
   }
 
   if (!data || loading) {
@@ -228,221 +242,224 @@ const CartPage = () => {
   }
 
   return (
-<div className="bg-gray-100 min-h-screen text-black pt-24">
-  <NavigationBar />
-  <div className="flex flex-col lg:flex-row gap-8 px-4 sm:px-6 lg:px-8">
-    {/* Shopping Bag Section */}
-    <div className="flex-1 bg-white p-6 rounded-2xl shadow-md">
-      <h2 className="text-xl sm:text-2xl font-semibold mb-2">Shopping Bag</h2>
-      <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} items in your bag</p>
-      {data.length > 0 ? (
-        <div className="space-y-4">
-          {data.map((item) => (
-            <div
-              key={item.productVariantId}
-              className="flex flex-col sm:flex-row items-center p-4 bg-gray-50 rounded-2xl shadow-sm"
-            >
-              <Image
-                src={`${process.env.BACK_BASE_URL}${item.product_variant.productImage}`}
-                alt="Product"
-                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
-                width={200}
-                height={200}
-              />
-              <div className="mt-4 sm:mt-0 sm:ml-4 flex-1 text-center sm:text-left">
-                <h3 className="text-sm sm:text-lg font-semibold">
-                  {item.product_variant.product.productName}
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-500">
-                  Color: {item.product_variant.productColor} | Size:{" "}
-                  {item.product_variant.productSize}
-                </p>
-              </div>
-              <div className="text-gray-800 font-bold mt-2 sm:mt-0">
-                Rp.{" "}
-                {item.product_variant.productPrice * quantities[item.productVariantId]}
-              </div>
-              <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
-                <button
-                  onClick={() =>
-                    setQuantities((prev) => ({
-                      ...prev,
-                      [item.productVariantId]: Math.max(
-                        (prev[item.productVariantId] || 1) - 1,
-                        1
-                      ),
-                    }))
-                  }
-                  className="p-2 bg-gray-300 rounded"
+    <div className="bg-gray-100 min-h-screen text-black pt-24">
+      <NavigationBar />
+      <div className="flex flex-col lg:flex-row gap-8 px-4 sm:px-6 lg:px-8">
+        {/* Shopping Bag Section */}
+        <div className="flex-1 bg-white p-6 rounded-2xl shadow-md">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-2">Shopping Bag</h2>
+          <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} items in your bag</p>
+          {data.length > 0 ? (
+            <div className="space-y-4">
+              {data.map((item) => (
+                <div
+                  key={item.productVariantId}
+                  className="flex flex-col sm:flex-row items-center p-4 bg-gray-50 rounded-2xl shadow-sm"
                 >
-                  -
-                </button>
-                <span className="px-4">{quantities[item.productVariantId]}</span>
-                <button
-                  onClick={() =>
-                    setQuantities((prev) => ({
-                      ...prev,
-                      [item.productVariantId]:
-                        (prev[item.productVariantId] || 1) + 1,
-                    }))
-                  }
-                  className="p-2 bg-gray-300 rounded"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="w-full h-64 flex justify-center items-center">
-          <button
-            onClick={() => router.push("/product")}
-            className="bg-secondary py-2 px-4 rounded-xl text-white text-sm sm:text-base"
-          >
-            Explore Our Products
-          </button>
-        </div>
-      )}
-    </div>
+                  <Image
+                    src={`${process.env.BACK_BASE_URL}${item.product_variant.productImage}`}
+                    alt="Product"
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
+                    width={200}
+                    height={200}
+                  />
+                  <div className="mt-4 sm:mt-0 sm:ml-4 flex-1 text-center sm:text-left">
+                    <h3 className="text-sm sm:text-lg font-semibold">
+                      {item.product_variant.product.productName}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      Color: {item.product_variant.productColor} | Size:{" "}
+                      {item.product_variant.productSize}
+                    </p>
+                  </div>
+                  <div className="text-gray-800 font-bold mt-2 sm:mt-0">
+                    Rp.{" "}
+                    {item.product_variant.productPrice * quantities[item.productVariantId]}
+                  </div>
+                  <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
+                    <button
+                      onClick={() => {
+                        setQuantities((prev) => ({
+                          ...prev,
+                          [item.productVariantId]: Math.max(
+                            (prev[item.productVariantId] || 1) - 1,
+                            1
+                          ),
+                        }))
 
-    {/* Shipping and Payment Section */}
-    <div className="w-full lg:w-1/3 space-y-6">
-      {clientToken ? (
-        <div className="bg-white p-6 rounded-md shadow-md">
-          <h3 className="text-lg font-semibold mb-4">Shipping and Payment</h3>
-          {address.length === 0 ? (
-            <button
-              onClick={() => router.push("/address/create")}
-              className="w-full bg-secondary text-white py-2 rounded-md mb-2 text-sm sm:text-base"
-            >
-              Create Address
-            </button>
+                        recalculateTotalPrice()
+                      }
+                      }
+                      className="p-2 bg-gray-300 rounded"
+                    >
+                      -
+                    </button>
+                    <span className="px-4">{quantities[item.productVariantId]}</span>
+                    <button
+                      onClick={() => {
+                        setQuantities(prevQuantities => ({
+                          ...prevQuantities,
+                          [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
+                        }));
+                      }
+                      }
+                      className="p-2 bg-gray-300 rounded"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
-            <div>
-              <label htmlFor="shippingAddress" className="block text-sm font-medium text-gray-700">
-                Shipping Address
+            <div className="w-full h-64 flex justify-center items-center">
+              <button
+                onClick={() => router.push("/product")}
+                className="bg-secondary py-2 px-4 rounded-xl text-white text-sm sm:text-base"
+              >
+                Explore Our Products
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Shipping and Payment Section */}
+        <div className="w-full lg:w-1/3 space-y-6">
+          {clientToken ? (
+            <div className="bg-white p-6 rounded-md shadow-md">
+              <h3 className="text-lg font-semibold mb-4">Shipping and Payment</h3>
+              {address.length === 0 ? (
+                <button
+                  onClick={() => router.push("/address/create")}
+                  className="w-full bg-secondary text-white py-2 rounded-md mb-2 text-sm sm:text-base"
+                >
+                  Create Address
+                </button>
+              ) : (
+                <div>
+                  <label htmlFor="shippingAddress" className="block text-sm font-medium text-gray-700">
+                    Shipping Address
+                  </label>
+                  <select
+                    id="shippingAddress"
+                    className="w-full p-2 mb-4 border rounded-md focus:outline-none"
+                    onChange={(e) => {
+                      const selectedId = e.target.value;
+                      const selectedAddress = address.find(
+                        (addr) => addr.addressDetail === selectedId
+                      );
+                      setChosenAddress(selectedAddress);
+                    }}
+                    disabled={data.length === 0}
+                    value={chosenAddress?.addressDetail || ""}
+                  >
+                    <option value="">Select an Address</option>
+                    {address.map((addr) => (
+                      <option key={addr.addressId} value={addr.addressDetail}>
+                        {addr.addressDetail}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <label htmlFor="shippingOption" className="block text-sm font-medium text-gray-700">
+                Shipping Option
               </label>
               <select
-                id="shippingAddress"
+                id="shippingOption"
                 className="w-full p-2 mb-4 border rounded-md focus:outline-none"
                 onChange={(e) => {
-                  const selectedId = e.target.value;
-                  const selectedAddress = address.find(
-                    (addr) => addr.addressDetail === selectedId
+                  const selectedOption = shippingOptions.find(
+                    (option) => option.shipping_name === e.target.value
                   );
-                  setChosenAddress(selectedAddress);
+                  if (selectedOption) {
+                    setSelectedShipping(selectedOption);
+                    setPrice((prev) => ({
+                      ...prev,
+                      shippingFee: selectedOption.shipping_cost,
+                    }));
+                  } else {
+                    setSelectedShipping(null);
+                  }
                 }}
-                disabled={data.length === 0}
-                value={chosenAddress?.addressDetail || ""}
               >
-                <option value="">Select an Address</option>
-                {address.map((addr) => (
-                  <option key={addr.addressId} value={addr.addressDetail}>
-                    {addr.addressDetail}
+                <option value="">Select a Shipping Option</option>
+                {shippingOptions.map((option, index) => (
+                  <option key={index} value={option.shipping_name}>
+                    {option.shipping_name} - Rp. {option.grandtotal}
                   </option>
                 ))}
               </select>
+
+              {/* Voucher Section */}
+              <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
+                Voucher Code
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  id="voucher"
+                  className="w-full p-2 border rounded-md focus:outline-none"
+                  value={voucherCode}
+                  onChange={(e) => setVoucherCode(e.target.value)}
+                  placeholder="Enter Voucher Code"
+                />
+                <button
+                  className="p-2 bg-secondary rounded-md text-white text-sm sm:text-base"
+                  onClick={checkVoucher}
+                >
+                  Check
+                </button>
+              </div>
+
+              {/* Price Summary */}
+              <div className="flex flex-col space-y-2 mt-6">
+                <div className="flex justify-between">
+                  <span className="text-sm sm:text-lg font-semibold">Total Price:</span>
+                  <span className="font-light text-primary">{price.totalPrice}</span>
+                </div>
+                {selectedShipping && (
+                  <div className="flex justify-between">
+                    <span className="text-sm sm:text-lg font-semibold">Shipping Fee:</span>
+                    <span className="font-light text-primary">{price.shippingFee}</span>
+                  </div>
+                )}
+                {price.voucher !== 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-sm sm:text-lg font-semibold">Voucher:</span>
+                    <span className="font-light text-primary">- {price.voucher}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-lg sm:text-xl font-semibold">Grand Total:</span>
+                  <span className="font-light text-primary">
+                    {price.totalPrice + price.shippingFee - price.voucher}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                className="w-full bg-secondary text-white py-2 sm:py-3 mt-4 rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all"
+                onClick={checkOut}
+              >
+                Checkout
+              </button>
+            </div>
+          ) : (
+            <div className="bg-white p-6 rounded-md shadow-md h-full flex flex-col items-center justify-center">
+              <p className="text-gray-600 mb-6">You need to login first to access this feature.</p>
+              <button
+                onClick={() => (window.location.href = "/auth/login")}
+                className="bg-secondary text-white py-2 px-4 rounded-md"
+              >
+                Login Now
+              </button>
             </div>
           )}
-
-          <label htmlFor="shippingOption" className="block text-sm font-medium text-gray-700">
-            Shipping Option
-          </label>
-          <select
-            id="shippingOption"
-            className="w-full p-2 mb-4 border rounded-md focus:outline-none"
-            onChange={(e) => {
-              const selectedOption = shippingOptions.find(
-                (option) => option.shipping_name === e.target.value
-              );
-              if (selectedOption) {
-                setSelectedShipping(selectedOption);
-                setPrice((prev) => ({
-                  ...prev,
-                  shippingFee: selectedOption.shipping_cost,
-                }));
-              } else {
-                setSelectedShipping(null);
-              }
-            }}
-          >
-            <option value="">Select a Shipping Option</option>
-            {shippingOptions.map((option, index) => (
-              <option key={index} value={option.shipping_name}>
-                {option.shipping_name} - Rp. {option.grandtotal}
-              </option>
-            ))}
-          </select>
-
-          {/* Voucher Section */}
-          <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
-            Voucher Code
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              id="voucher"
-              className="w-full p-2 border rounded-md focus:outline-none"
-              value={voucherCode}
-              onChange={(e) => setVoucherCode(e.target.value)}
-              placeholder="Enter Voucher Code"
-            />
-            <button
-              className="p-2 bg-secondary rounded-md text-white text-sm sm:text-base"
-              onClick={checkVoucher}
-            >
-              Check
-            </button>
-          </div>
-
-          {/* Price Summary */}
-          <div className="flex flex-col space-y-2 mt-6">
-            <div className="flex justify-between">
-              <span className="text-sm sm:text-lg font-semibold">Total Price:</span>
-              <span className="font-light text-primary">{price.totalPrice}</span>
-            </div>
-            {selectedShipping && (
-              <div className="flex justify-between">
-                <span className="text-sm sm:text-lg font-semibold">Shipping Fee:</span>
-                <span className="font-light text-primary">{price.shippingFee}</span>
-              </div>
-            )}
-            {price.voucher !== 0 && (
-              <div className="flex justify-between">
-                <span className="text-sm sm:text-lg font-semibold">Voucher:</span>
-                <span className="font-light text-primary">- {price.voucher}</span>
-              </div>
-            )}
-            <div className="flex justify-between">
-              <span className="text-lg sm:text-xl font-semibold">Grand Total:</span>
-              <span className="font-light text-primary">
-                {price.totalPrice + price.shippingFee - price.voucher}
-              </span>
-            </div>
-          </div>
-
-          <button
-            className="w-full bg-secondary text-white py-2 sm:py-3 mt-4 rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all"
-            onClick={checkOut}
-          >
-            Checkout
-          </button>
         </div>
-      ) : (
-        <div className="bg-white p-6 rounded-md shadow-md h-full flex flex-col items-center justify-center">
-          <p className="text-gray-600 mb-6">You need to register first to access this feature.</p>
-          <button
-            onClick={() => (window.location.href = "/auth/register")}
-            className="bg-secondary text-white py-2 px-4 rounded-md"
-          >
-            Register Now
-          </button>
-        </div>
-      )}
+      </div>
     </div>
-  </div>
-</div>
 
   );
 };

@@ -82,6 +82,20 @@ const LoginPage = () => {
 
   return (
     <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
+      <div className="absolute top-4 left-4">
+        <button
+          onClick={() => window.history.back()}
+          className="p-3 bg-secondary text-black rounded-full shadow-md"
+        >
+          <Image
+            src="/icons/back-arrow.svg"
+            alt="Back Arrow"
+            width={24} 
+            height={24}
+            className="object-contain filter invert "
+          />
+        </button>
+      </div>
       <div className="shadow-2xl w-fit flex justify-center border rounded-2xl">
         <div className="w-full md:w-1/2 rounded-l-2xl p-12 md:p-36 flex flex-col">
           <div className="text-black text-4xl font-bold text-center">
