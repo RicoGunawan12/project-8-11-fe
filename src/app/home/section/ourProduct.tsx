@@ -61,11 +61,10 @@ const OurProductSection = () => {
             <button
               key={category.productCategoryId}
               onClick={() => setActiveCategoryId(category.productCategoryId)}
-              className={`text-md text-secondary font-semibold p-2 rounded ${
-                activeCategoryId === category.productCategoryId
+              className={`text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === category.productCategoryId
                   ? "border-secondary border-b-2"
                   : null
-              }`}
+                }`}
             >
               {category.productCategoryName}
             </button>
@@ -77,8 +76,8 @@ const OurProductSection = () => {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16">
               {activeCategory.products.map((product: ProductCard) => (
-                <Link href={`/product/${product.productId}`}>
-                <div key={product.productId}>
+                <Link key={product.productId} href={`/product/${product.productId}`}>
+                  <div>
                     <Image
                       src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
                       alt={product.productName}
@@ -88,11 +87,7 @@ const OurProductSection = () => {
                     />
                     <div className="text-lg font-semibold text-black w-full text-center mt-6">{product.productName}</div>
                     <p className="text-sm text-black w-full text-center">Rp. {product.product_variants[0].productPrice}</p>
-                  {/* <CardHeader>
-                  </CardHeader>
-                  <CardBody>
-                  </CardBody> */}
-                </div>
+                  </div>
                 </Link>
               ))}
             </div>

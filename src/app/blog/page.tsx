@@ -46,35 +46,33 @@ const BlogsPage: React.FC = () => {
 
       {/* Content */}
       <div className="flex-grow mt-20">
-      <Banner page="Blog Page" text="Blog" />
-        <div className="p-12 min-h-[27.5%] flex justify-center">
-          <div className="grid grid-cols-2 w-3/4 lg:grid-cols-4 gap-6 h-full mt-12">
+        <Banner page="Blog Page" text="Blog" />
+        <div className="px-4 md:px-12 py-8 flex justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-7xl">
             {blogData?.map((blog) => (
               <Link
                 key={blog.postId}
                 href={`/blog/${blog.postId}`}
-                className="mb-6"
+                className="block"
               >
-                <div className="block p-4 border-2 rounded-md shadow-2xl bg-gray-50 hover:bg-gray-100 w-full">
-                  <div className="">
-                    <Image
-                      src={`${process.env.BACK_BASE_URL}${blog.postImage}`}
-                      alt={blog.postTitle}
-                      width={500}
-                      height={500}
-                      className="w-full h-40 object-cover mr-4 rounded-md"
-                    />
-                    <div>
-                      <h2 className="text-md lg:text-2xl mt-2 font-semibold text-black truncate max-w-full">
-                        {blog.postTitle}
-                      </h2>
-                      <p className="mt-2 text-sm text-gray-700 flex flex-col">
-                        <span>{formatDate(blog.createdAt)}</span>
-                        <span className="text-secondary text-md font-semibold">
-                          Read more &gt; &gt;
-                        </span>
-                      </p>
-                    </div>
+                <div className="p-4 border rounded-md shadow-lg bg-gray-50 hover:bg-gray-100 transition-all duration-300">
+                  <Image
+                    src={`${process.env.BACK_BASE_URL}${blog.postImage}`}
+                    alt={blog.postTitle}
+                    width={500}
+                    height={500}
+                    className="w-full h-40 md:h-48 lg:h-52 object-cover rounded-md"
+                  />
+                  <div className="mt-4">
+                    <h2 className="text-lg md:text-xl font-semibold text-black truncate">
+                      {blog.postTitle}
+                    </h2>
+                    <p className="mt-2 text-sm md:text-base text-gray-700 flex flex-col">
+                      <span>{formatDate(blog.createdAt)}</span>
+                      <span className="text-secondary text-sm md:text-base font-semibold">
+                        Read more &gt;&gt;
+                      </span>
+                    </p>
                   </div>
                 </div>
               </Link>
