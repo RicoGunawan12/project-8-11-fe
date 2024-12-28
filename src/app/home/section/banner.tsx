@@ -29,14 +29,8 @@ const Banner = () => {
   }, []);
 
   const pageData = pages?.[0]?.[locale]?.[0] ?? {}; // Fallback for safe access to page data
-  console.log(pages?.[0])
-  console.log(pageData)
-  console.log(process.env.BACK_BASE_URL)
-  // Construct the background image URL
   const backgroundImageUrl = process.env.BACK_BASE_URL + (pageData.background || "");
   
-  // Log the URL to see how it looks
-  console.log("Background Image URL:", backgroundImageUrl);
 
   return (
     <div
@@ -48,10 +42,10 @@ const Banner = () => {
       }}
     >
       <div className="w-full lg:w-2/5 pt-20 lg:pt-0">
-        <h1 className="text-black text-2xl lg:text-5xl font-bold text-center lg:text-left">
+        <h1 className="text-white text-2xl lg:text-5xl font-bold text-center lg:text-left">
           {pageData.title || "Loading..."}
         </h1>
-        <p className="text-black mt-6 text-md text-justify lg:text-left">
+        <p className="text-white mt-6 text-md text-justify lg:text-left">
           {pageData.content || "Loading..."}
         </p>
         <div className="mt-4 flex justify-start">

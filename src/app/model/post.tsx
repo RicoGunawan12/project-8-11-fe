@@ -3,5 +3,6 @@ export interface Post{
     postTitle : string,
     postContent : string,
     postImage : string,
-    createdAt : string
+    createdAt : string,
+    postBanner : string
 }

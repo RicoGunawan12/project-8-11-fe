@@ -51,6 +51,11 @@ const NavigationBar = () => {
   };
 
   const fetchSearchResults = async () => {
+
+    if(!searchQuery.trim()){
+      return
+    }
+
     if (fetchedPages[currentPage]) {
       setSearchResults(fetchedPages[currentPage]);
       return;
@@ -359,11 +364,15 @@ const NavigationBar = () => {
                   ))}
                 </ul>
               ) : (
-                <p>No products found.</p>
+                <p>
+                {searchQuery.trim()
+                  ? "No products found."
+                  : "Please insert what you want to search."}
+              </p>
               )}
             </div>
             {
-              totalPages === 1 ? null : <div className="flex justify-between mt-4">
+              totalPages <= 1 ? null : <div className="flex justify-between mt-4">
                 <button
                   onClick={handlePrevPage}
                   disabled={currentPage === 1}

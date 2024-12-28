@@ -33,6 +33,7 @@ const nextConfig = {
     PAGES: process.env.PAGES,
     VOUCHER: process.env.VOUCHER,
     BANNERS: process.env.BANNERS,
+    RATINGS: process.env.RATINGS,
   },
   eslint: {
     ignoreDuringBuilds: true, 
