@@ -2,6 +2,7 @@
 import NavigationBar from '@/app/component/navbar';
 import { toastError, toastSuccess } from '@/app/utilities/toast';
 import { getTokenCookie } from '@/app/utilities/token';
+import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 
@@ -330,13 +331,13 @@ const AddressForm = () => {
                         />
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-secondary text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isLoading ? "Creating..." : "Create Address"}
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>

@@ -1,5 +1,5 @@
 export interface UserRegister{
-    username : string,
+    fullName : string,
     email : string,
     password : string,
     phoneNumber: string,
@@ -12,6 +12,6 @@ export interface UserLogin{
 }
 
 export interface UserData{
-    username : string,
+    fullName : string,
     email : string
 }

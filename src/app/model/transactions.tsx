@@ -58,7 +58,7 @@ interface UserAddress{
 
 interface User {
     userId : string;
-    username : string;
+    fullName : string;
     email : string;
     user_address : UserAddress[];
 }

@@ -307,7 +307,7 @@ const ProductDetailPage = () => {
                   <div key={index} className="border-b-2 pb-4 mb-4">
                     <div className="flex items-center">
                       <StarRating rating={parseInt(review.rating)} />
-                      <span className="ml-2 text-sm text-gray-500">{review.user.username}</span>
+                      <span className="ml-2 text-sm text-gray-500">{review.user.fullName}</span>
                     </div>
                     <p className="text-sm text-gray-700">{review.comment}</p>
                   </div>
