@@ -10,9 +10,12 @@ import Banner from "../component/banner";
 import { ExploreProduct } from "../model/product";
 import Footer from "../component/footer";
 import Loading from "../utilities/loading";
+import { Categories } from "../model/category";
 
 const ProductPage = () => {
   const [searchResults, setSearchResults] = useState<ExploreProduct[]>();
+  const [categories, setCategories] = useState<Categories[]>();
+  const [activeCategory, setActiveCategory] = useState("All");
   const [limit, setLimit] = useState(40);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -22,14 +25,16 @@ const ProductPage = () => {
 
   const fetchSearchResults = async () => {
 
-    if (fetchedPages[currentPage]) {
-      setSearchResults(fetchedPages[currentPage]);
-      return;
-    }
-
+    // if (fetchedPages[currentPage]) {
+    //   setSearchResults(fetchedPages[currentPage]);
+    //   return;
+    // }
+    console.log("test: ", activeCategory);
+    
     try {
       const counturl = new URL(`${process.env.PRODUCTS}/getCount`);
       counturl.searchParams.append("search", "");
+      counturl.searchParams.append("category", activeCategory === "All" ? "": activeCategory);
       const countResponse = await fetch(counturl, {
         method: "GET",
         headers: {
@@ -49,6 +54,7 @@ const ProductPage = () => {
       url.searchParams.append("limit", String(limit));
       url.searchParams.append("offset", String((currentPage - 1) * limit));
       url.searchParams.append("search", "");
+      url.searchParams.append("category", activeCategory === "All" ? "": activeCategory);
 
       const response = await fetch(url, {
         method: "GET",
@@ -75,6 +81,27 @@ const ProductPage = () => {
     }
   };
 
+  const getCategories = async () => {
+    try {
+      const categoriesUrl = new URL(`${process.env.CATEGORIES}`);
+      const categoriesResponse = await fetch(categoriesUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await categoriesResponse.json();
+      if (!categoriesResponse.ok) {
+        throw new Error(data.message);
+      }
+      setCategories(data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      
+    }
+  }
+
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -87,9 +114,17 @@ const ProductPage = () => {
     }
   };
 
+
+
   useEffect(() => {
     fetchSearchResults();
-  }, [currentPage]);
+    console.log(activeCategory);
+    
+  }, [currentPage, activeCategory]);
+
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   if(!searchResults){
     return <Loading/>
@@ -100,6 +135,35 @@ const ProductPage = () => {
       <NavigationBar />
       <div className="mt-20 flex-grow">
         <Banner page="Product Page" text="Product" />
+
+        <div className="flex gap-8 mb-2 w-full justify-center">
+          <button
+            onClick={() => setActiveCategory("All")}
+            className={`text-md text-secondary font-semibold p-2 rounded ${
+              activeCategory === "All"
+                ? "border-secondary border-b-2"
+                : null
+            }`}
+          >
+            All
+          </button>
+          {
+            categories?.map((category) => (
+              <button
+                key={category.productCategoryId}
+                onClick={() => setActiveCategory(category.productCategoryName)}
+                className={`text-md text-secondary font-semibold p-2 rounded ${
+                  activeCategory === category.productCategoryName
+                    ? "border-secondary border-b-2"
+                    : null
+                }`}
+              >
+                {category.productCategoryName}
+              </button>
+            ))
+          }
+        </div>
+
         {searchResults.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 w-full justify-items-center py-12 lg:px-12 px-4">
             {searchResults.map((result, index) => (
