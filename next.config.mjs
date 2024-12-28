@@ -6,6 +6,14 @@ const nextConfig = {
         protocol: 'http',
         hostname: 'localhost',
       },
+      {
+        protocol: 'http',
+        hostname: process.env.BACK_IP_ADDR ?? 'localhost'
+      },
+      {
+        protocol: 'https',
+        hostname: process.env.BACK_IP_ADDR ?? 'localhost'
+      }
     ],
   },
   env: {
