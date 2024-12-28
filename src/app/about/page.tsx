@@ -64,58 +64,74 @@ const AboutUsPage = () => {
             <h1 className="text-white text-2xl font-semibold">
               Why you should choose TYESO?
             </h1>
-            <div className="flex w-full justify-center flex-wrap gap-12 my-6 px-6">
+            <div className="flex flex-col w-full justify-center items-center flex-wrap gap-6 my-6 px-6">
               {/* Product 1 */}
-              <div className="flex flex-col items-center max-w-xs">
-                <img
-                  src="/a.jpg"
-                  alt="Product 1"
-                  className="w-32 h-32 object-cover rounded-lg shadow-md"
-                />
-                <p className="mt-4 text-white text-justify text-xs font-light">
-                  Tumbler eksklusif dengan bahan premium, memberikan kualitas
-                  tinggi dan daya tahan maksimal.
-                </p>
+              <div className="w-8/12 flex flex-row items-center">
+                <div className="mr-6">
+                  <img
+                    src="/a.jpg"
+                    alt="Product 1"
+                    className="max-w-full h-64 object-cover rounded-lg shadow-md"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="w-full mt-4 text-white text-justify text-xs font-light">
+                    Tumbler eksklusif dengan bahan premium, memberikan kualitas
+                    tinggi dan daya tahan maksimal.
+                  </p>
+                </div>
               </div>
 
               {/* Product 2 */}
-              <div className="flex flex-col items-center max-w-xs">
-                <img
-                  src="/a.jpg"
-                  alt="Product 2"
-                  className="w-32 h-32 object-cover rounded-lg shadow-md"
-                />
-                <p className="mt-4 text-white text-justify text-xs font-light">
-                  Dirancang untuk menjaga suhu minuman, memberikan pengalaman
-                  minum yang optimal dalam berbagai kondisi.
-                </p>
+              <div className="flex flex-row items-center w-8/12">
+                <div className="flex-1 mr-6">
+                  <p className="w-full mt-4 text-white text-justify text-xs font-light">
+                    Dirancang untuk menjaga suhu minuman, memberikan pengalaman
+                    minum yang optimal dalam berbagai kondisi.
+                  </p>
+                </div>
+                <div>
+                  <img
+                    src="/a.jpg"
+                    alt="Product 2"
+                    className="max-w-full h-64 object-cover rounded-lg shadow-md"
+                  />
+                </div>
               </div>
 
               {/* Product 3 */}
-              <div className="flex flex-col items-center max-w-xs">
-                <img
-                  src="/a.jpg"
-                  alt="Product 3"
-                  className="w-32 h-32 object-cover rounded-lg shadow-md"
-                />
-                <p className="mt-4 text-white text-justify text-xs font-light">
-                  Tampil stylish dan modern dengan berbagai pilihan desain yang
-                  trendi, menjadikannya aksesori gaya hidup yang sempurna.
-                </p>
+              <div className="flex flex-row items-center w-8/12">
+                <div className="mr-6">
+                  <img
+                    src="/a.jpg"
+                    alt="Product 3"
+                    className="max-w-full h-64 object-cover rounded-lg shadow-md"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="mt-4 text-white text-justify text-xs font-light">
+                    Tampil stylish dan modern dengan berbagai pilihan desain yang
+                    trendi, menjadikannya aksesori gaya hidup yang sempurna.
+                  </p>
+                </div>
               </div>
 
               {/* Product 4 */}
-              <div className="flex flex-col items-center max-w-xs">
-                <img
-                  src="/a.jpg"
-                  alt="Product 4"
-                  className="w-32 h-32 object-cover rounded-lg shadow-md"
-                />
-                <p className="mt-4 text-white text-justify text-xs font-light">
-                  Dibuat dari material ramah lingkungan yang dapat didaur ulang,
-                  mendukung gaya hidup berkelanjutan dan mengurangi penggunaan
-                  kemasan sekali pakai.
-                </p>
+              <div className="flex flex-row items-center w-8/12">
+                <div className="flex-1 mr-6">
+                  <p className="mt-4 text-white text-justify text-xs font-light">
+                    Dibuat dari material ramah lingkungan yang dapat didaur ulang,
+                    mendukung gaya hidup berkelanjutan dan mengurangi penggunaan
+                    kemasan sekali pakai.
+                  </p>
+                </div>
+                <div>
+                  <img
+                    src="/a.jpg"
+                    alt="Product 4"
+                    className="max-w-full h-64 object-cover rounded-lg shadow-md"
+                  />
+                </div>
               </div>
             </div>
           </div>
