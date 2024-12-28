@@ -3,17 +3,17 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
+        protocol: "http",
+        hostname: "localhost",
       },
       {
-        protocol: 'http',
-        hostname: process.env.BACK_IP_ADDR ?? 'localhost'
+        protocol: "http",
+        hostname: process.env.BACK_IP_ADDR ?? "localhost",
       },
       {
-        protocol: 'https',
-        hostname: process.env.BACK_IP_ADDR ?? 'localhost'
-      }
+        protocol: "https",
+        hostname: process.env.BACK_IP_ADDR ?? "localhost",
+      },
     ],
   },
   env: {
@@ -36,10 +36,13 @@ const nextConfig = {
     RATINGS: process.env.RATINGS,
   },
   eslint: {
-    ignoreDuringBuilds: true, 
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true, 
+    ignoreBuildErrors: true,
+  },
+  experimental: {
+    missingSuspenseWithCSRBailout: false, 
   },
 };
 

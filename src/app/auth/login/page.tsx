@@ -6,8 +6,8 @@ import Image from "next/image";
 import { toastSuccess, toastError } from '../../utilities/toast';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { setTokenCookie } from "@/app/utilities/token";
 import { ErrorMessage } from "@/app/model/error";
+import { setTokenCookie } from "@/app/utilities/test";
 
 const LoginPage = () => {
 
