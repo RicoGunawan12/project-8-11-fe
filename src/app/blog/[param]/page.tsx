@@ -28,6 +28,7 @@ const BlogDetail = () => {
           throw new Error(result.message || "Failed to fetch blog details");
         }
         setData(result.post);
+        console.log(result.post)
       } catch (error) {
         console.error("Error fetching blog details:", error);
       }

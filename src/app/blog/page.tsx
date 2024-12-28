@@ -68,7 +68,7 @@ const BlogsPage: React.FC = () => {
                       <h2 className="text-md lg:text-2xl mt-2 font-semibold text-black truncate max-w-full">
                         {blog.postTitle}
                       </h2>
-                      <p className="mt-2 text-sm text-gray-700 flex justify-between">
+                      <p className="mt-2 text-sm text-gray-700 flex flex-col">
                         <span>{formatDate(blog.createdAt)}</span>
                         <span className="text-secondary text-md font-semibold">
                           Read more &gt; &gt;
