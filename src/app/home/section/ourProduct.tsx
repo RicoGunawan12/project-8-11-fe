@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { toastError } from "@/app/utilities/toast";
 import Loading from "@/app/utilities/loading";
+import { ProductCard } from "@/app/model/productCard";
 
 const OurProductSection = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -74,8 +75,8 @@ const OurProductSection = () => {
         {/* Products of the active category */}
         {activeCategory ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:px-40 lg:grid-cols-5 gap-16">
-              {activeCategory.products.map((product: any) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16">
+              {activeCategory.products.map((product: ProductCard) => (
                 <Link href={`/product/${product.productId}`}>
                 <div key={product.productId}>
                     <Image
@@ -86,7 +87,7 @@ const OurProductSection = () => {
                       className="w-full"
                     />
                     <div className="text-lg font-semibold text-black w-full text-center mt-6">{product.productName}</div>
-                    <p className="text-sm text-black w-full text-center">{product.productDescription}</p>
+                    <p className="text-sm text-black w-full text-center">Rp. {product.product_variants[0].productPrice}</p>
                   {/* <CardHeader>
                   </CardHeader>
                   <CardBody>

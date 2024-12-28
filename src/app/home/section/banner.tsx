@@ -6,35 +6,53 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const Banner = () => {
-  const [page, setPages] = useState<Page[]>();
-  const { locale, change } = useLocaleStore();
+  const [pages, setPages] = useState<Page[] | undefined>(undefined);
+  const { locale } = useLocaleStore();
 
   useEffect(() => {
-    try {
-      const fetchData = async () => {
-        const req = await fetch(`${process.env.PAGES}`, {
-          method: "GET",
-        });
+    const fetchData = async () => {
+      try {
+        const response = await fetch(process.env.PAGES || "", { method: "GET" });
 
-        const res = await req.json();
+        if (!response.ok) {
+          throw new Error(`Failed to fetch pages: ${response.statusText}`);
+        }
 
-        setPages(res.pages);
-      };
+        const data = await response.json();
+        setPages(data.pages);
+      } catch (error: any) {
+        toastError(error.message || "An unexpected error occurred.");
+      }
+    };
 
-      fetchData();
-    } catch (error: any) {
-      toastError(error.message);
-    }
+    fetchData();
   }, []);
 
+  const pageData = pages?.[0]?.[locale]?.[0] ?? {}; // Fallback for safe access to page data
+  console.log(pages?.[0])
+  console.log(pageData)
+  console.log(process.env.BACK_BASE_URL)
+  // Construct the background image URL
+  const backgroundImageUrl = process.env.BACK_BASE_URL + (pageData.background || "");
+  
+  // Log the URL to see how it looks
+  console.log("Background Image URL:", backgroundImageUrl);
+
   return (
-    <div className="flex flex-col lg:flex-row w-full h-auto lg:h-screen justify-center items-center gap-8 lg:gap-24 bg-gradient-radial from-yellow-200 via-yellow-300 to-amber-500 p-6">
+    <div
+      className="flex flex-col lg:flex-row w-full h-auto lg:h-screen justify-center items-center gap-8 lg:gap-24 p-6"
+      style={{
+        backgroundImage: `url('${backgroundImageUrl}')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div className="w-full lg:w-2/5 pt-20 lg:pt-0">
         <h1 className="text-black text-2xl lg:text-5xl font-bold text-center lg:text-left">
-          {page && page[0]?.[locale]?.[0]?.title || "Loading"}
+          {pageData.title || "Loading..."}
         </h1>
         <p className="text-black mt-6 text-md text-justify lg:text-left">
-          {page && page[0]?.[locale]?.[0]?.content || "Loading"}
+          {pageData.content || "Loading..."}
         </p>
         <div className="mt-4 flex justify-start">
           <button className="bg-black text-white py-2 px-10 rounded-md">
@@ -44,13 +62,17 @@ const Banner = () => {
       </div>
 
       <div className="w-full lg:w-2/5 h-auto lg:h-5/6 flex justify-center lg:items-center pt-6 lg:pt-0">
-        <Image
-          src="/a.jpg"
-          width={500}
-          height={500}
-          alt="Stylish cup"
-          className="rounded-lg w-full lg:w-[500px] lg:h-[500px] object-cover"
-        />
+        {pageData.photo ? (
+          <Image
+            src={`${process.env.BACK_BASE_URL}${pageData.photo}`}
+            width={500}
+            height={500}
+            alt="Banner photo"
+            className="rounded-lg w-full lg:w-[500px] lg:h-[500px] object-cover"
+          />
+        ) : (
+          <div className="text-center text-black">No Image Available</div>
+        )}
       </div>
     </div>
   );

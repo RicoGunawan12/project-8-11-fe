@@ -60,7 +60,7 @@ const BestSellerProduct = () => {
             {products?.map((product, idx) => (
               <Link
                 key={idx}
-                className="flex-shrink-0 w-full sm:w-[200px] lg:w-[400px]"
+                className="flex-shrink-0 w-full sm:w-[150px] lg:w-[300px]"
                 href={`/product/${product.productId}`}
               >
                 <Image
@@ -68,13 +68,13 @@ const BestSellerProduct = () => {
                   width={400}
                   height={550}
                   alt="logo pic"
-                  className="w-full h-[450px] object-cover"
+                  className="w-full h-[300px] object-cover"
                 />
                 <div className="bg-white py-6 px-10">
                   {/* <div className="text-black">{renderStars(product.)}</div> */}
-                  <div className="text-black">{product.productName}</div>
+                  <div className="text-black font-semibold">{product.productName}</div>
+                  <div className="text-black">Rp. {product.product_variants[0].productPrice}</div>
                   {/* <div className="text-black flex gap-2">
-                    <div>Rp. {product.product_variants[0].productPrice}</div>
                   </div> */}
                 </div>
               </Link>
