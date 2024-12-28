@@ -11,11 +11,15 @@ import { ExploreProduct } from "../model/product";
 import Footer from "../component/footer";
 import Loading from "../utilities/loading";
 import { Categories } from "../model/category";
+import { useSearchParams } from "next/navigation";
 
 const ProductPage = () => {
+  const searchParams = useSearchParams();
+  const category = searchParams.get('category');
+  
   const [searchResults, setSearchResults] = useState<ExploreProduct[]>();
   const [categories, setCategories] = useState<Categories[]>();
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState(category ? category : "All");
   const [limit, setLimit] = useState(40);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
