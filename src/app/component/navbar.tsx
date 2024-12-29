@@ -195,23 +195,38 @@ const NavigationBar = () => {
             {/* Action Buttons */}
             <div className="flex flex-col text-sm items-center w-full gap-4 py-2">
               {/* Search */}
-              <button
-                onClick={toggleModal}
-                className="text-white flex items-center hover:underline h-6"
-              >
-                <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
-                <span className="text-medium h-full">Search</span>
-              </button>
+              <div>
+                <button
+                  onClick={toggleModal}
+                  className="text-white flex items-center hover:underline h-6"
+                >
+                  <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
+                  <span className="text-medium h-full">Search</span>
+                </button>
+              </div>
 
               {/* User Account */}
               {token ? (
-                <button
-                  onClick={toggleDropdown}
-                  className="text-white flex items-center hover:underline"
-                >
-                  <FontAwesomeIcon icon={faUser} size="sm" className="mr-2" />
-                  <span className="text-md">Profile</span>
-                </button>
+                <div className="flex flex-col items-center gap-4">
+                  <button
+                    onClick={toggleDropdown}
+                    className="text-white flex items-center hover:underline"
+                  >
+                    <FontAwesomeIcon icon={faUser} size="sm" className="mr-2" />
+                    <span className="text-md">Profile</span>
+                  </button>
+                  <Link
+                    href="/"
+                    className="text-white flex items-center hover:underline h-6"
+                    onClick={() => {
+                      deleteTokenCookie();
+                      setToken(null);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faRightToBracket} size="sm" className="mr-2" />
+                    <span className="text-md">Logout</span>
+                  </Link>
+                </div>
               ) : (
                 <Link
                   href="/auth/login"
