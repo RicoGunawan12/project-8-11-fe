@@ -20,7 +20,7 @@ const ProductPage = () => {
   const [searchResults, setSearchResults] = useState<ExploreProduct[]>();
   const [categories, setCategories] = useState<Categories[]>();
   const [activeCategory, setActiveCategory] = useState(category ? category : "All");
-  const [limit, setLimit] = useState(40);
+  const [limit, setLimit] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [fetchedPages, setFetchedPages] = useState<{
