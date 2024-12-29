@@ -295,8 +295,8 @@ const ProductDetailPage = () => {
             <h3 className="text-2xl font-bold mb-4">
               Descriptions
             </h3>
-            <p>Size: {data?.productSize} mL</p>
-            <p>{data?.productDescription}</p>
+            <p><span className="font-semibold">Size: </span>{data?.productSize} mL</p>
+            <p className="pt-4">{data?.productDescription}</p>
           </div>
         </div>
       </div>
