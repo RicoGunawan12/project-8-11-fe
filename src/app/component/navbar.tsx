@@ -179,13 +179,13 @@ const NavigationBar = () => {
         <div className="absolute top-20 left-0 w-full bg-secondary shadow-lg z-50 lg:hidden text-xs">
           <div className="flex flex-col items-center gap-4 py-4">
             {/* Navigation Links */}
-            {["product", "blog", "FAQ", "contact", "about"].map((item) => (
+            {["product", "blog", "faq", "contact", "about"].map((item) => (
               <Link
                 key={item}
                 href={`/${item}`}
                 className="font-semibold text-white hover:underline"
               >
-                {item.charAt(0).toUpperCase() + item.slice(1)}
+                {item === "faq" ? item.toUpperCase() : item.charAt(0).toUpperCase() + item.slice(1)}
               </Link>
             ))}
 

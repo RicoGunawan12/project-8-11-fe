@@ -48,11 +48,11 @@ const Banner = () => {
         <p className="text-white mt-6 text-md text-justify lg:text-left">
           {pageData.content || "Loading..."}
         </p>
-        <div className="mt-4 flex justify-start">
+        {/* <div className="mt-4 flex justify-start">
           <button className="bg-black text-white py-2 px-10 rounded-md">
             Check
           </button>
-        </div>
+        </div> */}
       </div>
 
       <div className="w-full lg:w-2/5 h-auto lg:h-5/6 flex justify-center lg:items-center pt-6 lg:pt-0">

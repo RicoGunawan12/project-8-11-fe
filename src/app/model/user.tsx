@@ -14,4 +14,5 @@ export interface UserLogin{
 export interface UserData{
     fullName : string,
     email : string
+    phone: string
 }

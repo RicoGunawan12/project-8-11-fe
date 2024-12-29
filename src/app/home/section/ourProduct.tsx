@@ -56,19 +56,27 @@ const OurProductSection = () => {
 
       {/* Category Tabs */}
       <div className="mt-8 w-full px-10">
-        <div className="flex gap-8 mb-8 w-full justify-center">
-          {products.map((category) => (
-            <button
-              key={category.productCategoryId}
-              onClick={() => setActiveCategoryId(category.productCategoryId)}
-              className={`text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === category.productCategoryId
-                  ? "border-secondary border-b-2"
-                  : null
-                }`}
-            >
-              {category.productCategoryName}
-            </button>
-          ))}
+        <div className="w-full flex justify-center">
+          <div 
+            className="flex gap-8 mb-10 pb-4 overflow-x-auto mx-8"
+            style={{
+              scrollbarWidth: "thin", // For Firefox
+              scrollbarColor: "gray transparent", // For Firefox
+            }}
+          >
+            {products.map((category) => (
+              <button
+                key={category.productCategoryId}
+                onClick={() => setActiveCategoryId(category.productCategoryId)}
+                className={`text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === category.productCategoryId
+                    ? "border-secondary border-b-2"
+                    : null
+                  }`}
+              >
+                {category.productCategoryName}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Products of the active category */}

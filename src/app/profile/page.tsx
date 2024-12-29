@@ -12,7 +12,7 @@ import Loading from "../utilities/loading";
 import { mapPaymentMethod } from "../utilities/converter";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState<UserData>({ fullName: "", email: "" });
+  const [user, setUser] = useState<UserData>({ fullName: "", email: "", phone: "" });
   const [totalTransaction, setTotalTransaction] = useState<Transaction[]>([]);
   const [addressData, setAddressData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,6 +52,7 @@ const ProfilePage = () => {
           },
         }
       );
+      
 
       if (!transactionResponse.ok) {
         throw new Error("Failed to fetch transaction data");
@@ -130,6 +131,9 @@ const ProfilePage = () => {
                 </p>
                 <p className="mt-2 text-gray-600">
                   <strong>Email :</strong> {user?.email || "N/A"}
+                </p>
+                <p className="mt-2 text-gray-600">
+                  <strong>Phone :</strong> {user?.phone || "N/A"}
                 </p>
               </div>
 

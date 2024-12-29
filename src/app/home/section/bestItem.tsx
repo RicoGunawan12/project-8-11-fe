@@ -27,7 +27,7 @@ const BestItem = () => {
   }, []);
 
   return (
-    <div className="w-full h-auto lg:h-screen flex flex-col lg:flex-row-reverse relative lg:justify-center pt-6 lg:pt-32 px-4 lg:px-0">
+    <div className="w-full h-auto lg:h-screen flex flex-col lg:flex-row-reverse relative lg:justify-center pt-6 lg:pt-24 px-4 lg:px-0">
       {/* Left Section */}
       <div className="w-full lg:w-2/5 text-center lg:text-left">
         <div className="text-black text-3xl sm:text-4xl font-bold">

@@ -140,32 +140,40 @@ const ProductPage = () => {
       <div className="mt-20 flex-grow">
         <Banner page="Product Page" text="Product" />
 
-        <div className="flex gap-8 mt-6 mb-2 w-full justify-center">
-          <button
-            onClick={() => setActiveCategory("All")}
-            className={`text-md text-secondary font-semibold p-2 rounded ${
-              activeCategory === "All"
-                ? "border-secondary border-b-2"
-                : null
-            }`}
+        <div className="w-full flex justify-center">
+          <div 
+            className="flex gap-8 mt-6 mb-2 pb-4 overflow-x-auto mx-8"
+            style={{
+              scrollbarWidth: "thin", // For Firefox
+              scrollbarColor: "gray transparent", // For Firefox
+            }}
           >
-            All
-          </button>
-          {
-            categories?.map((category) => (
-              <button
-                key={category.productCategoryId}
-                onClick={() => setActiveCategory(category.productCategoryName)}
-                className={`text-md text-secondary font-semibold p-2 rounded ${
-                  activeCategory === category.productCategoryName
-                    ? "border-secondary border-b-2"
-                    : null
-                }`}
-              >
-                {category.productCategoryName}
-              </button>
-            ))
-          }
+            <button
+              onClick={() => setActiveCategory("All")}
+              className={`text-md text-secondary font-semibold p-2 rounded ${
+                activeCategory === "All"
+                  ? "border-secondary border-b-2"
+                  : null
+              }`}
+            >
+              All
+            </button>
+            {
+              categories?.map((category) => (
+                <button
+                  key={category.productCategoryId}
+                  onClick={() => setActiveCategory(category.productCategoryName)}
+                  className={`text-md text-secondary font-semibold p-2 rounded ${
+                    activeCategory === category.productCategoryName
+                      ? "border-secondary border-b-2"
+                      : null
+                  }`}
+                >
+                  {category.productCategoryName}
+                </button>
+              ))
+            }
+          </div>
         </div>
         {
           searchResults.length == 0 &&

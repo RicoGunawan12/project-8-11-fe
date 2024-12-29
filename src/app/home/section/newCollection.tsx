@@ -35,7 +35,7 @@ const NewCollection = () => {
         // setData(dataRes.products)
 
         // after: category
-        const dataReq = await fetch(`${process.env.CATEGORIES}`, {
+        const dataReq = await fetch(`${process.env.CATEGORIES}?limit=6`, {
           method: "GET",
         });
 
@@ -52,7 +52,7 @@ const NewCollection = () => {
   }, []);
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center pt-10 lg:pt-20 px-4 lg:px-0">
+    <div className="w-full min-h-[80vh] flex flex-col items-center pt-10 lg:pt-20 px-4 lg:px-0">
       <div className="text-black text-3xl lg:text-4xl font-bold text-center">
         {page && page[0]?.[locale]?.[1]?.title || "Loading"}
       </div>
@@ -60,7 +60,7 @@ const NewCollection = () => {
         {page && page[0]?.[locale]?.[1]?.content || "Loading"}
       </div>
 
-      <div className="flex flex-col lg:flex-row w-full lg:w-2/3 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
+      <div className="flex flex-col flex-wrap lg:flex-row w-full lg:w-2/3 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
         {
           data.map((datum: Categories) => {
             return (

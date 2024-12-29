@@ -11,6 +11,8 @@ import { UserAddress } from "../model/address";
 import { Shipping } from "../model/shipping";
 import { useDebounce } from "use-debounce";
 import { Payment } from "../model/transactions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 const CartPage = () => {
   const router = useRouter();
@@ -35,6 +37,7 @@ const CartPage = () => {
     voucher: 0,
     grandTotal: 0
   })
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -99,7 +102,7 @@ const CartPage = () => {
       );
       setLoading(false)
     }
-  }, [router, clientToken]);
+  }, [router, clientToken, update]);
 
   const recalculateTotalPrice = () => {
     console.log(quantities)
@@ -121,8 +124,10 @@ const CartPage = () => {
 
     let totalWeight = 0;
     const cartTotal = data.reduce((total, item) => {
+      console.log(item);
+      
       const quantity = quantities[item.productVariantId] || 1;
-      totalWeight += item.product_variant.productWeight * quantity;
+      totalWeight += item.product_variant.product.productWeight * quantity;
       return total + item.product_variant.productPrice * quantity;
     }, 0);
 
@@ -237,6 +242,25 @@ const CartPage = () => {
     }
   }
 
+  const handleRemoveCart = async (cartItemId: string) => {
+    const url = new URL(`${process.env.CART}/${cartItemId}`);
+    const fetchData = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${clientToken}`
+      },
+    })
+    const result = await fetchData.json()
+
+    if (fetchData.ok) {
+      setUpdate(!update);
+      toastSuccess("Item removed")
+    } else {
+      toastError(result.message || "Something went wrong")
+    }
+  }
+
   if (!data || loading) {
     return <Loading />;
   }
@@ -269,7 +293,7 @@ const CartPage = () => {
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-500">
                       Color: {item.product_variant.productColor} | Size:{" "}
-                      {item.product_variant.productSize}
+                      {item.product_variant.product.productSize}
                     </p>
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
@@ -307,6 +331,10 @@ const CartPage = () => {
                     >
                       +
                     </button>
+
+                    <div className="ml-4"> 
+                    <FontAwesomeIcon color="red" className="hover:cursor-pointer" onClick={() => handleRemoveCart(item.cartItemId)} icon={faTrashCan}/>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -348,6 +376,8 @@ const CartPage = () => {
                       const selectedAddress = address.find(
                         (addr) => addr.addressDetail === selectedId
                       );
+                      console.log(selectedAddress);
+                      
                       setChosenAddress(selectedAddress);
                     }}
                     disabled={data.length === 0}
