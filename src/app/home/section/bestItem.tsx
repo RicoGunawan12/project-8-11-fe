@@ -65,18 +65,20 @@ const BestItem = () => {
       </div>
 
       {/* Stats Section */}
-      <div className=" lg:hidden flex bg-white text-black absolute bottom-8 left-1/2 transform -translate-x-1/2 py-3 px-6 justify-between rounded-lg shadow-2xl">
-        <div className="border-r-2 pr-2 lg:pr-6 my-4 lg:my-6 border-black flex flex-col items-center">
-          <div className="text-sm lg:text-3xl font-semibold">8900+</div>
-          <div className="text-xs lg:text-sm">Interact</div>
-        </div>
-        <div className="px-2 lg:px-6 my-4 lg:my-6 flex flex-col items-center">
-          <div className="text-sm lg:text-3xl font-semibold">3105+</div>
-          <div className="text-xs lg:text-sm">Purchase</div>
-        </div>
-        <div className="border-l-2 pl-2 lg:pl-6 my-4 lg:my-6 border-black flex flex-col items-center">
-          <div className="text-sm lg:text-3xl font-semibold">2014</div>
-          <div className="text-xs lg:text-sm">Reviews</div>
+      <div className="flex justify-center mb-12">
+        <div className="w-2/5 lg:hidden flex bg-white text-black py-3 px-6 justify-between rounded-lg shadow-2xl">
+          <div className="border-r-2 pr-2 lg:pr-6 my-4 lg:my-6 border-black flex flex-col items-center">
+            <div className="text-sm lg:text-3xl font-semibold">8900+</div>
+            <div className="text-xs lg:text-sm">Interact</div>
+          </div>
+          <div className="px-2 lg:px-6 my-4 lg:my-6 flex flex-col items-center">
+            <div className="text-sm lg:text-3xl font-semibold">3105+</div>
+            <div className="text-xs lg:text-sm">Purchase</div>
+          </div>
+          <div className="border-l-2 pl-2 lg:pl-6 my-4 lg:my-6 border-black flex flex-col items-center">
+            <div className="text-sm lg:text-3xl font-semibold">2014</div>
+            <div className="text-xs lg:text-sm">Reviews</div>
+          </div>
         </div>
       </div>
     </div>
