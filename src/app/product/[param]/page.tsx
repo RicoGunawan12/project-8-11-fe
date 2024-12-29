@@ -170,138 +170,136 @@ const ProductDetailPage = () => {
     <div className="bg-white w-screen h-screen pt-20">
       <NavigationBar />
       <div className="px-4 flex flex-col lg:flex-row lg:h-full items-start md:items-center space-y-8 md:space-y-0">
+  
+  {/* Center Column: Selected Product */}
+  <div className="w-full py-6 lg:w-1/2 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
+    {/* Main Product Image */}
+    <div className="w-full flex justify-center items-center mb-6">
+      <Image
+        src={`${process.env.BACK_BASE_URL}${data?.product_variants[variantChosen]?.productImage || "/placeholder.png"}`}
+        width={400}
+        height={400}
+        style={{ objectFit: "contain" }}
+        alt="Product Image"
+        className="border-2 rounded-lg w-3/4 lg:w-3/5 aspect-square"
+      />
+    </div>
 
-        {/* Center Column: Selected Product */}
-        <div className="w-full py-6 lg:w-1/2 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
-          {/* Main Product Image */}
-          <div className="w-full flex justify-center items-center mb-6">
+    {/* Variant Thumbnails */}
+    <div className="w-full lg:w-3/4 h-auto text-black overflow-x-auto py-4 flex gap-4 border-b-2">
+      <div className="flex flex-nowrap justify-start items-center gap-4">
+        {data?.product_variants.map((product, idx) => (
+          <div
+            key={idx}
+            className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${variantChosen === idx ? "border-secondary shadow-md" : "border-gray-300"}`}
+            onClick={() => setVariantChosen(idx)}
+          >
             <Image
-              src={`${process.env.BACK_BASE_URL}${data?.product_variants[variantChosen]?.productImage || "/placeholder.png"}`}
-              width={400}
-              height={400}
-              style={{ objectFit: "contain" }}
-              alt="Product Image"
-              className="border-2 rounded-lg w-3/4 lg:w-3/5 aspect-square"
+              src={`${process.env.BACK_BASE_URL}${product.productImage || "/placeholder.png"}`}
+              width={150}
+              height={150}
+              alt="Variant Image"
+              className="object-contain w-full h-full"
             />
           </div>
+        ))}
+      </div>
+    </div>
+  </div>
 
-          {/* Variant Thumbnails */}
-          <div className="w-full lg:w-3/4 h-auto text-black overflow-x-auto py-4 flex gap-4 border-b-2">
-            <div className="flex flex-nowrap justify-start items-center gap-4">
-              {data?.product_variants.map((product, idx) => (
-                <div
-                  key={idx}
-                  className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${variantChosen === idx ? "border-secondary shadow-md" : "border-gray-300"
-                    }`}
-                  onClick={() => setVariantChosen(idx)}
-                >
-                  <Image
-                    src={`${process.env.BACK_BASE_URL}${product.productImage || "/placeholder.png"}`}
-                    width={150}
-                    height={150}
-                    alt="Variant Image"
-                    className="object-contain w-full h-full"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-
-        </div>
-
-
-        {/* Right Column: Product Details */}
-        <div className="w-full justify-center overflow-y-auto items-start lg:w-1/2 text-black pr-4 md:pr-16 flex flex-col gap-8 lg:pt-48 lg:h-4/5">
-          <div className="w-3/4">
-            <h2 className="text-2xl md:text-3xl font-bold border-b-2 pb-2">
-              {data?.productName}
-            </h2>
-            <div className="mt-2 text-lg md:text-xl font-light border-b-2 pb-2">
-              {
-                data.promo_details[0] ?
-                  <div>
-                    <span className="line-through mr-2 text-gray-600">Rp. {data.product_variants[buyVariant].productPrice}</span>
-                    <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0}</span>
-                  </div>
-                  :
-                  <div >
-                    Rp. {data.product_variants[buyVariant].productPrice}
-                  </div>
-              }
-            </div>
+  {/* Right Column: Product Details */}
+  <div className="w-full justify-center items-start lg:w-1/2 text-black pr-4 md:pr-16 flex flex-col gap-8 lg:h-full overflow-y-auto">
+    <div className="w-3/4">
+      <h2 className="text-2xl md:text-3xl font-bold border-b-2 pb-2">
+        {data?.productName}
+      </h2>
+      <div className="mt-2 text-lg md:text-xl font-light border-b-2 pb-2">
+        {
+          data.promo_details[0] ? (
             <div>
-              <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
+              <span className="line-through mr-2 text-gray-600">Rp. {data.product_variants[buyVariant].productPrice}</span>
+              <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0}</span>
             </div>
-          </div>
-          <div className="flex flex-wrap w-3/4 gap-4">
-            {data?.product_variants.map((product, idx) => (
-              <div
-                key={idx}
-                className={`flex justify-center cursor-pointer border-2 px-4 py-2 rounded-md transition-all ${buyVariant === idx ? "border-secondary shadow-lg" : ""
-                  }`}
-                onClick={() => setBuyVariant(idx)}
-              >
-                <Image
-                  src={`${process.env.BACK_BASE_URL}${product.productImage}`}
-                  width={120}
-                  height={120}
-                  alt="Not Found"
-                  className="w-8 h-6 object-contain"
-                />
-                {
-                  product.productColor
-                }
-              </div>
-            ))}
-          </div>
-          <div className="w-3/4">
-            <span className="text-sm font-semibold">Quantity: </span>
-            <div className="flex items-center mt-2">
-              <button
-                onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
-                className="px-4 py-2 border border-gray-300 rounded-l bg-gray-100 hover:bg-gray-200 text-gray-700"
-              >
-                -
-              </button>
-              <div className="px-4 py-2 border-t border-b w-16 border-gray-300 text-center">
-                {quantity}
-              </div>
-              <button
-                onClick={() => setQuantity((prev) => prev + 1)}
-                className="px-4 py-2 border border-gray-300 rounded-r bg-gray-100 hover:bg-gray-200 text-gray-700"
-              >
-                +
-              </button>
-              <div className="ml-4 font-semibold">
-                {data?.product_variants[buyVariant].productStock === "0" ? (
-                  <span className="text-red-500">Out of Stock</span>
-                ) : (
-                  <span className="text-green-400">
-                    In Stock: {data?.product_variants[buyVariant].productStock}
-                  </span>
-                )}
-              </div>
+          ) : (
+            <div>
+              Rp. {data.product_variants[buyVariant].productPrice}
             </div>
-            <div className=" hidden lg:block font-light text-sm mt-4">
-              Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
-            </div>
-            <Button
-              onClick={addToCart}
-              className="hidden lg:block w-full bg-secondary text-white font-semibold text-lg mt-6 py-2"
-            >
-              Add to Cart
-            </Button>
-          </div>
-          <div className="w-3/4">
-            <h3 className="text-2xl font-bold mb-4">
-              Descriptions
-            </h3>
-            <p>Size: {data?.productSize} mL</p>
-            <p>{data?.productDescription}</p>
-          </div>
+          )
+        }
+      </div>
+      <div>
+        <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
+      </div>
+    </div>
+
+    <div className="flex flex-wrap w-3/4 gap-4">
+      {data?.product_variants.map((product, idx) => (
+        <div
+          key={idx}
+          className={`flex justify-center cursor-pointer border-2 px-4 py-2 rounded-md transition-all ${buyVariant === idx ? "border-secondary shadow-lg" : ""}`}
+          onClick={() => setBuyVariant(idx)}
+        >
+          <Image
+            src={`${process.env.BACK_BASE_URL}${product.productImage}`}
+            width={120}
+            height={120}
+            alt="Not Found"
+            className="w-8 h-6 object-contain"
+          />
+          {product.productColor}
+        </div>
+      ))}
+    </div>
+
+    <div className="w-3/4">
+      <span className="text-sm font-semibold">Quantity: </span>
+      <div className="flex items-center mt-2">
+        <button
+          onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
+          className="px-4 py-2 border border-gray-300 rounded-l bg-gray-100 hover:bg-gray-200 text-gray-700"
+        >
+          -
+        </button>
+        <div className="px-4 py-2 border-t border-b w-16 border-gray-300 text-center">
+          {quantity}
+        </div>
+        <button
+          onClick={() => setQuantity((prev) => prev + 1)}
+          className="px-4 py-2 border border-gray-300 rounded-r bg-gray-100 hover:bg-gray-200 text-gray-700"
+        >
+          +
+        </button>
+        <div className="ml-4 font-semibold">
+          {data?.product_variants[buyVariant].productStock === "0" ? (
+            <span className="text-red-500">Out of Stock</span>
+          ) : (
+            <span className="text-green-400">
+              In Stock: {data?.product_variants[buyVariant].productStock}
+            </span>
+          )}
         </div>
       </div>
+      <div className=" hidden lg:block font-light text-sm mt-4">
+        Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
+      </div>
+      <Button
+        onClick={addToCart}
+        className="hidden lg:block w-full bg-secondary text-white font-semibold text-lg mt-6 py-2"
+      >
+        Add to Cart
+      </Button>
+    </div>
+
+    <div className="w-3/4">
+      <h3 className="text-2xl font-bold mb-4">
+        Descriptions
+      </h3>
+      <p>Size: {data?.productSize} mL</p>
+      <p>{data?.productDescription}</p>
+    </div>
+  </div>
+</div>
+
 
       <div className="w-full flex flex-col items-center text-black justify-center">
         <div className="w-1/2 mt-8">
