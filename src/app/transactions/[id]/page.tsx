@@ -6,7 +6,7 @@ import { getTokenCookie } from "@/app/utilities/token";
 import NavigationBar from "@/app/component/navbar";
 import Banner from "@/app/component/banner";
 import Footer from "@/app/component/footer";
-import Loading from "@/app/utilities/loading";
+import {Loading} from "@/app/utilities/loading";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import { mapPaymentMethod } from "@/app/utilities/converter";
 

@@ -8,7 +8,7 @@ import { Transaction } from "../model/transactions";
 import { useRouter } from "next/navigation";
 import { Button } from "@nextui-org/react";
 import Banner from "../component/banner";
-import Loading from "../utilities/loading";
+import {Loading} from "../utilities/loading";
 import { mapPaymentMethod } from "../utilities/converter";
 
 const ProfilePage = () => {

@@ -8,7 +8,7 @@ import Footer from "../component/footer";
 import { toastError } from "../utilities/toast";
 import { Post } from "../model/post";
 import { formatDate } from "../utilities/converter";
-import Loading from "../utilities/loading";
+import {Loading} from "../utilities/loading";
 
 const BlogsPage: React.FC = () => {
   const [blogData, setBlogData] = useState<Post[]>();
