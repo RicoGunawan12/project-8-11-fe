@@ -6,7 +6,7 @@ import { getTokenCookie } from "@/app/utilities/token";
 import NavigationBar from "@/app/component/navbar";
 import Banner from "@/app/component/banner";
 import Footer from "@/app/component/footer";
-import Loading from "@/app/utilities/loading";
+import {Loading} from "@/app/utilities/loading";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import { mapPaymentMethod } from "@/app/utilities/converter";
 
@@ -88,7 +88,7 @@ const TransactionPage = () => {
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner text="Transaction Details" page="Transaction Page"/>
+        <Banner text="Transaction Details" page="/Transaction Page"/>
         <div className="text-black p-12">
           <div className="flex justify-center items-center flex-col gap-6">
             <div className="p-6 border-2 w-3/4 rounded-md shadow-2xl bg-gray-50">

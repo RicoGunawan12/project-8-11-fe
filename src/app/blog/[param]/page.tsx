@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import NavigationBar from "@/app/component/navbar";
-import Loading from "@/app/utilities/loading";
+import {Loading} from "@/app/utilities/loading";
 import { Post } from "@/app/model/post";
 import Banner from "@/app/component/banner";
 import Footer from "@/app/component/footer";
@@ -44,7 +44,7 @@ const BlogDetail = () => {
   return (
     <div className="h-screen w-screen bg-gray-50">
       <NavigationBar />
-      <div className="mt-20 h-full">
+      <div className="mt-20 h-full overflow-y-auto">
          <Banner
           text="Blog"
           page={`${data.postBanner}`}

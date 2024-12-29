@@ -6,13 +6,14 @@ import { getTokenCookie } from "../utilities/token";
 import { useRouter } from "next/navigation";
 import { toastError, toastSuccess } from "../utilities/toast";
 import { Cart } from "../model/cart";
-import Loading from "../utilities/loading";
+import { Loading, LoadingOverlay } from "../utilities/loading";
 import { UserAddress } from "../model/address";
 import { Shipping } from "../model/shipping";
 import { useDebounce } from "use-debounce";
 import { Payment } from "../model/transactions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import Footer from "../component/footer";
 
 const CartPage = () => {
   const router = useRouter();
@@ -66,7 +67,7 @@ const CartPage = () => {
             addressData.message || "Failed to fetch address data"
           );
         }
-
+        console.log(cartData)
         setData(cartData);
         setQuantities(
           cartData.reduce((acc: { [key: string]: number }, item: Cart) => {
@@ -92,7 +93,7 @@ const CartPage = () => {
       if (!Array.isArray(cartData) || cartData.length === 0) {
         return;
       }
-
+      console.log(cartData)
       setData(cartData);
       setQuantities(
         cartData?.reduce((acc: { [key: string]: number }, item: Cart) => {
@@ -105,7 +106,6 @@ const CartPage = () => {
   }, [router, clientToken, update]);
 
   const recalculateTotalPrice = () => {
-    console.log(quantities)
     const cartTotal = data.reduce((total, item) => {
       const quantity = quantities[item.productVariantId] || 1;
       return total + item.product_variant.productPrice * quantity;
@@ -140,9 +140,12 @@ const CartPage = () => {
     if (!response.ok) throw new Error(resp.message);
 
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
+    console.log(chosenAddress)
+    console.log(chosenAddress.komshipAddressId)
+    console.log(totalWeight)
 
     const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${cartTotal}`;
-
+    console.log(url)
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -163,6 +166,7 @@ const CartPage = () => {
 
   useEffect(() => {
     if (clientToken && debouncedChosenAddress && debouncedQuantities) {
+      console.log("test")
       calculateShippingOptions();
     }
   }, [debouncedChosenAddress, debouncedQuantities, clientToken]);
@@ -210,6 +214,8 @@ const CartPage = () => {
     const url = new URL(`${process.env.VOUCHER}/getByCode`);
 
     url.searchParams.append("code", String(voucherCode));
+
+    console.log(url)
     const fetchData = await fetch(url, {
       method: "GET",
       headers: {
@@ -219,7 +225,7 @@ const CartPage = () => {
     })
 
     const result = await fetchData.json()
-
+    console.log(fetchData)
     let discount = 0
 
     if (result.voucherType == "percentage") {
@@ -261,16 +267,19 @@ const CartPage = () => {
     }
   }
 
-  if (!data || loading) {
+  if (!data) {
     return <Loading />;
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen text-black pt-24">
+    <div className="bg-gray-100 min-h-screen flex flex-col text-black">
       <NavigationBar />
-      <div className="flex flex-col lg:flex-row gap-8 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col flex-grow lg:flex-row gap-8 px-4 mt-24 sm:px-6 lg:px-8">
         {/* Shopping Bag Section */}
-        <div className="flex-1 bg-white p-6 rounded-2xl shadow-md">
+        {
+          loading ? <LoadingOverlay/> : null
+        }
+        <div className="flex-1 h-full bg-white p-6 rounded-2xl shadow-md">
           <h2 className="text-xl sm:text-2xl font-semibold mb-2">Shopping Bag</h2>
           <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} items in your bag</p>
           {data.length > 0 ? (
@@ -297,8 +306,17 @@ const CartPage = () => {
                     </p>
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
-                    Rp.{" "}
-                    {item.product_variant.productPrice * quantities[item.productVariantId]}
+                  {
+                        item.product_variant.product.promo_details[0]? 
+                        <div>
+                          <span className="line-through mr-2 text-gray-600">Rp. {item.product_variant.productPrice}</span>
+                          <span className="font-semibold">Rp. {item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount  > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0}</span>
+                        </div>
+                        :
+                        <div >
+                        Rp. {item.product_variant.productPrice}
+                        </div>
+                      }
                   </div>
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
                     <button
@@ -376,7 +394,6 @@ const CartPage = () => {
                       const selectedAddress = address.find(
                         (addr) => addr.addressDetail === selectedId
                       );
-                      console.log(selectedAddress);
                       
                       setChosenAddress(selectedAddress);
                     }}
@@ -447,24 +464,24 @@ const CartPage = () => {
               <div className="flex flex-col space-y-2 mt-6">
                 <div className="flex justify-between">
                   <span className="text-sm sm:text-lg font-semibold">Total Price:</span>
-                  <span className="font-light text-primary">{price.totalPrice}</span>
+                  <span className="font-light text-primary">Rp. {price.totalPrice}</span>
                 </div>
                 {selectedShipping && (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold">Shipping Fee:</span>
-                    <span className="font-light text-primary">{price.shippingFee}</span>
+                    <span className="font-light text-primary">Rp. {price.shippingFee}</span>
                   </div>
                 )}
                 {price.voucher !== 0 && (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold">Voucher:</span>
-                    <span className="font-light text-primary">- {price.voucher}</span>
+                    <span className="font-light text-primary">- Rp. {price.voucher}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span className="text-lg sm:text-xl font-semibold">Grand Total:</span>
                   <span className="font-light text-primary">
-                    {price.totalPrice + price.shippingFee - price.voucher}
+                    Rp. {price.totalPrice + price.shippingFee - (price.voucher ? price.voucher : 0)}
                   </span>
                 </div>
               </div>
@@ -489,8 +506,8 @@ const CartPage = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
-
   );
 };
 

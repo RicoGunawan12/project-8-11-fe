@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Loading from "../utilities/loading";
+import {Loading} from "../utilities/loading";
 
 interface BannerProps {
   page: string;

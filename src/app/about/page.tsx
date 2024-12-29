@@ -7,19 +7,20 @@ import Banner from "../component/banner";
 import { toastError } from "../utilities/toast";
 import { useLocaleStore } from "../component/locale";
 import { AboutPage } from "../model/aboutPage";
+import { Loading } from "../utilities/loading";
 
 const AboutUsPage = () => {
 
   const [page, setPage] = useState<AboutPage[]>()
-  const {locale, change} = useLocaleStore()
+  const { locale, change } = useLocaleStore()
 
   useEffect(() => {
 
-    const fetchData = async() => {
+    const fetchData = async () => {
 
       try {
-        
-        const response = await fetch(`${process.env.PAGES}/about`,{
+
+        const response = await fetch(`${process.env.PAGES}/about`, {
           method: "GET"
         })
 
@@ -30,12 +31,16 @@ const AboutUsPage = () => {
       } catch (error: any) {
         toastError(error.message)
       }
-      
+
     }
 
     fetchData()
 
   }, [])
+
+  if(!page){
+    return <Loading/>
+  }
 
   return (
     <div className="flex flex-col h-screen bg-white">
@@ -64,60 +69,63 @@ const AboutUsPage = () => {
             <h1 className="text-white text-2xl font-semibold">
               Why you should choose TYESO?
             </h1>
-            <div className="flex w-full justify-center flex-wrap gap-12 my-6 px-6">
-              {/* Product 1 */}
-              <div className="flex flex-col items-center max-w-xs">
-                <img
-                  src="/a.jpg"
-                  alt="Product 1"
-                  className="w-32 h-32 object-cover rounded-lg shadow-md"
-                />
-                <p className="mt-4 text-white text-justify text-xs font-light">
-                  Tumbler eksklusif dengan bahan premium, memberikan kualitas
-                  tinggi dan daya tahan maksimal.
-                </p>
-              </div>
+            <div className="flex justify-center items-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-12 my-6 px-6">
+                {/* Product 1 */}
+                <div className="flex flex-col items-center max-w-xs">
+                  <img
+                    src="/a.jpg"
+                    alt="Product 1"
+                    className="w-32 h-32 object-cover rounded-lg shadow-md"
+                  />
+                  <p className="mt-4 text-white text-center text-xs font-light">
+                    Tumbler eksklusif dengan bahan premium, memberikan kualitas
+                    tinggi dan daya tahan maksimal.
+                  </p>
+                </div>
 
-              {/* Product 2 */}
-              <div className="flex flex-col items-center max-w-xs">
-                <img
-                  src="/a.jpg"
-                  alt="Product 2"
-                  className="w-32 h-32 object-cover rounded-lg shadow-md"
-                />
-                <p className="mt-4 text-white text-justify text-xs font-light">
-                  Dirancang untuk menjaga suhu minuman, memberikan pengalaman
-                  minum yang optimal dalam berbagai kondisi.
-                </p>
-              </div>
+                {/* Product 2 */}
+                <div className="flex flex-col items-center max-w-xs">
+                  <img
+                    src="/a.jpg"
+                    alt="Product 2"
+                    className="w-32 h-32 object-cover rounded-lg shadow-md"
+                  />
+                  <p className="mt-4 text-white text-center text-xs font-light">
+                    Dirancang untuk menjaga suhu minuman, memberikan pengalaman
+                    minum yang optimal dalam berbagai kondisi.
+                  </p>
+                </div>
 
-              {/* Product 3 */}
-              <div className="flex flex-col items-center max-w-xs">
-                <img
-                  src="/a.jpg"
-                  alt="Product 3"
-                  className="w-32 h-32 object-cover rounded-lg shadow-md"
-                />
-                <p className="mt-4 text-white text-justify text-xs font-light">
-                  Tampil stylish dan modern dengan berbagai pilihan desain yang
-                  trendi, menjadikannya aksesori gaya hidup yang sempurna.
-                </p>
-              </div>
+                {/* Product 3 */}
+                <div className="flex flex-col items-center max-w-xs">
+                  <img
+                    src="/a.jpg"
+                    alt="Product 3"
+                    className="w-32 h-32 object-cover rounded-lg shadow-md"
+                  />
+                  <p className="mt-4 text-white text-center text-xs font-light">
+                    Tampil stylish dan modern dengan berbagai pilihan desain yang
+                    trendi, menjadikannya aksesori gaya hidup yang sempurna.
+                  </p>
+                </div>
 
-              {/* Product 4 */}
-              <div className="flex flex-col items-center max-w-xs">
-                <img
-                  src="/a.jpg"
-                  alt="Product 4"
-                  className="w-32 h-32 object-cover rounded-lg shadow-md"
-                />
-                <p className="mt-4 text-white text-justify text-xs font-light">
-                  Dibuat dari material ramah lingkungan yang dapat didaur ulang,
-                  mendukung gaya hidup berkelanjutan dan mengurangi penggunaan
-                  kemasan sekali pakai.
-                </p>
+                {/* Product 4 */}
+                <div className="flex flex-col items-center max-w-xs">
+                  <img
+                    src="/a.jpg"
+                    alt="Product 4"
+                    className="w-32 h-32 object-cover rounded-lg shadow-md"
+                  />
+                  <p className="mt-4 text-white text-center text-xs font-light">
+                    Dibuat dari material ramah lingkungan yang dapat didaur ulang,
+                    mendukung gaya hidup berkelanjutan dan mengurangi penggunaan
+                    kemasan sekali pakai.
+                  </p>
+                </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>

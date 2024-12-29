@@ -65,4 +65,15 @@ export interface ExploreProduct {
       productHeight: number;
     }
   ];
+  promo_details:[
+    {
+      promo:{
+        endDate : string,
+        promoAmount : number,
+        promoId : string,
+        promoName : string,
+        startDate : string
+      }
+    }
+  ]
 }

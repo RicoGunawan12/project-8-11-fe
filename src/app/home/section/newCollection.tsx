@@ -3,7 +3,9 @@ import { useLocaleStore } from "@/app/component/locale";
 import { Categories } from "@/app/model/category";
 import Page from "@/app/model/pageModel";
 import { ProductCard } from "@/app/model/productCard";
+import {Loading} from "@/app/utilities/loading";
 import { toastError } from "@/app/utilities/toast";
+import { Spinner } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -41,7 +43,6 @@ const NewCollection = () => {
 
         const dataRes = await dataReq.json();
 
-        console.log(dataRes)
         setData(dataRes)
       };
 
@@ -51,20 +52,24 @@ const NewCollection = () => {
     }
   }, []);
 
+  if(!page){
+    return <Loading/>
+  }
+
   return (
     <div className="w-full min-h-[80vh] flex flex-col items-center pt-10 lg:pt-20 px-4 lg:px-0">
       <div className="text-black text-3xl lg:text-4xl font-bold text-center">
-        {page && page[0]?.[locale]?.[1]?.title || "Loading"}
+        {page && page[0]?.[locale]?.[1]?.title || ""}
       </div>
       <div className="text-black text-center text-sm pt-2 px-6 lg:mt-6 lg:w-1/2">
-        {page && page[0]?.[locale]?.[1]?.content || "Loading"}
+        {page && page[0]?.[locale]?.[1]?.content || ""}
       </div>
 
       <div className="flex flex-col flex-wrap lg:flex-row w-full lg:w-2/3 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
         {
           data.map((datum: Categories) => {
             return (
-              <Link href={`/product?category=${datum.productCategoryName}`} className="w-full lg:w-[300px] flex flex-col items-center justify-center">
+              <Link key={datum.productCategoryId} href={`/product?category=${datum.productCategoryName}`} className="w-full lg:w-[300px] flex flex-col items-center justify-center">
                 <Image
                   src={`${process.env.BACK_BASE_URL}${datum.productCategoryPhoto}`}
                   width={400}

@@ -193,35 +193,93 @@ const NavigationBar = () => {
             <div className="w-full border-t-2 border-white mt-4"></div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col text-sm items-center w-full gap-4 py-2">
-              {/* Search */}
-              <button
-                onClick={toggleModal}
-                className="text-white flex items-center hover:underline h-6"
-              >
-                <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
-                <span className="text-medium h-full">Search</span>
-              </button>
+                        <div className="flex flex-col text-sm items-center w-full gap-4 py-2">
+                            <div className="relative inline-block text-secondary">
+                                <button
+                                    onClick={() => setIsOpen(!isOpen)}
+                                    className="w-20 h-8 text-white rounded-lg text-md flex items-center justify-between px-2"
+                                >
+                                    <img
+                                        src={selectedOption?.icon}
+                                        alt={selectedOption?.label}
+                                        className="w-6 h-6 mr-2"
+                                    />
+                                    {selectedOption?.label}
+                                    <span className="ml-2">&#x25BC;</span>
+                                </button>
 
-              {/* User Account */}
-              {token ? (
-                <button
-                  onClick={toggleDropdown}
-                  className="text-white flex items-center hover:underline"
-                >
-                  <FontAwesomeIcon icon={faUser} size="sm" className="mr-2" />
-                  <span className="text-md">Profile</span>
-                </button>
-              ) : (
-                <Link
-                  href="/auth/login"
-                  className="text-white flex items-center hover:underline h-6"
-                >
-                  <FontAwesomeIcon icon={faRightToBracket} size="sm" className="mr-2" />
-                  <span className="text-md">Login</span>
-                </Link>
-              )}
-            </div>
+                                {/* Dropdown Menu */}
+                                {isOpen && (
+                                    <div className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                                        {options.map((option) => (
+                                            <div
+                                                key={option.value}
+                                                className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-100 text-xs"
+                                                onClick={() => {
+                                                    change(option.value);
+                                                    setIsOpen(false);
+                                                }}
+                                            >
+                                                <img
+                                                    src={option.icon}
+                                                    alt={option.label}
+                                                    className="w-4 h-4 mr-2"
+                                                />
+                                                {option.label}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            {/* Search */}
+                            <button
+                                onClick={toggleModal}
+                                className="text-white flex items-center hover:underline h-6"
+                            >
+                                <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
+                                <span className="text-medium h-full">Search</span>
+                            </button>
+
+                            {/* User Account */}
+                            {token ? (
+                                <div className="relative" ref={dropdownRef}>
+                                    <button
+                                        type="button" // Prevent default form submission behavior
+                                        onClick={toggleDropdown}
+                                        className="text-white gap-2 text-medium flex items-center"
+                                    >
+                                        <FontAwesomeIcon icon={faUser} size="sm" />
+                                        <span>
+                                            Account
+                                        </span>
+                                    </button>
+
+                                    {/* User Dropdown Menu */}
+                                    {isDropdownVisible && (
+                                        <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-48 p-2">
+                                            <Link href="/profile" className="block px-4 py-2 text-gray-800">
+                                                Profile
+                                            </Link>
+                                            <Link
+                                                href="/"
+                                                className="block px-4 py-2 text-gray-800"
+                                                onClick={() => {
+                                                    deleteTokenCookie();
+                                                    setToken(null);
+                                                }}
+                                            >
+                                                Logout
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <Link href="/auth/login" className="text-white">
+                                    <FontAwesomeIcon icon={faRightToBracket} size="lg" />
+                                </Link>
+                            )}
+                        </div>
+
 
           </div>
         </div>
@@ -357,7 +415,17 @@ const NavigationBar = () => {
                         />
                         <div className="flex flex-col">
                           <span>{product.productName}</span>
-                          <span>Rp. {product.product_variants[0].productPrice}</span>
+                          {
+                        product.promo_details[0]? 
+                        <div className="flex justify-start">
+                          <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0].productPrice}</span>
+                          <span className="font-semibold">Rp. {product.product_variants[0].productPrice - product.promo_details[0].promo.promoAmount > 0 ? product.product_variants[0].productPrice - product.promo_details[0].promo.promoAmount : 0}</span>
+                        </div>
+                        :
+                        <div >
+                        Rp. {product.product_variants[0].productPrice}
+                        </div>
+                      }
                         </div>
                       </Link>
                     </li>
