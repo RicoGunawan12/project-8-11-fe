@@ -7,6 +7,16 @@ import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 
+
+interface DestinationOption {
+    id: number,
+    label: string,
+    subdistrict_name: string,
+    district_name: string,
+    city_name: string,
+    zip_code: string    
+}
+
 interface ProvinceOption {
     province_id: string;
     province: string;
@@ -42,9 +52,11 @@ interface FormData {
 }
 
 const AddressForm = () => {
-    const [provinces, setProvinces] = useState<ProvinceOption[]>([]);
-    const [cities, setCities] = useState<CityOption[]>([]);
-    const [subdistricts, setSubdistricts] = useState<SubdistrictOption[]>([]);
+    const [destinations, setDestinations] = useState<DestinationOption[]>([]);
+    // const [provinces, setProvinces] = useState<ProvinceOption[]>([]);
+    // const [cities, setCities] = useState<CityOption[]>([]);
+    // const [subdistricts, setSubdistricts] = useState<SubdistrictOption[]>([]);
+    const [destination, setDestination] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<Array<ErrorMessage>>([]);
     const [customErr, setCustomErr] = useState('')
@@ -67,13 +79,23 @@ const AddressForm = () => {
             return;
         }
         setClientToken(token);
-        fetchProvinces(token);
     }, [router]);
 
-    const fetchProvinces = async (token: string) => {
+    useEffect(() => {
+        const token = getTokenCookie();
+        if (!token) {
+            router.push("/");
+            return;
+        }
+        if (destination.length > 0) {
+            fetchDestinations(token);
+        }
+    }, [destination]);
+
+    const fetchDestinations = async (token: string) => {
         setIsLoading(true);
         try {
-            const response = await fetch(`${process.env.ADDRESS}/province`, {
+            const response = await fetch(`${process.env.ADDRESS}/destination?keyword=${destination}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -83,10 +105,10 @@ const AddressForm = () => {
             if (!response.ok) {
                 throw new Error(data.message);
             }
+            
+            const res = data.searchResult.data;
 
-            const res = data.provinces
-
-            setProvinces(res);
+            setDestination(res);
         } catch (error) {
             toastError(error instanceof Error ? error.message : "Failed to fetch provinces");
         } finally {
@@ -94,78 +116,67 @@ const AddressForm = () => {
         }
     };
 
-    const fetchCities = async (provinceId: string) => {
-        if (!provinceId || !clientToken) return;
+    // const fetchCities = async (provinceId: string) => {
+    //     if (!provinceId || !clientToken) return;
 
-        setIsLoading(true);
-        try {
-            const response = await fetch(
-                `${process.env.ADDRESS}/city?province=${provinceId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${clientToken}`,
-                    },
-                }
-            );
+    //     setIsLoading(true);
+    //     try {
+    //         const response = await fetch(
+    //             `${process.env.ADDRESS}/city?province=${provinceId}`,
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${clientToken}`,
+    //                 },
+    //             }
+    //         );
 
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message);
-            }
-            const res = data.cities
+    //         const data = await response.json();
+    //         if (!response.ok) {
+    //             throw new Error(data.message);
+    //         }
+    //         const res = data.cities
 
-            setCities(res)
-        } catch (error) {
-            toastError(error instanceof Error ? error.message : "Failed to fetch cities");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    //         setCities(res)
+    //     } catch (error) {
+    //         toastError(error instanceof Error ? error.message : "Failed to fetch cities");
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
 
-    const fetchSubdistricts = async (cityId: string) => {
-        if (!cityId || !clientToken) return;
+    // const fetchSubdistricts = async (cityId: string) => {
+    //     if (!cityId || !clientToken) return;
 
-        setIsLoading(true);
-        try {
-            const response = await fetch(
-                `${process.env.ADDRESS}/subdistrict?city=${cityId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${clientToken}`,
-                    },
-                }
-            );
+    //     setIsLoading(true);
+    //     try {
+    //         const response = await fetch(
+    //             `${process.env.ADDRESS}/subdistrict?city=${cityId}`,
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${clientToken}`,
+    //                 },
+    //             }
+    //         );
 
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message);
-            }
-            const res = data.subdistrict.rajaongkir.results
+    //         const data = await response.json();
+    //         if (!response.ok) {
+    //             throw new Error(data.message);
+    //         }
+    //         const res = data.subdistrict.rajaongkir.results
 
-            setSubdistricts(res);
-        } catch (error) {
-            toastError(error instanceof Error ? error.message : "Failed to fetch subdistricts");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    //         setSubdistricts(res);
+    //     } catch (error) {
+    //         toastError(error instanceof Error ? error.message : "Failed to fetch subdistricts");
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
 
     const handleChange = (
         e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
-
-        if (name === "province") {
-            let obj = JSON.parse(value);
-            setFormData((prev) => ({ ...prev, province: value, city: "", subdistrict: "" }));
-            fetchCities(obj.province_id);
-        } else if (name === "city") {
-            let obj = JSON.parse(value);
-            setFormData((prev) => ({ ...prev, city: value, subdistrict: "" }));
-            fetchSubdistricts(obj.city_id);
-        } else {
-            setFormData((prev) => ({ ...prev, [name]: value }));
-        }
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e: FormEvent) => {
@@ -275,17 +286,17 @@ const AddressForm = () => {
                             className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'province') ? "border-red-300" : "border-gray-300"}`}
                         >
                             
-                            <option value="">Select Province</option>
+                            {/* <option value="">Select Province</option>
                             {provinces.map((province) => (
                                 <option key={province.province_id} value={JSON.stringify(province)}>
                                     {province.province}
                                 </option>
-                            ))}
+                            ))} */}
                         </select>
                     </div>
                     <p hidden={!errors?.find(e => e.path === 'province')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'province')?.msg}</p>
 
-                    <div className="space-y-2">
+                    {/* <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">City</label>
                         <select
                             name="city"
@@ -331,7 +342,7 @@ const AddressForm = () => {
                             ))}
                         </select>
                     </div>
-                    <p hidden={!errors?.find(e => e.path === 'subdistrict')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'subdistrict')?.msg}</p>
+                    <p hidden={!errors?.find(e => e.path === 'subdistrict')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'subdistrict')?.msg}</p> */}
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">Address Detail</label>
