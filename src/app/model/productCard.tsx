@@ -19,5 +19,17 @@ export interface ProductCard {
     productVariantId : string,
     sku : string
   }],
-  averageRating : string
+  averageRating : string,
+  productSize : string,
+  promo_details:[
+    {
+      promo:{
+        endDate : string,
+        promoAmount : number,
+        promoId : string,
+        promoName : string,
+        startDate : string
+      }
+    }
+  ]
 }

@@ -159,46 +159,63 @@ const ProductDetailPage = () => {
     <div className="bg-white w-screen h-screen pt-20">
       <NavigationBar />
       <div className="px-4 flex flex-col lg:flex-row lg:h-full items-start md:items-center space-y-8 md:space-y-0">
-        {/* Left Column: Product Variants */}
-        <div className="w-full lg:w-1/6 h-1/6 lg:h-full text-black overflow-y-auto py-4 flex items-center lg:flex-col border-b-2 lg:border-b-0 lg:border-r-2 justify-center lg:space-y-4">
-          {data?.product_variants.map((product, idx) => (
-            <div
-              key={idx}
-              className="flex h-full w-1/4 lg:w-full lg:h-[15%] justify-center items-center lg:py-2 px-2 cursor-pointer"
-              onClick={() => setVariantChosen(idx)}
-            >
-              <Image
-                src={`${process.env.BACK_BASE_URL}${product.productImage}`}
-                width={150}
-                height={150}
-                alt="Not Found"
-                className={`border-2 w-3/4 h-full object-contain ${variantChosen === idx ? "border-secondary" : "border-transparent"
-                  }`}
-              />
-            </div>
-          ))}
-        </div>
 
         {/* Center Column: Selected Product */}
-        <div className="w-full py-6 lg:w-3/6 h-1/3 lg:h-3/4 flex justify-center items-center mt-4 md:mt-0">
-          <Image
-            src={`${process.env.BACK_BASE_URL}${data?.product_variants[variantChosen].productImage}`}
-            width={400}
-            height={400}
-            style={{ objectFit: "cover" }}
-            alt="Not Found"
-            className="border-2 w-5/6 aspect-square"
-          />
+        <div className="w-full py-6 lg:w-3/6 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
+          {/* Main Product Image */}
+          <div className="w-full flex justify-center items-center mb-6">
+            <Image
+              src={`${process.env.BACK_BASE_URL}${data?.product_variants[variantChosen]?.productImage || "/placeholder.png"}`}
+              width={400}
+              height={400}
+              style={{ objectFit: "contain" }}
+              alt="Product Image"
+              className="border-2 rounded-lg w-3/4 lg:w-1/2 aspect-square"
+            />
+          </div>
+
+          {/* Variant Thumbnails */}
+          <div className="w-full lg:w-3/4 h-auto text-black overflow-y-auto py-4 flex flex-wrap justify-center items-center gap-4 border-b-2">
+            {data?.product_variants.map((product, idx) => (
+              <div
+                key={idx}
+                className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${variantChosen === idx
+                  ? "border-secondary shadow-md"
+                  : "border-gray-300"
+                  }`}
+                onClick={() => setVariantChosen(idx)}
+              >
+                <Image
+                  src={`${process.env.BACK_BASE_URL}${product.productImage || "/placeholder.png"}`}
+                  width={100}
+                  height={100}
+                  alt="Variant Image"
+                  className="object-contain w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
+
         {/* Right Column: Product Details */}
-        <div className="w-full justify-center overflow-y-auto items-center lg:w-2/6 text-black pr-4 md:pr-8 flex flex-col gap-8 pt-4 lg:h-3/4">
+        <div className="w-full justify-center overflow-y-auto items-center lg:w-1/2 text-black pr-4 md:pr-8 flex flex-col gap-8 pt-4 lg:h-3/4">
           <div className="w-1/2">
             <h2 className="text-2xl md:text-3xl font-bold border-b-2 pb-2">
               {data?.productName}
             </h2>
             <div className="mt-2 text-lg md:text-xl font-light border-b-2 pb-2">
-              Rp {data?.product_variants[buyVariant].productPrice}
+                                  {
+                        data.promo_details[0]? 
+                        <div>
+                          <span className="line-through mr-2 text-gray-600">Rp. {data.product_variants[buyVariant].productPrice}</span>
+                          <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount}</span>
+                        </div>
+                        :
+                        <div >
+                        Rp. {data.product_variants[buyVariant].productPrice}
+                        </div>
+                      }
             </div>
             <div>
               <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
@@ -254,7 +271,7 @@ const ProductDetailPage = () => {
               </div>
             </div>
             <div className=" hidden lg:block font-light text-sm mt-4">
-              Rp. {quantity * Number(data?.product_variants[buyVariant].productPrice)}
+              Rp. {quantity * ( data.promo_details[0] ? Number(data?.product_variants[buyVariant].productPrice)  - data.promo_details[0].promo.promoAmount : Number(data?.product_variants[buyVariant].productPrice))}
             </div>
             <Button
               onClick={addToCart}
@@ -267,6 +284,7 @@ const ProductDetailPage = () => {
             <h3 className="text-2xl font-bold mb-4">
               Product Descriptions
             </h3>
+            <p>Size: {data?.productSize} mL</p>
             <p>{data?.productDescription}</p>
           </div>
         </div>
@@ -288,12 +306,12 @@ const ProductDetailPage = () => {
             value={comment}
             onChange={(e) => setComment(e.target.value)} // Update comment
           />
-                  <Button
-          onClick={submitRating}
-          className="mt-4 w-full bg-secondary text-white font-semibold text-lg py-2"
-        >
-          Submit Rating
-        </Button>
+          <Button
+            onClick={submitRating}
+            className="mt-4 w-full bg-secondary text-white font-semibold text-lg py-2"
+          >
+            Submit Rating
+          </Button>
         </div>
 
         <div className=" w-1/2 mt-8">
@@ -323,7 +341,7 @@ const ProductDetailPage = () => {
         >
           <span>Add to Cart</span>
           <span>
-            Rp. {quantity * Number(data?.product_variants[variantChosen].productPrice)}
+          Rp. {quantity * ( data.promo_details[0] ? Number(data?.product_variants[buyVariant].productPrice)  - data.promo_details[0].promo.promoAmount : Number(data?.product_variants[buyVariant].productPrice))}
           </span>
         </button>
       </div>

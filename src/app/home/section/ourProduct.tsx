@@ -25,6 +25,7 @@ const OurProductSection = () => {
 
         const data = await response.json();
         setProducts(data.products);
+        console.log(data.products)
 
         // Set the first category as active by default
         if (data.products.length > 0) {
@@ -222,7 +223,7 @@ const OurProductSection = () => {
         {/* Products of the active category */}
         {activeCategory ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16">
               {activeCategory.products.map((product: ProductCard) => (
                 <Link key={product.productId} href={`/product/${product.productId}`}>
                   <div>
@@ -231,10 +232,20 @@ const OurProductSection = () => {
                       alt={product.productName}
                       width={200}
                       height={200}
-                      className="w-full"
+                      className="w-full object-contain"
                     />
                     <div className="text-lg font-semibold text-black w-full text-center mt-6">{product.productName}</div>
-                    <p className="text-sm text-black w-full text-center">Rp. {product.product_variants[0].productPrice}</p>
+                    {
+                        product.promo_details[0]? 
+                        <div>
+                          <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0].productPrice}</span>
+                          <span className="font-semibold">Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo.promoAmount}</span>
+                        </div>
+                        :
+                        <div >
+                        Rp. {product.product_variants[0].productPrice}
+                        </div>
+                      }
                   </div>
                 </Link>
               ))}

@@ -177,10 +177,10 @@ const ProductPage = () => {
         </div>
         {
           searchResults.length == 0 &&
-          <div className="text-center h-20 my-20">There is no product in {activeCategory} category</div>
+          <div className="text-center h-20 my-12">There is no product in {activeCategory} category</div>
         }
         {searchResults.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 w-full justify-items-center py-12 lg:px-12 px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 w-full justify-items-center pb-12 lg:px-12 px-4">
             {searchResults.map((result, index) => (
               <Link
                 href={`/product/${result.productId}`}
@@ -192,15 +192,15 @@ const ProductPage = () => {
                     {result ? (
                       <Image
                         alt="Card background"
-                        className="object-cover rounded-xl w-[450px] lg:h-[300px] md:h-[250px] h-[200px] py-6"
-                        src={`${process.env.BACK_BASE_URL}${result.product_variants[0].productImage}`}
+                        className="object-contain rounded-xl w-[450px] lg:h-[300px] md:h-[250px] h-[200px] py-6"
+                        src={`${process.env.BACK_BASE_URL}${result.defaultImage}`}
                         width={300}
                         height={200}
                       />
                     ) : (
                       <Image
                         alt="Card background"
-                        className="object-cover rounded-xl w-[450px] h-[300px] md:h-[250px] sm:h-[200px] py-6"
+                        className="object-contain rounded-xl w-[450px] h-[300px] md:h-[250px] sm:h-[200px] py-6"
                         src="/d.jpg"
                         width={300}
                         height={200}
@@ -211,9 +211,17 @@ const ProductPage = () => {
                     <p className="text-sm uppercase font-bold truncate max-w-[200px]">
                       {result.productName}
                     </p>
-                    <div className="flex">
-                      <div>Rp. {result.product_variants[0].productPrice}</div>
-                    </div>
+                    {
+                        result.promo_details? 
+                        <div>
+                          <span className="line-through mr-2 text-gray-600">Rp. {result.product_variants[0].productPrice}</span>
+                          <span className="font-semibold">Rp. {result.product_variants[0].productPrice - result.promo_details[0].promo.promoAmount}</span>
+                        </div>
+                        :
+                        <div >
+                        Rp. {result.product_variants[0].productPrice}
+                        </div>
+                      }
                   </CardFooter>
                 </Card>
               </Link>
