@@ -4,7 +4,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
 import Link from "next/link";
 import Image from "next/image";
 import { toastError } from "@/app/utilities/toast";
-import Loading from "@/app/utilities/loading";
+import {Loading} from "@/app/utilities/loading";
 import { ProductCard } from "@/app/model/productCard";
 
 const OurProductSection = () => {
@@ -242,7 +242,7 @@ const OurProductSection = () => {
                           <span className="font-semibold">Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo.promoAmount > 0 ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo.promoAmount : 0}</span>
                         </div>
                         :
-                        <div >
+                        <div className="flex justify-center">
                         Rp. {product.product_variants[0].productPrice}
                         </div>
                       }

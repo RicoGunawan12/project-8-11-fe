@@ -6,7 +6,7 @@ import { getTokenCookie } from "../utilities/token";
 import { useRouter } from "next/navigation";
 import { toastError, toastSuccess } from "../utilities/toast";
 import { Cart } from "../model/cart";
-import Loading from "../utilities/loading";
+import { Loading, LoadingOverlay } from "../utilities/loading";
 import { UserAddress } from "../model/address";
 import { Shipping } from "../model/shipping";
 import { useDebounce } from "use-debounce";
@@ -67,7 +67,7 @@ const CartPage = () => {
             addressData.message || "Failed to fetch address data"
           );
         }
-
+        console.log(cartData)
         setData(cartData);
         setQuantities(
           cartData.reduce((acc: { [key: string]: number }, item: Cart) => {
@@ -106,7 +106,6 @@ const CartPage = () => {
   }, [router, clientToken, update]);
 
   const recalculateTotalPrice = () => {
-    console.log(quantities)
     const cartTotal = data.reduce((total, item) => {
       const quantity = quantities[item.productVariantId] || 1;
       return total + item.product_variant.productPrice * quantity;
@@ -268,7 +267,7 @@ const CartPage = () => {
     }
   }
 
-  if (!data || loading) {
+  if (!data) {
     return <Loading />;
   }
 
@@ -277,6 +276,9 @@ const CartPage = () => {
       <NavigationBar />
       <div className="flex flex-col flex-grow lg:flex-row gap-8 px-4 mt-24 sm:px-6 lg:px-8">
         {/* Shopping Bag Section */}
+        {
+          loading ? <LoadingOverlay/> : null
+        }
         <div className="flex-1 h-full bg-white p-6 rounded-2xl shadow-md">
           <h2 className="text-xl sm:text-2xl font-semibold mb-2">Shopping Bag</h2>
           <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} items in your bag</p>
@@ -305,10 +307,10 @@ const CartPage = () => {
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
                   {
-                        item.promo_details[0]? 
+                        item.product_variant.product.promo_details[0]? 
                         <div>
                           <span className="line-through mr-2 text-gray-600">Rp. {item.product_variant.productPrice}</span>
-                          <span className="font-semibold">Rp. {item.product_variant.productPrice - item.promo_details[0].promo.promoAmount  > 0 ? item.product_variant.productPrice - item.promo_details[0].promo.promoAmount : 0}</span>
+                          <span className="font-semibold">Rp. {item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount  > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0}</span>
                         </div>
                         :
                         <div >

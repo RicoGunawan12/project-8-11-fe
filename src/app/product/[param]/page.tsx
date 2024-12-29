@@ -5,7 +5,7 @@ import Image from "next/image";
 import NavigationBar from "@/app/component/navbar";
 import { Button, Input } from "@nextui-org/react";
 import { ProductCard } from "@/app/model/productCard";
-import Loading from "@/app/utilities/loading";
+import {Loading} from "@/app/utilities/loading";
 import { getTokenCookie } from "@/app/utilities/token";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Footer from "@/app/component/footer";
@@ -98,9 +98,10 @@ const ProductDetailPage = () => {
             ...data?.product_variants[variantChosen],
             product: {
               productName: data?.productName,
+              promo_details: promo_details
             },
           },
-          promo_details: promo_details
+          
         };
 
         if (existingItemIndex !== -1) {

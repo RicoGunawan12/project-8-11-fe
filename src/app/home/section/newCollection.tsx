@@ -3,7 +3,7 @@ import { useLocaleStore } from "@/app/component/locale";
 import { Categories } from "@/app/model/category";
 import Page from "@/app/model/pageModel";
 import { ProductCard } from "@/app/model/productCard";
-import Loading from "@/app/utilities/loading";
+import {Loading} from "@/app/utilities/loading";
 import { toastError } from "@/app/utilities/toast";
 import { Spinner } from "@nextui-org/react";
 import Image from "next/image";

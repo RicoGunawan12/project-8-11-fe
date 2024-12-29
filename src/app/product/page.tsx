@@ -9,7 +9,7 @@ import NavigationBar from "../component/navbar";
 import Banner from "../component/banner";
 import { ExploreProduct } from "../model/product";
 import Footer from "../component/footer";
-import Loading from "../utilities/loading";
+import {Loading} from "../utilities/loading";
 import { Categories } from "../model/category";
 import { useSearchParams } from "next/navigation";
 

@@ -3,13 +3,6 @@ export interface Cart{
     productVariantId: string;
     product_variant: ProductVariant;
     quantity : number,
-    promo_details:[
-        {
-            promo:{
-                promoAmount : number
-            }
-        }
-    ]
 }
 
 interface ProductVariant {
@@ -27,5 +20,10 @@ interface ProductVariant {
         productName : string
         productWeight: number;
         productSize: string | null;
+        promo_details:[{
+            promo:{
+                promoAmount : number
+            }
+        }]
     }
 }

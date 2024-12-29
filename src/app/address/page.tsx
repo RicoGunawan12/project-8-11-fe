@@ -57,7 +57,7 @@ const ProfilePage = () => {
     }
   };
 
-  const FetchData = async () => {
+  const FetchAddressData = async () => {
     try {
       const response = await fetch(`${process.env.ADDRESS}`, {
         method: "GET",
@@ -78,7 +78,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     fetchData();
-    FetchData(); // Fetch address data
+    FetchAddressData()
   }, []);
 
   return (

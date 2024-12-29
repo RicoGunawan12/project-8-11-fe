@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useLocaleStore } from "@/app/component/locale";
 import Page from "@/app/model/pageModel";
 import { Spinner } from "@nextui-org/react";
-import Loading from "@/app/utilities/loading";
+import {Loading} from "@/app/utilities/loading";
 
 const BestSellerProduct = () => {
   const [products, setProducts] = useState<ExploreProduct[]>();

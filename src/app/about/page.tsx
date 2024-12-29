@@ -7,6 +7,7 @@ import Banner from "../component/banner";
 import { toastError } from "../utilities/toast";
 import { useLocaleStore } from "../component/locale";
 import { AboutPage } from "../model/aboutPage";
+import { Loading } from "../utilities/loading";
 
 const AboutUsPage = () => {
 
@@ -36,6 +37,10 @@ const AboutUsPage = () => {
     fetchData()
 
   }, [])
+
+  if(!page){
+    return <Loading/>
+  }
 
   return (
     <div className="flex flex-col h-screen bg-white">
