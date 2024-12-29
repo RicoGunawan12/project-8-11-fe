@@ -120,7 +120,7 @@ const BestSellerProduct = () => {
             {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
           </div>
           <div className="border-white text-white border w-fit py-4 px-8 text-lg mt-4 mx-auto sm:mx-0">
-            <button>click here</button>
+            <Link href="/product">View More</Link>
           </div>
         </div>
         
@@ -134,7 +134,7 @@ const BestSellerProduct = () => {
               {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
             </div>
             <div className="border-white text-white border w-fit py-4 px-8 text-lg mt-4 mx-auto sm:mx-0">
-              <button>click here</button>
+              <Link href="/product">View More</Link>
             </div>
           </div>
 
