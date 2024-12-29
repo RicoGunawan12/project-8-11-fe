@@ -2,7 +2,9 @@
 import { useLocaleStore } from "@/app/component/locale";
 import Page from "@/app/model/pageModel";
 import { toastError } from "@/app/utilities/toast";
+import { Spinner } from "@nextui-org/react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const Banner = () => {
@@ -28,7 +30,7 @@ const Banner = () => {
     fetchData();
   }, []);
 
-  const pageData = pages?.[0]?.[locale]?.[0] ?? {}; // Fallback for safe access to page data
+  const pageData : any = pages?.[0]?.[locale]?.[0] ?? {}; // Fallback for safe access to page data
   const backgroundImageUrl = process.env.BACK_BASE_URL + (pageData.background || "");
   
 
@@ -43,16 +45,16 @@ const Banner = () => {
     >
       <div className="w-full lg:w-2/5 pt-20 lg:pt-0">
         <h1 className="text-white text-2xl lg:text-5xl font-bold text-center lg:text-left">
-          {pageData.title || "Loading..."}
+          {pageData.title || <Spinner label="Loading" color="primary" labelColor="primary"/>}
         </h1>
         <p className="text-white mt-6 text-md text-justify lg:text-left">
-          {pageData.content || "Loading..."}
+          {pageData.content || <Spinner label="Loading" color="primary" labelColor="primary"/>}
         </p>
-        {/* <div className="mt-4 flex justify-start">
-          <button className="bg-black text-white py-2 px-10 rounded-md">
-            Check
-          </button>
-        </div> */}
+        <div className="mt-4 flex justify-start">
+          <Link href={"/product"} className="bg-secondary text-white py-2 px-10 rounded-md">
+            Explore
+          </Link>
+        </div>
       </div>
 
       <div className="w-full lg:w-2/5 h-auto lg:h-5/6 flex justify-center lg:items-center pt-6 lg:pt-0">
@@ -65,7 +67,7 @@ const Banner = () => {
             className="rounded-lg w-full lg:w-[500px] lg:h-[500px] object-cover"
           />
         ) : (
-          <div className="text-center text-black">No Image Available</div>
+          <Spinner label="Loading" color="primary" labelColor="primary"/>
         )}
       </div>
     </div>

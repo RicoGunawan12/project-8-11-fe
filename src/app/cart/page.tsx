@@ -13,6 +13,7 @@ import { useDebounce } from "use-debounce";
 import { Payment } from "../model/transactions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import Footer from "../component/footer";
 
 const CartPage = () => {
   const router = useRouter();
@@ -140,9 +141,12 @@ const CartPage = () => {
     if (!response.ok) throw new Error(resp.message);
 
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
+    console.log(chosenAddress)
+    console.log(chosenAddress.komshipAddressId)
+    console.log(totalWeight)
 
     const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${cartTotal}`;
-
+    console.log(url)
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -163,6 +167,7 @@ const CartPage = () => {
 
   useEffect(() => {
     if (clientToken && debouncedChosenAddress && debouncedQuantities) {
+      console.log("test")
       calculateShippingOptions();
     }
   }, [debouncedChosenAddress, debouncedQuantities, clientToken]);
@@ -210,6 +215,8 @@ const CartPage = () => {
     const url = new URL(`${process.env.VOUCHER}/getByCode`);
 
     url.searchParams.append("code", String(voucherCode));
+
+    console.log(url)
     const fetchData = await fetch(url, {
       method: "GET",
       headers: {
@@ -219,7 +226,7 @@ const CartPage = () => {
     })
 
     const result = await fetchData.json()
-
+    console.log(fetchData)
     let discount = 0
 
     if (result.voucherType == "percentage") {
@@ -266,11 +273,11 @@ const CartPage = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen text-black pt-24">
+    <div className="bg-gray-100 min-h-screen flex flex-col text-black">
       <NavigationBar />
-      <div className="flex flex-col lg:flex-row gap-8 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col flex-grow lg:flex-row gap-8 px-4 mt-24 sm:px-6 lg:px-8">
         {/* Shopping Bag Section */}
-        <div className="flex-1 bg-white p-6 rounded-2xl shadow-md">
+        <div className="flex-1 h-full bg-white p-6 rounded-2xl shadow-md">
           <h2 className="text-xl sm:text-2xl font-semibold mb-2">Shopping Bag</h2>
           <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} items in your bag</p>
           {data.length > 0 ? (
@@ -376,7 +383,6 @@ const CartPage = () => {
                       const selectedAddress = address.find(
                         (addr) => addr.addressDetail === selectedId
                       );
-                      console.log(selectedAddress);
                       
                       setChosenAddress(selectedAddress);
                     }}
@@ -447,24 +453,24 @@ const CartPage = () => {
               <div className="flex flex-col space-y-2 mt-6">
                 <div className="flex justify-between">
                   <span className="text-sm sm:text-lg font-semibold">Total Price:</span>
-                  <span className="font-light text-primary">{price.totalPrice}</span>
+                  <span className="font-light text-primary">Rp. {price.totalPrice}</span>
                 </div>
                 {selectedShipping && (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold">Shipping Fee:</span>
-                    <span className="font-light text-primary">{price.shippingFee}</span>
+                    <span className="font-light text-primary">Rp. {price.shippingFee}</span>
                   </div>
                 )}
                 {price.voucher !== 0 && (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold">Voucher:</span>
-                    <span className="font-light text-primary">- {price.voucher}</span>
+                    <span className="font-light text-primary">- Rp. {price.voucher}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span className="text-lg sm:text-xl font-semibold">Grand Total:</span>
                   <span className="font-light text-primary">
-                    {price.totalPrice + price.shippingFee - price.voucher}
+                    Rp. {price.totalPrice + price.shippingFee - (price.voucher ? price.voucher : 0)}
                   </span>
                 </div>
               </div>
@@ -489,6 +495,7 @@ const CartPage = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
 
   );
