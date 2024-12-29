@@ -18,5 +18,6 @@ export interface ProductCard {
     productSize : string,
     productVariantId : string,
     sku : string
-  }]
+  }],
+  averageRating : string
 }

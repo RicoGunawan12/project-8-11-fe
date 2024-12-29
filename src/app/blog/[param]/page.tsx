@@ -44,7 +44,7 @@ const BlogDetail = () => {
   return (
     <div className="h-screen w-screen bg-gray-50">
       <NavigationBar />
-      <div className="mt-20 h-full">
+      <div className="mt-20 h-full overflow-y-auto">
          <Banner
           text="Blog"
           page={`${data.postBanner}`}

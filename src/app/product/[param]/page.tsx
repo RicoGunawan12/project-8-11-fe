@@ -20,11 +20,11 @@ const ProductDetailPage = () => {
   const [token, setToken] = useState<string | null>(null);
   const [data, setData] = useState<ProductCard>();
   const [variantChosen, setVariantChosen] = useState(0);
-  const [activeTab, setActiveTab] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [ratingData, setRatingData] = useState<Rating[]>([])
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
+  const [buyVariant, setBuyVariant] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +52,7 @@ const ProductDetailPage = () => {
         throw new Error(ratingData.message);
       }
 
-      console.log(ratingData)
+      console.log(data)
       setData(data);
       setRatingData(ratingData.ratings); // Set fetched rating
       const clientToken = getTokenCookie();
@@ -172,9 +172,8 @@ const ProductDetailPage = () => {
                 width={150}
                 height={150}
                 alt="Not Found"
-                className={`border-2 w-3/4 h-full object-contain ${
-                  variantChosen === idx ? "border-secondary" : "border-transparent"
-                }`}
+                className={`border-2 w-3/4 h-full object-contain ${variantChosen === idx ? "border-secondary" : "border-transparent"
+                  }`}
               />
             </div>
           ))}
@@ -193,14 +192,38 @@ const ProductDetailPage = () => {
         </div>
 
         {/* Right Column: Product Details */}
-        <div className="w-full justify-center items-center lg:w-2/6 text-black pr-4 md:pr-8 flex flex-col gap-4 pt-4 lg:h-3/4 lg:pt-32">
+        <div className="w-full justify-center overflow-y-auto items-center lg:w-2/6 text-black pr-4 md:pr-8 flex flex-col gap-8 pt-4 lg:h-3/4">
           <div className="w-1/2">
             <h2 className="text-2xl md:text-3xl font-bold border-b-2 pb-2">
               {data?.productName}
             </h2>
             <div className="mt-2 text-lg md:text-xl font-light border-b-2 pb-2">
-              Rp {data?.product_variants[variantChosen].productPrice}
+              Rp {data?.product_variants[buyVariant].productPrice}
             </div>
+            <div>
+              <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
+            </div>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4">
+            {data?.product_variants.map((product, idx) => (
+              <div
+                key={idx}
+                className={`flex justify-center cursor-pointer border-2 px-4 py-2 rounded-md transition-all ${buyVariant === idx ? "border-secondary shadow-lg" : "border-transparent"
+                  }`}
+                onClick={() => setBuyVariant(idx)}
+              >
+                <Image
+                  src={`${process.env.BACK_BASE_URL}${product.productImage}`}
+                  width={120}
+                  height={120}
+                  alt="Not Found"
+                  className="w-8 h-6 object-contain"
+                />
+                {
+                  product.productColor
+                }
+              </div>
+            ))}
           </div>
           <div className="w-1/2">
             <span className="text-sm font-semibold">Quantity: </span>
@@ -221,17 +244,17 @@ const ProductDetailPage = () => {
                 +
               </button>
               <div className="ml-4 font-semibold">
-                {data?.product_variants[variantChosen].productStock === "0" ? (
+                {data?.product_variants[buyVariant].productStock === "0" ? (
                   <span className="text-red-500">Out of Stock</span>
                 ) : (
                   <span className="text-green-400">
-                    In Stock: {data?.product_variants[variantChosen].productStock}
+                    In Stock: {data?.product_variants[buyVariant].productStock}
                   </span>
                 )}
               </div>
             </div>
             <div className=" hidden lg:block font-light text-sm mt-4">
-              Rp. {quantity * Number(data?.product_variants[variantChosen].productPrice)}
+              Rp. {quantity * Number(data?.product_variants[buyVariant].productPrice)}
             </div>
             <Button
               onClick={addToCart}
@@ -240,89 +263,55 @@ const ProductDetailPage = () => {
               Add to Cart
             </Button>
           </div>
+          <div className="w-1/2">
+            <h3 className="text-2xl font-bold mb-4">
+              Product Descriptions
+            </h3>
+            <p>{data?.productDescription}</p>
+          </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="w-full my-12 px-4 flex flex-col items-center">
-        <div className="flex space-x-4 border-b-2 w-1/2">
-          {TABS.map((tab, idx) => (
-            <button
-              key={idx}
-              className={`px-4 py-2 ${
-                activeTab === idx
-                  ? "rounded-t-2xl bg-secondary text-white font-bold"
-                  : "text-black"
-              }`}
-              onClick={() => setActiveTab(idx)}
-            >
-              {tab}
-            </button>
-          ))}
+      <div>
+        <div className="w-1/2 mt-8">
+          <strong>Rating:</strong>
+          <StarRating
+            rating={rating}
+            onRatingChange={setRating} // Update rating
+          />
         </div>
-
-        {/* Tab Content */}
-        <div className="p-4 text-black flex justify-start w-1/2">
-          {(() => {
-            switch (activeTab) {
-              case 0:
-                return (
-                  <div>
-                    <h3 className="text-2xl font-bold mb-4">
-                      Product Descriptions
-                    </h3>
-                    <p>{data?.productDescription}</p>
+        <div className="mt-4">
+          <strong>Comment:</strong>
+          <textarea
+            className="w-full p-2 mt-2 border rounded-lg"
+            placeholder="Write your comment here..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)} // Update comment
+          />
+        </div>
+        <Button
+          onClick={submitRating}
+          className="mt-4 w-full bg-secondary text-white font-semibold text-lg py-2"
+        >
+          Submit Rating
+        </Button>
+        <div className="mt-8">
+          <h4 className="text-xl font-semibold mb-4">All Reviews</h4>
+          {ratingData.length > 0 ? (
+            <div className="max-h-80 overflow-y-auto">
+              {ratingData.map((review, index) => (
+                <div key={index} className="border-b-2 pb-4 mb-4">
+                  <div className="flex items-center">
+                    <StarRating rating={parseInt(review.rating)} />
+                    <span className="ml-2 text-sm text-gray-500">{review.user.fullName}</span>
                   </div>
-                );
-              case 1:
-                return (
-                  <div>
-                    <div className="w-1/2 mt-8">
-                      <strong>Rating:</strong>
-                      <StarRating
-                        rating={rating}
-                        onRatingChange={setRating} // Update rating
-                      />
-                    </div>
-                    <div className="mt-4">
-                      <strong>Comment:</strong>
-                      <textarea
-                        className="w-full p-2 mt-2 border rounded-lg"
-                        placeholder="Write your comment here..."
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)} // Update comment
-                      />
-                    </div>
-                    <Button
-                      onClick={submitRating}
-                      className="mt-4 w-full bg-secondary text-white font-semibold text-lg py-2"
-                    >
-                      Submit Rating
-                    </Button>
-          <div className="mt-8">
-            <h4 className="text-xl font-semibold mb-4">All Reviews</h4>
-            {ratingData.length > 0 ? (
-              <div className="max-h-80 overflow-y-auto">
-                {ratingData.map((review, index) => (
-                  <div key={index} className="border-b-2 pb-4 mb-4">
-                    <div className="flex items-center">
-                      <StarRating rating={parseInt(review.rating)} />
-                      <span className="ml-2 text-sm text-gray-500">{review.user.fullName}</span>
-                    </div>
-                    <p className="text-sm text-gray-700">{review.comment}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>No reviews yet.</p>
-            )}
-          </div>
-                  </div>
-                );
-              default:
-                return <div>Tab content not found.</div>;
-            }
-          })()}
+                  <p className="text-sm text-gray-700">{review.comment}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No reviews yet.</p>
+          )}
         </div>
       </div>
       <Footer />

@@ -37,7 +37,7 @@ const Footer = () => {
               <Link href={"/contact"} className="hover:text-primary">Contact</Link>
             </div>
           </div>
-          <div>
+          <div className="text-sm">
             <h1 className="mb-6 text-xl font-semibold">SUPPORT</h1>
             <div className="flex flex-col gap-y-1">
               <Link href={"/faq"} className="hover:text-primary">FAQ</Link>
