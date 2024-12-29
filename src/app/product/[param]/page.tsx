@@ -79,6 +79,16 @@ const ProductDetailPage = () => {
           (item: any) => item.productVariantId === payload.productVariantId
         );
 
+        const promo_details = data?.promo_details[0]?.promo
+          ? [
+            {
+              promo: {
+                promoAmount: data.promo_details[0].promo.promoAmount,
+              },
+            },
+          ]
+          : [];
+
         const fullVariantData = {
           cartItemId: "",
           productVariantId:
@@ -90,6 +100,7 @@ const ProductDetailPage = () => {
               productName: data?.productName,
             },
           },
+          promo_details: promo_details
         };
 
         if (existingItemIndex !== -1) {
@@ -175,26 +186,28 @@ const ProductDetailPage = () => {
           </div>
 
           {/* Variant Thumbnails */}
-          <div className="w-full lg:w-3/4 h-auto text-black overflow-y-auto py-4 flex flex-wrap justify-center items-center gap-4 border-b-2">
-            {data?.product_variants.map((product, idx) => (
-              <div
-                key={idx}
-                className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${variantChosen === idx
-                  ? "border-secondary shadow-md"
-                  : "border-gray-300"
-                  }`}
-                onClick={() => setVariantChosen(idx)}
-              >
-                <Image
-                  src={`${process.env.BACK_BASE_URL}${product.productImage || "/placeholder.png"}`}
-                  width={100}
-                  height={100}
-                  alt="Variant Image"
-                  className="object-contain w-full h-full"
-                />
-              </div>
-            ))}
+          <div className="w-full lg:w-2/3 h-auto text-black overflow-x-auto py-4 flex gap-4 border-b-2">
+            <div className="flex flex-nowrap justify-start items-center gap-4">
+              {data?.product_variants.map((product, idx) => (
+                <div
+                  key={idx}
+                  className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${variantChosen === idx ? "border-secondary shadow-md" : "border-gray-300"
+                    }`}
+                  onClick={() => setVariantChosen(idx)}
+                >
+                  <Image
+                    src={`${process.env.BACK_BASE_URL}${product.productImage || "/placeholder.png"}`}
+                    width={150}
+                    height={150}
+                    alt="Variant Image"
+                    className="object-contain w-full h-full"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
+
+
         </div>
 
 
@@ -205,23 +218,23 @@ const ProductDetailPage = () => {
               {data?.productName}
             </h2>
             <div className="mt-2 text-lg md:text-xl font-light border-b-2 pb-2">
-                                  {
-                        data.promo_details[0]? 
-                        <div>
-                          <span className="line-through mr-2 text-gray-600">Rp. {data.product_variants[buyVariant].productPrice}</span>
-                          <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount}</span>
-                        </div>
-                        :
-                        <div >
-                        Rp. {data.product_variants[buyVariant].productPrice}
-                        </div>
-                      }
+              {
+                data.promo_details[0] ?
+                  <div>
+                    <span className="line-through mr-2 text-gray-600">Rp. {data.product_variants[buyVariant].productPrice}</span>
+                    <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0}</span>
+                  </div>
+                  :
+                  <div >
+                    Rp. {data.product_variants[buyVariant].productPrice}
+                  </div>
+              }
             </div>
             <div>
               <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
             </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap w-1/2 gap-4">
             {data?.product_variants.map((product, idx) => (
               <div
                 key={idx}
@@ -271,7 +284,7 @@ const ProductDetailPage = () => {
               </div>
             </div>
             <div className=" hidden lg:block font-light text-sm mt-4">
-              Rp. {quantity * ( data.promo_details[0] ? Number(data?.product_variants[buyVariant].productPrice)  - data.promo_details[0].promo.promoAmount : Number(data?.product_variants[buyVariant].productPrice))}
+              Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
             </div>
             <Button
               onClick={addToCart}
@@ -282,7 +295,7 @@ const ProductDetailPage = () => {
           </div>
           <div className="w-1/2">
             <h3 className="text-2xl font-bold mb-4">
-              Product Descriptions
+              Descriptions
             </h3>
             <p>Size: {data?.productSize} mL</p>
             <p>{data?.productDescription}</p>
@@ -315,7 +328,7 @@ const ProductDetailPage = () => {
         </div>
 
         <div className=" w-1/2 mt-8">
-          <h4 className="text-xl font-semibold mb-4">All Reviews</h4>
+          <h4 className="text-xl font-semibold mb-4">What Customers are Saying:</h4>
           {ratingData.length > 0 ? (
             <div className="max-h-80 overflow-y-auto">
               {ratingData.map((review, index) => (
@@ -329,7 +342,7 @@ const ProductDetailPage = () => {
               ))}
             </div>
           ) : (
-            <p>No reviews yet.</p>
+            <p className="pb-4 mb-4">No reviews yet.</p>
           )}
         </div>
       </div>
@@ -341,7 +354,7 @@ const ProductDetailPage = () => {
         >
           <span>Add to Cart</span>
           <span>
-          Rp. {quantity * ( data.promo_details[0] ? Number(data?.product_variants[buyVariant].productPrice)  - data.promo_details[0].promo.promoAmount : Number(data?.product_variants[buyVariant].productPrice))}
+            Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
           </span>
         </button>
       </div>

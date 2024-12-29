@@ -93,7 +93,7 @@ const CartPage = () => {
       if (!Array.isArray(cartData) || cartData.length === 0) {
         return;
       }
-
+      console.log(cartData)
       setData(cartData);
       setQuantities(
         cartData?.reduce((acc: { [key: string]: number }, item: Cart) => {
@@ -304,8 +304,17 @@ const CartPage = () => {
                     </p>
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
-                    Rp.{" "}
-                    {item.product_variant.productPrice * quantities[item.productVariantId]}
+                  {
+                        item.promo_details[0]? 
+                        <div>
+                          <span className="line-through mr-2 text-gray-600">Rp. {item.product_variant.productPrice}</span>
+                          <span className="font-semibold">Rp. {item.product_variant.productPrice - item.promo_details[0].promo.promoAmount  > 0 ? item.product_variant.productPrice - item.promo_details[0].promo.promoAmount : 0}</span>
+                        </div>
+                        :
+                        <div >
+                        Rp. {item.product_variant.productPrice}
+                        </div>
+                      }
                   </div>
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
                     <button

@@ -2,7 +2,14 @@ export interface Cart{
     cartItemId: string;
     productVariantId: string;
     product_variant: ProductVariant;
-    quantity : number
+    quantity : number,
+    promo_details:[
+        {
+            promo:{
+                promoAmount : number
+            }
+        }
+    ]
 }
 
 interface ProductVariant {

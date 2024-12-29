@@ -239,7 +239,7 @@ const OurProductSection = () => {
                         product.promo_details[0]? 
                         <div>
                           <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0].productPrice}</span>
-                          <span className="font-semibold">Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo.promoAmount}</span>
+                          <span className="font-semibold">Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo.promoAmount > 0 ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo.promoAmount : 0}</span>
                         </div>
                         :
                         <div >
