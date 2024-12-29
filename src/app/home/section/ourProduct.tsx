@@ -55,17 +55,17 @@ const OurProductSection = () => {
       <div className=" text-3xl font-bold text-black">Our Product</div>
 
       {/* Category Tabs */}
-      <div className="mt-8 w-full px-10 flex flex-row md:flex-col">
+      <div className="mt-8 w-full px-10 flex flex-col">
         <div className="md:w-full flex justify-center">
           <div 
-            className="flex flex-col md:flex-row gap-8 mb-10 pb-4 overflow-x-auto mx-2 md:mx-8"
+            className="flex flex-row gap-8 mb-10 pb-4 overflow-x-auto mx-2 md:mx-8"
             style={{
               scrollbarWidth: "thin", // For Firefox
               scrollbarColor: "gray transparent", // For Firefox
             }}
           >
             {/* Category Dummy Data */}
-            {/* <button
+            <button
               key={1}
               onClick={() => setActiveCategoryId("1")}
               className={`text-xs md:text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === "1"
@@ -114,7 +114,7 @@ const OurProductSection = () => {
                 }`}
             >
               {"Category 5"}
-            </button> */}
+            </button>
 
             {/* Category Real Data */}
             {products.map((category) => (
@@ -133,7 +133,7 @@ const OurProductSection = () => {
         </div>
 
         {/* Our Product dummy data */}
-        {/* <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16 ml-3 md:ml-0">
+        <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16 ml-3 md:ml-0">
           <Link key={`1`} href={`/product/1`}>
             <div>
               <Image
@@ -217,10 +217,10 @@ const OurProductSection = () => {
               <p className="text-sm text-black w-full text-center">Rp. {100000}</p>
             </div>
           </Link>
-        </div> */}
+        </div>
 
         {/* Products of the active category */}
-        {activeCategory ? (
+        {/* {activeCategory ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16">
               {activeCategory.products.map((product: ProductCard) => (
@@ -242,7 +242,7 @@ const OurProductSection = () => {
           </>
         ) : (
           <div className="text-gray-500">No products available in this category</div>
-        )}
+        )} */}
       </div>
     </div>
   );
