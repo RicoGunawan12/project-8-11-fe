@@ -272,7 +272,7 @@ const ProductDetailPage = () => {
         </div>
       </div>
 
-      <div>
+      <div className="w-full flex flex-col items-center text-black justify-center">
         <div className="w-1/2 mt-8">
           <strong>Rating:</strong>
           <StarRating
@@ -280,22 +280,23 @@ const ProductDetailPage = () => {
             onRatingChange={setRating} // Update rating
           />
         </div>
-        <div className="mt-4">
+        <div className="w-1/2 mt-4">
           <strong>Comment:</strong>
           <textarea
-            className="w-full p-2 mt-2 border rounded-lg"
+            className="w-full p-2 mt-2 border rounded-lg text-black"
             placeholder="Write your comment here..."
             value={comment}
             onChange={(e) => setComment(e.target.value)} // Update comment
           />
-        </div>
-        <Button
+                  <Button
           onClick={submitRating}
           className="mt-4 w-full bg-secondary text-white font-semibold text-lg py-2"
         >
           Submit Rating
         </Button>
-        <div className="mt-8">
+        </div>
+
+        <div className=" w-1/2 mt-8">
           <h4 className="text-xl font-semibold mb-4">All Reviews</h4>
           {ratingData.length > 0 ? (
             <div className="max-h-80 overflow-y-auto">
