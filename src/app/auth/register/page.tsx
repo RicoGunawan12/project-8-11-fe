@@ -84,7 +84,7 @@ const RegisterPage = () => {
           />
         </button>
       </div>
-      <div className="shadow-2xl w-fit flex border rounded-2xl">
+      <div className="shadow-2xl w-fit flex justify-center border rounded-2xl">
         <div className="hidden md:flex w-1/2 h-full">
           <Image
             alt="Card background"
@@ -94,7 +94,7 @@ const RegisterPage = () => {
             height={220}
           />
         </div>
-        <div className="w-full md:w-1/2 rounded-r-2xl p-24 text-black ">
+        <div className="w-full md:w-1/2 rounded-r-2xl p-12 md:p-24 text-black justify-center">
           <div className="text-4xl font-bold text-center">
             REGISTER
           </div>
