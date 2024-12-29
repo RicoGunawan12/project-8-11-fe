@@ -66,11 +66,12 @@ const Footer = () => {
                   alt={`${contact.contact}`}
                   width={24}
                   height={24}
-                  className="filter grayscale brightness-150 hover:brightness-100 transition-all"
+                  className="filter invert brightness-0"
                 />
               </a>
             ))}
           </div>
+
         </div>
       </div>
 

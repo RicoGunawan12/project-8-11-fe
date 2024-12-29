@@ -415,7 +415,17 @@ const NavigationBar = () => {
                         />
                         <div className="flex flex-col">
                           <span>{product.productName}</span>
-                          <span>Rp. {product.product_variants[0].productPrice}</span>
+                          {
+                        product.promo_details[0]? 
+                        <div className="flex justify-start">
+                          <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0].productPrice}</span>
+                          <span className="font-semibold">Rp. {product.product_variants[0].productPrice - product.promo_details[0].promo.promoAmount > 0 ? product.product_variants[0].productPrice - product.promo_details[0].promo.promoAmount : 0}</span>
+                        </div>
+                        :
+                        <div >
+                        Rp. {product.product_variants[0].productPrice}
+                        </div>
+                      }
                         </div>
                       </Link>
                     </li>

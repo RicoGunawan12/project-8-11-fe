@@ -172,7 +172,7 @@ const ProductDetailPage = () => {
       <div className="px-4 flex flex-col lg:flex-row lg:h-full items-start md:items-center space-y-8 md:space-y-0">
 
         {/* Center Column: Selected Product */}
-        <div className="w-full py-6 lg:w-3/6 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
+        <div className="w-full py-6 lg:w-1/2 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
           {/* Main Product Image */}
           <div className="w-full flex justify-center items-center mb-6">
             <Image
@@ -181,12 +181,12 @@ const ProductDetailPage = () => {
               height={400}
               style={{ objectFit: "contain" }}
               alt="Product Image"
-              className="border-2 rounded-lg w-3/4 lg:w-1/2 aspect-square"
+              className="border-2 rounded-lg w-3/4 lg:w-3/5 aspect-square"
             />
           </div>
 
           {/* Variant Thumbnails */}
-          <div className="w-full lg:w-2/3 h-auto text-black overflow-x-auto py-4 flex gap-4 border-b-2">
+          <div className="w-full lg:w-3/4 h-auto text-black overflow-x-auto py-4 flex gap-4 border-b-2">
             <div className="flex flex-nowrap justify-start items-center gap-4">
               {data?.product_variants.map((product, idx) => (
                 <div
@@ -212,8 +212,8 @@ const ProductDetailPage = () => {
 
 
         {/* Right Column: Product Details */}
-        <div className="w-full justify-center overflow-y-auto items-center lg:w-1/2 text-black pr-4 md:pr-8 flex flex-col gap-8 pt-4 lg:h-3/4">
-          <div className="w-1/2">
+        <div className="w-full justify-center overflow-y-auto items-start lg:w-1/2 text-black pr-4 md:pr-16 flex flex-col gap-8 lg:pt-48 lg:h-4/5">
+          <div className="w-3/4">
             <h2 className="text-2xl md:text-3xl font-bold border-b-2 pb-2">
               {data?.productName}
             </h2>
@@ -234,11 +234,11 @@ const ProductDetailPage = () => {
               <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
             </div>
           </div>
-          <div className="flex flex-wrap w-1/2 gap-4">
+          <div className="flex flex-wrap w-3/4 gap-4">
             {data?.product_variants.map((product, idx) => (
               <div
                 key={idx}
-                className={`flex justify-center cursor-pointer border-2 px-4 py-2 rounded-md transition-all ${buyVariant === idx ? "border-secondary shadow-lg" : "border-transparent"
+                className={`flex justify-center cursor-pointer border-2 px-4 py-2 rounded-md transition-all ${buyVariant === idx ? "border-secondary shadow-lg" : ""
                   }`}
                 onClick={() => setBuyVariant(idx)}
               >
@@ -255,7 +255,7 @@ const ProductDetailPage = () => {
               </div>
             ))}
           </div>
-          <div className="w-1/2">
+          <div className="w-3/4">
             <span className="text-sm font-semibold">Quantity: </span>
             <div className="flex items-center mt-2">
               <button
@@ -293,7 +293,7 @@ const ProductDetailPage = () => {
               Add to Cart
             </Button>
           </div>
-          <div className="w-1/2">
+          <div className="w-3/4">
             <h3 className="text-2xl font-bold mb-4">
               Descriptions
             </h3>
@@ -350,13 +350,18 @@ const ProductDetailPage = () => {
       <div className="lg:hidden w-full p-2 bg-secondary flex justify-around">
         <button
           onClick={addToCart}
-          className="bg-white rounded-xl text-secondary flex justify-between font-semibold text-lg px-6 py-2 w-1/2"
+          className={`bg-white rounded-xl text-secondary flex justify-between font-semibold text-lg px-6 py-2 w-1/2 ${data?.product_variants[buyVariant].productStock === "0" ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          disabled={data?.product_variants[buyVariant].productStock === "0"}
         >
           <span>Add to Cart</span>
           <span>
             Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
           </span>
+          {data?.product_variants[buyVariant].productStock === "0" && (
+            <span className="text-red-500 ml-2">Out of Stock</span>
+          )}
         </button>
+
       </div>
     </div>
   );
