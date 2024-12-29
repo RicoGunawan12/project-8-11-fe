@@ -5,7 +5,12 @@ import Image from "next/image";
 import { Contact } from "../model/contact";
 import { toastError } from "../utilities/toast";
 
-const Footer = () => {
+// Define the type for the component props, including className as an optional prop
+interface FooterProps {
+  className?: string;
+}
+
+const Footer: React.FC<FooterProps> = ({ className = "" }) => {
   const [contacts, setContacts] = useState<Contact[]>();
 
   useEffect(() => {
@@ -26,7 +31,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <div className="w-full bg-secondary text-white pt-12">
+    <div className={`w-full bg-secondary text-white pt-12 ${className}`}>
       <div className="flex flex-col lg:flex-row w-full justify-between px-6 lg:px-12">
         <div className="flex flex-col lg:flex-row w-full lg:w-3/4 gap-6 lg:gap-12 px-6">
           <div className="text-sm">
@@ -54,7 +59,7 @@ const Footer = () => {
           </div>
           <div className="flex gap-4 mt-6 justify-center lg:justify-start">
             {/* Social Media Icons */}
-            {contacts?.map((contact, idx) => (
+            {contacts?.map((contact) => (
               <a
                 key={contact.contactId}
                 href={`${contact.contactAccount}`}
@@ -71,7 +76,6 @@ const Footer = () => {
               </a>
             ))}
           </div>
-
         </div>
       </div>
 
