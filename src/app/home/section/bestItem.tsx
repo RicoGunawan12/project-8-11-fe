@@ -59,18 +59,17 @@ const BestItem = () => {
       </div>
 
       {/* Image Section */}
-      <div className="w-full lg:w-2/5 flex justify-center lg:justify-start my-6 lg:mt-0">
+      <div className="w-full lg:w-2/5 flex justify-center lg:justify-start lg:mt-0">
         <Image
           src={`${process.env.BACK_BASE_URL}${page[0]?.[locale]?.[2]?.photo}`}
           width={550}
           height={550}
           alt="logo pic"
-          className="rounded-tl-banner w-[90%] max-w-[350px] lg:max-w-[550px] h-4/5"
+          className="rounded-tl-banner w-[90%] max-w-[350px] lg:max-w-[550px] h-[95%%]"
         />
       </div>
 
       {/* Stats Section */}
-
       <div className="flex lg:hidden bg-white text-black lg:w-fit shadow-2xl justify-between rounded-lg py-3 px-12 mt-6">
           <div className="border-r-2 pr-2 lg:pr-6 my-4 lg:my-6 border-black flex flex-col items-center">
             <div className="text-sm lg:text-3xl font-semibold">{page && page[0]?.[locale]?.[2]?.bestNumber1 || ""}</div>
