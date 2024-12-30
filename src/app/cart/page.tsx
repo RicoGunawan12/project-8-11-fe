@@ -77,7 +77,7 @@ const CartPage = () => {
         );
         setAddress(addressData);
         
-        const cartTotal = data.reduce((total, item) => total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * item.quantity, 0);
+        const cartTotal = data.reduce((total, item) => total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * item.quantity, 0);
         setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
@@ -110,7 +110,7 @@ const CartPage = () => {
     const cartTotal = data.reduce((total, item) => {
       const quantity = quantities[item.productVariantId] || 1;
       if (item.product_variant.product.promo_details[0]?.promo) {
-        return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
+        return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
       }
       else {
         return total + item.product_variant.productPrice * quantity;
@@ -135,7 +135,7 @@ const CartPage = () => {
       const quantity = quantities[item.productVariantId] || 1;
       totalWeight += item.product_variant.product.productWeight * quantity;
       if (item.product_variant.product.promo_details[0]?.promo) {
-        return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
+        return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
       }
       else {
         return total + item.product_variant.productPrice * quantity;
