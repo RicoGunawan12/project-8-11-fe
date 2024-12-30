@@ -46,7 +46,7 @@ const BlogDetail = () => {
       <NavigationBar />
       <div className="mt-20 h-full overflow-y-auto">
          <Banner
-          text="Blog"
+          text=""
           page={`${data.postBanner}`}
         />
 

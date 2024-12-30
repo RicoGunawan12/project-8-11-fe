@@ -52,7 +52,7 @@ const OurProductSection = () => {
   );
 
   return (
-    <div className="w-screen flex flex-col items-center py-20">
+    <div className="w-screen flex flex-col items-center pb-20 pt-10">
       <div className=" text-3xl font-bold text-black">Our Product</div>
 
       {/* Category Tabs */}

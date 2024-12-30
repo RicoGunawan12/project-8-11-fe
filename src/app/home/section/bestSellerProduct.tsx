@@ -116,7 +116,7 @@ const BestSellerProduct = () => {
   }
 
   return (
-    <div className="relative flex w-full h-auto lg:h-screen bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-10">
+    <div className="relative flex w-full h-auto my-10 lg:h-[80vh] bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-2">
       {/* Fade effect container */}
       <div className="relative w-full">
         <div className="w-full h-full z-10 sm:w-3/5 lg:w-2/5 text-center sm:text-left sm:absolute lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
