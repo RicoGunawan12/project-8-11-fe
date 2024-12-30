@@ -15,7 +15,7 @@ const HomePage = () => {
       <NavigationBar />
       <Banner/>
       <NewCollection/>
-      <BestItem/>
+      {/* <BestItem/> */}
       <BestSellerProduct/>
       <OurProductSection/>
       <Footer/>

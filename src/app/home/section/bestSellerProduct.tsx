@@ -7,14 +7,14 @@ import { toastError } from "@/app/utilities/toast";
 import Link from "next/link";
 import { useLocaleStore } from "@/app/component/locale";
 import Page from "@/app/model/pageModel";
-import { Spinner } from "@nextui-org/react";
-import {Loading} from "@/app/utilities/loading";
+import { Loading } from "@/app/utilities/loading";
 
 const BestSellerProduct = () => {
   const [products, setProducts] = useState<ExploreProduct[]>();
   const [page, setPages] = useState<Page[]>();
   const [lastDivisionResult, setLastDivisionResult] = useState<number>();
   const { locale, change } = useLocaleStore();
+  const [flag, setFlag ] = useState(false)
 
   useEffect(() => {
     const handleScrollAnimation = () => {
@@ -25,7 +25,7 @@ const BestSellerProduct = () => {
 
       const productsCompLeftPoint = bestSellerProductsComponent.scrollLeft; 
       const descriptionCompWidth = bestSellerDescriptionComponent.clientWidth;
-      
+
       let percentageCovered = productsCompLeftPoint / descriptionCompWidth * 100;
       console.log(productsCompLeftPoint, descriptionCompWidth, percentageCovered);
 
@@ -63,7 +63,7 @@ const BestSellerProduct = () => {
           "opacity-5",
           "opacity-0"
         );
-        
+
         bestSellerDescriptionComponent.classList.add(printedClass);
 
         if (printedToClass === 100) {
@@ -74,7 +74,7 @@ const BestSellerProduct = () => {
       }
     }
 
-    
+
     const bestSellerDescriptionComponent = document.querySelector('#best-seller-desc');
     bestSellerDescriptionComponent?.classList.add('opacity-100');
 
@@ -84,7 +84,7 @@ const BestSellerProduct = () => {
     return () => {
       bestSellerProductsComponent?.removeEventListener('scroll', handleScrollAnimation);
     }
-  }, []);
+  }, [flag]);
 
   useEffect(() => {
     try {
@@ -94,7 +94,6 @@ const BestSellerProduct = () => {
         });
 
         const result = await req.json();
-        console.log(result.bestSellerProduct)
         setProducts(result.bestSellerProduct);
 
         const reqs = await fetch(`${process.env.PAGES}`, {
@@ -103,6 +102,7 @@ const BestSellerProduct = () => {
 
         const res = await reqs.json();
         setPages(res.pages);
+        setFlag(true)
       };
 
       fetchData();
@@ -111,7 +111,7 @@ const BestSellerProduct = () => {
     }
   }, []);
 
-  if(!page){
+  if(!flag){
     return <Loading/>
   }
 
@@ -119,34 +119,35 @@ const BestSellerProduct = () => {
     <div className="relative flex w-full h-auto lg:h-screen bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-10">
       {/* Fade effect container */}
       <div className="relative w-full">
-        <div className="w-full h-full sm:w-3/5 lg:w-2/5 text-center sm:text-left sm:absolute lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
+        <div className="w-full h-full z-10 sm:w-3/5 lg:w-2/5 text-center sm:text-left sm:absolute lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
           <div className="text-white text-3xl sm:text-4xl font-bold">
-            {(page && page[0]?.[locale]?.[3]?.title) || ""}
+            {(page && page[0]?.[locale]?.[3]?.title) || "Loading"}
           </div>
           <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
-            {(page && page[0]?.[locale]?.[3]?.content) || ""}
+            {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
           </div>
           <div className="border-white text-white border w-fit py-4 px-8 text-lg mt-4 mx-auto sm:mx-0">
             <Link href="/product">View More</Link>
           </div>
         </div>
-        
-        <div className="flex flex-col lg:flex-row gap-6 items-center overflow-x-auto pl-4 lg:pl-12 pr-4 lg:pr-12" id="best-seller-products">
+
+        <div className="flex flex-col z-10 lg:flex-row gap-6 items-center overflow-x-auto pl-4 lg:pl-12 pr-4 lg:pr-12" id="best-seller-products">
           {/* Content container */}
           <div className="w-full sm:w-3/5 lg:w-2/5 text-center sm:text-left opacity-0">
             <div className="text-white text-3xl sm:text-4xl font-bold">
-              {(page && page[0]?.[locale]?.[3]?.title) || ""}
+              {(page && page[0]?.[locale]?.[3]?.title) || "Loading"}
             </div>
             <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
-              {(page && page[0]?.[locale]?.[3]?.content) || ""}
+              {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
             </div>
             <div className="border-white text-white border w-fit py-4 px-8 text-lg mt-4 mx-auto sm:mx-0">
+              <button>click here</button>
               <Link href="/product">View More</Link>
             </div>
           </div>
 
           {/* Product display */}
-          <div className="w-full lg:w-3/5 flex flex-wrap lg:flex-nowrap justify-center lg:justify-start gap-6 lg:gap-12">
+          <div className="w-full lg:w-3/5 z-20 flex flex-wrap lg:flex-nowrap justify-center lg:justify-start gap-6 lg:gap-12">
               {products?.map((product, idx) => (
                 <Link
                   key={idx}
@@ -158,7 +159,7 @@ const BestSellerProduct = () => {
                     width={400}
                     height={550}
                     alt="logo pic"
-                    className="w-full h-[300px] object-contain"
+                    className="w-full h-[300px] object-cover"
                   />
                   <div className="bg-white py-6 px-10">
                     {/* <div className="text-black">{renderStars(product.)}</div> */}
@@ -166,17 +167,7 @@ const BestSellerProduct = () => {
                       {product.productName}
                     </div>
                     <div className="text-black">
-                      {
-                        product.promo_details[0]? 
-                        <div>
-                          <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0].productPrice}</span>
-                          <span className="font-semibold">Rp. {product.product_variants[0].productPrice - product.promo_details[0].promo.promoAmount > 0 ? product.product_variants[0].productPrice - product.promo_details[0].promo.promoAmount : 0}</span>
-                        </div>
-                        :
-                        <div >
-                        Rp. {product.product_variants[0].productPrice}
-                        </div>
-                      }
+                      Rp. {product.product_variants[0].productPrice}
                     </div>
                     {/* <div className="text-black flex gap-2">
                   </div> */}
