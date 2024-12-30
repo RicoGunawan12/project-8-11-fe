@@ -76,7 +76,8 @@ const CartPage = () => {
           }, {})
         );
         setAddress(addressData);
-        const cartTotal = data.reduce((total, item) => total + item.product_variant.productPrice * item.quantity, 0);
+        
+        const cartTotal = data.reduce((total, item) => total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * item.quantity, 0);
         setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
@@ -108,7 +109,7 @@ const CartPage = () => {
   const recalculateTotalPrice = () => {
     const cartTotal = data.reduce((total, item) => {
       const quantity = quantities[item.productVariantId] || 1;
-      return total + item.product_variant.productPrice * quantity;
+      return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
     }, 0);
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
   }
@@ -128,8 +129,13 @@ const CartPage = () => {
       
       const quantity = quantities[item.productVariantId] || 1;
       totalWeight += item.product_variant.product.productWeight * quantity;
-      return total + item.product_variant.productPrice * quantity;
+      return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
     }, 0);
+
+    var literalTotal = 0;
+    data.forEach((item) => {
+      literalTotal += item.product_variant.productPrice
+    })
 
     const response = await fetch(`${process.env.ADDRESS}`, {
       method: "GET",
@@ -144,7 +150,7 @@ const CartPage = () => {
     console.log(chosenAddress.komshipAddressId)
     console.log(totalWeight)
 
-    const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${cartTotal}`;
+    const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${literalTotal}`;
     console.log(url)
     try {
       const response = await fetch(url, {
@@ -263,6 +269,11 @@ const CartPage = () => {
       setUpdate(!update);
       toastSuccess("Item removed")
     } else {
+      console.log(result);
+      
+      if (result.status === 401) {
+        router.push("/login");
+      }
       toastError(result.message || "Something went wrong")
     }
   }

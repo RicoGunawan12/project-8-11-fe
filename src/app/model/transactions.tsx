@@ -85,6 +85,7 @@ export interface Transaction {
   userId: string;
   user: User;
   voucherId: string | null;
+  paymentLink: string
 }
 
 export interface Payment {

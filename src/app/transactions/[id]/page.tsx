@@ -44,7 +44,8 @@ const TransactionPage = () => {
         }
 
         const data = await response.json();
-
+        console.log(data);
+        
         setTransaction(data.transaction);
       } catch (err: any) {
         setError("Error fetching data: " + err.message);
@@ -100,7 +101,7 @@ const TransactionPage = () => {
                       <button
                         onClick={() =>
                           router.push(
-                            `/payment/${transaction?.paymentMethod}/${transaction?.transactionId}`
+                            `${transaction.paymentLink}`
                           )
                         }
                         className="text-sm font-semibold bg-secondary p-2 flex justify-center text-white rounded-lg"
