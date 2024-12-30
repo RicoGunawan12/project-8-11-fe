@@ -206,7 +206,7 @@ const CartPage = () => {
           paymentMethod: paymentMethod,
           expedition: selectedShipping?.shipping_name,
           shippingType: selectedShipping?.service_name,
-          deliveryFee: selectedShipping?.grandtotal,
+          deliveryFee: selectedShipping?.shipping_cost,
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
           voucherCode: voucherCode
