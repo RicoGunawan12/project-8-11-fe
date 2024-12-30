@@ -112,6 +112,24 @@ const ProfilePage = () => {
     setActiveAddress(activeAddress === addressId ? null : addressId);
   };
 
+  const handleDeleteAddress = async (addressId: string) => {
+    try {
+      const response = await fetch(`${process.env.ADDRESS}/${addressId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${clientToken}`,
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      
+    }
+  }
+
   return (
     <div className="w-screen h-screen bg-white text-black flex flex-col">
       <NavigationBar />
@@ -229,7 +247,8 @@ const ProfilePage = () => {
                                 <span>
                                   {address.addressCity} - {address.addressDetail}
                                 </span>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-sm flex gap-6 text-gray-500">
+                                  <div className="text-red-500 hover:text-red-600 hover:font-semibold transition" onClick={() => handleDeleteAddress(address.addressId)}>Delete</div>
                                   {activeAddress === address.addressId
                                     ? "Hide"
                                     : "Show"}

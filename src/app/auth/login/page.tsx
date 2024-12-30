@@ -14,6 +14,7 @@ const LoginPage = () => {
   const router = useRouter()
   const [errors, setErrors] = useState<Array<ErrorMessage>>([]);
   const [customErr, setCustomErr] = useState('')
+  const [loading, setLoading] = useState(false)
   const [userPayload, setUserPayload] = useState<UserLogin>({
     email: "",
     password: ""
@@ -31,6 +32,7 @@ const LoginPage = () => {
   };
 
   const login = async () => {
+    setLoading(true);
     try {
       const response = await fetch(`${process.env.USER_LOGIN}`, {
         method: "POST",
@@ -78,6 +80,7 @@ const LoginPage = () => {
       setCustomErr(error.message)
       toastError(error.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -128,7 +131,7 @@ const LoginPage = () => {
             <p hidden={!errors?.find(e => e.path === 'password')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'password')?.msg}</p>
           </div>
           <div className="flex justify-center mt-6 w-full flex-col">
-            <Button onClick={login} className="w-full px-12 py-6 bg-secondary text-white font-semibold text-sm">Login</Button>
+            <Button isLoading={loading} onClick={login} className="w-full px-12 py-6 bg-secondary text-white font-semibold text-sm">Login</Button>
             <p hidden={!(customErr.length >= 1)} className="text-red-500 mt-2 text-center text-sm">{customErr}</p>
           </div>
           <div className="text-sm mt-3">

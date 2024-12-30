@@ -9,6 +9,7 @@ interface PageContent{
     bestTitle1 ?: string
     bestTitle2 ?: string
     bestTitle3 ?: string
+    photo ?: string
 }
 
 export default interface Page{

@@ -10,6 +10,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState<UserData>({
     fullName: "",
     email: "",
+    phone: ""
   });
   const [totalTransaction, setTotalTransaction] = useState<Transaction[]>([]);
   const [addressData, setAddressData] = useState<any[]>([]); // State for address data

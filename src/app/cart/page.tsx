@@ -274,7 +274,7 @@ const CartPage = () => {
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col text-black">
       <NavigationBar />
-      <div className="flex flex-col flex-grow lg:flex-row gap-8 px-4 mt-24 sm:px-6 lg:px-8">
+      <div className="flex flex-col flex-grow lg:flex-row gap-8 px-4 mt-24 sm:px-6 lg:px-8 min-h-[80vh] mb-[50px]">
         {/* Shopping Bag Section */}
         {
           loading ? <LoadingOverlay/> : null
