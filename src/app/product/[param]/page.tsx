@@ -67,7 +67,7 @@ const ProductDetailPage = () => {
     try {
       const payload = {
         productVariantId:
-          data?.product_variants[variantChosen].productVariantId,
+          data?.product_variants[buyVariant].productVariantId,
         quantity: quantity,
       };
 
@@ -92,10 +92,10 @@ const ProductDetailPage = () => {
         const fullVariantData = {
           cartItemId: "",
           productVariantId:
-            data?.product_variants[variantChosen].productVariantId,
+            data?.product_variants[buyVariant].productVariantId,
           quantity: payload.quantity,
           product_variant: {
-            ...data?.product_variants[variantChosen],
+            ...data?.product_variants[buyVariant],
             product: {
               productName: data?.productName,
               promo_details: promo_details
