@@ -61,7 +61,7 @@ const BestItem = () => {
       {/* Image Section */}
       <div className="w-full lg:w-2/5 flex justify-center lg:justify-start my-6 lg:mt-0">
         <Image
-          src="/a.jpg"
+          src={`${process.env.BACK_BASE_URL}${page[0]?.[locale]?.[2]?.photo}`}
           width={550}
           height={550}
           alt="logo pic"
