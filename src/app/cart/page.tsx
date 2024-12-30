@@ -300,6 +300,74 @@ const CartPage = () => {
     }
   }
 
+  const handleMinusCartDb = async (item: Cart) => {
+    setLoading(true);
+    const url = new URL(`${process.env.CART}/${item.cartItemId}`);
+    const body = {
+      quantity: Math.max(quantities[item.productVariantId] - 1, 1)
+    }
+    const result = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${clientToken}`
+      },
+      body: JSON.stringify(body)
+    })
+
+    const resp = await result.json()
+
+    if (result.ok) {
+      
+    } else {
+      console.log(result);
+      
+      if (result.status === 401) {
+        router.push("/login");
+      }
+      toastError(resp.message || "Something went wrong")
+    }
+    
+
+    recalculateTotalPrice()
+    setLoading(false);
+  }
+
+  const handlePlusCartDb = async (item: Cart) => {
+    setLoading(true);
+    const url = new URL(`${process.env.CART}/${item.cartItemId}`);
+    const body = {
+      quantity: quantities[item.productVariantId] + 1
+    }
+    const result = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${clientToken}`
+      },
+      body: JSON.stringify(body)
+    })
+
+    const resp = await result.json()
+
+    if (result.ok) {
+      setQuantities(prevQuantities => ({
+        ...prevQuantities,
+        [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
+      }));
+    } else {
+      console.log(result);
+      
+      if (result.status === 401) {
+        router.push("/login");
+      }
+      toastError(resp.message || "Something went wrong")
+    }
+    
+    recalculateTotalPrice()
+    setLoading(false);
+  }
+
   if (!data) {
     return <Loading />;
   }
@@ -354,44 +422,26 @@ const CartPage = () => {
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
                     <button
                       onClick={async () => {
-                        setQuantities((prev) => ({
-                          ...prev,
-                          [item.productVariantId]: Math.max(
-                            (prev[item.productVariantId] || 1) - 1,
-                            1
-                          ),
-                        }))
-
-                        setLoading(true);
-                        const url = new URL(`${process.env.CART}/${item.cartItemId}`);
-                        const body = {
-                          quantity: Math.max(quantities[item.productVariantId] - 1, 1)
+                        if (clientToken) {
+                          setQuantities((prev) => ({
+                            ...prev,
+                            [item.productVariantId]: Math.max(
+                              (prev[item.productVariantId] || 1) - 1,
+                              1
+                            ),
+                          }))
+                          handleMinusCartDb(item);
                         }
-                        const result = await fetch(url, {
-                          method: "PUT",
-                          headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${clientToken}`
-                          },
-                          body: JSON.stringify(body)
-                        })
-
-                        const resp = await result.json()
-
-                        if (result.ok) {
+                        else {
+                          setQuantities((prev) => ({
+                            ...prev,
+                            [item.productVariantId]: Math.max(
+                              (prev[item.productVariantId] || 1) - 1,
+                              1
+                            ),
+                          }))
                           
-                        } else {
-                          console.log(result);
-                          
-                          if (result.status === 401) {
-                            router.push("/login");
-                          }
-                          toastError(resp.message || "Something went wrong")
                         }
-                        
-
-                        recalculateTotalPrice()
-                        setLoading(false);
                       }
                       }
                       className="p-2 bg-gray-300 rounded"
@@ -401,38 +451,15 @@ const CartPage = () => {
                     <span className="px-4">{quantities[item.productVariantId]}</span>
                     <button
                       onClick={async (e) => {
-                        setLoading(true);
-                        const url = new URL(`${process.env.CART}/${item.cartItemId}`);
-                        const body = {
-                          quantity: quantities[item.productVariantId] + 1
+                        if (clientToken) {
+                          handlePlusCartDb(item)
                         }
-                        const result = await fetch(url, {
-                          method: "PUT",
-                          headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${clientToken}`
-                          },
-                          body: JSON.stringify(body)
-                        })
-
-                        const resp = await result.json()
-
-                        if (result.ok) {
+                        else {
                           setQuantities(prevQuantities => ({
                             ...prevQuantities,
                             [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
                           }));
-                        } else {
-                          console.log(result);
-                          
-                          if (result.status === 401) {
-                            router.push("/login");
-                          }
-                          toastError(resp.message || "Something went wrong")
                         }
-                        
-                        recalculateTotalPrice()
-                        setLoading(false);
                       }
                       }
                       className="p-2 bg-gray-300 rounded"

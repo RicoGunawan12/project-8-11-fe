@@ -5,6 +5,9 @@ import "./globals.css";
 import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContactButton from "./component/contact";
+import Head from "next/head";
+import Script from "next/script";
+import { GoogleTagManager } from '@next/third-parties/google'
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -26,6 +29,7 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
+      <GoogleTagManager gtmId="G-GVMJMRDV3G" />
       <body className={poppinsFont.className}>
         {children}
         <ToastContainer />
