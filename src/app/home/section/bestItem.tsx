@@ -59,13 +59,13 @@ const BestItem = () => {
       </div>
 
       {/* Image Section */}
-      <div className="w-full lg:w-1/4 flex justify-center lg:justify-start my-6 lg:mt-0">
+      <div className="w-full lg:w-2/5 flex justify-center lg:justify-start my-6 lg:mt-0">
         <Image
           src={`${process.env.BACK_BASE_URL}${page[0]?.[locale]?.[2]?.photo}`}
           width={550}
           height={550}
           alt="logo pic"
-          className="rounded-tl-banner w-[90%] max-w-[350px] lg:max-w-[450px] h-4/5"
+          className="rounded-tl-banner w-[90%] max-w-[350px] lg:max-w-[550px] h-4/5"
         />
       </div>
 
