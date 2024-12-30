@@ -69,7 +69,7 @@ const RegisterPage = () => {
   }
 
   return (
-    <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
+    <div className="w-screen h-screen px-4 flex justify-center flex-wrap content-center bg-white text-black">
       <div className="absolute top-4 left-4">
         <button
           onClick={() => router.push('/')}

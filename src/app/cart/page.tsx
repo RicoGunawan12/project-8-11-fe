@@ -116,7 +116,8 @@ const CartPage = () => {
         return total + item.product_variant.productPrice * quantity;
       }
     }, 0);
-    setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
+    setSelectedShipping(null)
+    setPrice((prev) => ({ ...prev, totalPrice: cartTotal, shippingFee: 0 }))
   }
 
   useEffect(() => {
@@ -352,7 +353,7 @@ const CartPage = () => {
                   </div>
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         setQuantities((prev) => ({
                           ...prev,
                           [item.productVariantId]: Math.max(
@@ -361,7 +362,36 @@ const CartPage = () => {
                           ),
                         }))
 
+                        setLoading(true);
+                        const url = new URL(`${process.env.CART}/${item.cartItemId}`);
+                        const body = {
+                          quantity: Math.max(quantities[item.productVariantId] - 1, 1)
+                        }
+                        const result = await fetch(url, {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${clientToken}`
+                          },
+                          body: JSON.stringify(body)
+                        })
+
+                        const resp = await result.json()
+
+                        if (result.ok) {
+                          
+                        } else {
+                          console.log(result);
+                          
+                          if (result.status === 401) {
+                            router.push("/login");
+                          }
+                          toastError(resp.message || "Something went wrong")
+                        }
+                        
+
                         recalculateTotalPrice()
+                        setLoading(false);
                       }
                       }
                       className="p-2 bg-gray-300 rounded"
@@ -370,11 +400,39 @@ const CartPage = () => {
                     </button>
                     <span className="px-4">{quantities[item.productVariantId]}</span>
                     <button
-                      onClick={() => {
-                        setQuantities(prevQuantities => ({
-                          ...prevQuantities,
-                          [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
-                        }));
+                      onClick={async (e) => {
+                        setLoading(true);
+                        const url = new URL(`${process.env.CART}/${item.cartItemId}`);
+                        const body = {
+                          quantity: quantities[item.productVariantId] + 1
+                        }
+                        const result = await fetch(url, {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${clientToken}`
+                          },
+                          body: JSON.stringify(body)
+                        })
+
+                        const resp = await result.json()
+
+                        if (result.ok) {
+                          setQuantities(prevQuantities => ({
+                            ...prevQuantities,
+                            [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
+                          }));
+                        } else {
+                          console.log(result);
+                          
+                          if (result.status === 401) {
+                            router.push("/login");
+                          }
+                          toastError(resp.message || "Something went wrong")
+                        }
+                        
+                        recalculateTotalPrice()
+                        setLoading(false);
                       }
                       }
                       className="p-2 bg-gray-300 rounded"
@@ -448,6 +506,7 @@ const CartPage = () => {
               <select
                 id="shippingOption"
                 className="w-full p-2 mb-4 border rounded-md focus:outline-none"
+                value={selectedShipping ? selectedShipping.shipping_name : ""}
                 onChange={(e) => {
                   const selectedOption = shippingOptions.find(
                     (option) => option.shipping_name === e.target.value
@@ -466,7 +525,7 @@ const CartPage = () => {
                 <option value="">Select a Shipping Option</option>
                 {shippingOptions.map((option, index) => (
                   <option key={index} value={option.shipping_name}>
-                    {option.shipping_name} - Rp. {option.grandtotal}
+                    {option.shipping_name} - Rp. {option.shipping_cost}
                   </option>
                 ))}
               </select>

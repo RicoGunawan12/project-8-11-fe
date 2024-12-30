@@ -2,7 +2,7 @@
 import NavigationBar from '@/app/component/navbar';
 import { ErrorMessage } from '@/app/model/error';
 import { toastError, toastSuccess } from '@/app/utilities/toast';
-import { getTokenCookie } from '@/app/utilities/token';
+import { deleteTokenCookie, getTokenCookie } from '@/app/utilities/token';
 import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
@@ -235,6 +235,10 @@ const AddressForm = () => {
                 body: JSON.stringify(payLoad),
             });
 
+            if (response.status === 401) {
+                deleteTokenCookie();
+                router.push("/auth/login");
+            }
             const data = await response.json();
             if (!response.ok) {
                 if (data.errors) {
@@ -264,7 +268,7 @@ const AddressForm = () => {
     return (
         <div className="w-screen h-screen bg-white flex items-center justify-center">
             <NavigationBar />
-            <div className="w-1/2 mx-auto py-8 px-4">
+            <div className="min-w-[400px] w-[50vw] py-8 px-4">
                 <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg space-y-6">
                     <h2 className="text-2xl font-semibold text-center text-gray-800">Add New Address</h2>
 
