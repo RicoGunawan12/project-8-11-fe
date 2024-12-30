@@ -65,6 +65,7 @@ interface User {
 
 export interface Transaction {
   addressId: string;
+  readableId: string;
   deliveryCashback: number;
   deliveryFee: number;
   expedition: string;

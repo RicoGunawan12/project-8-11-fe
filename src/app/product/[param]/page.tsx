@@ -131,6 +131,7 @@ const ProductDetailPage = () => {
 
       toastSuccess("Product added to cart!");
     } catch (error: any) {
+      
       toastError(error.message);
     }
   };

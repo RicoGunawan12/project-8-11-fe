@@ -109,7 +109,12 @@ const CartPage = () => {
   const recalculateTotalPrice = () => {
     const cartTotal = data.reduce((total, item) => {
       const quantity = quantities[item.productVariantId] || 1;
-      return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
+      if (item.product_variant.product.promo_details[0]?.promo) {
+        return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
+      }
+      else {
+        return total + item.product_variant.productPrice * quantity;
+      }
     }, 0);
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
   }
@@ -129,7 +134,12 @@ const CartPage = () => {
       
       const quantity = quantities[item.productVariantId] || 1;
       totalWeight += item.product_variant.product.productWeight * quantity;
-      return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
+      if (item.product_variant.product.promo_details[0]?.promo) {
+        return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
+      }
+      else {
+        return total + item.product_variant.productPrice * quantity;
+      }
     }, 0);
 
     var literalTotal = 0;
@@ -203,6 +213,16 @@ const CartPage = () => {
       });
 
       const resp = await response.json();
+      console.log({
+        addressId: chosenAddress?.addressId,
+        paymentMethod: paymentMethod,
+        expedition: selectedShipping?.shipping_name,
+        shippingType: selectedShipping?.service_name,
+        deliveryFee: selectedShipping?.grandtotal,
+        deliveryCashback: selectedShipping?.shipping_cashback,
+        notes: "",
+        voucherCode: voucherCode
+      });
       if (!response.ok) {
         throw new Error(resp.message);
       }
@@ -212,6 +232,7 @@ const CartPage = () => {
       );
 
     } catch (error: any) {
+      
       toastError(error.message || "Failed to complete the checkout process");
     }
   };

@@ -10,6 +10,7 @@ import { Button } from "@nextui-org/react";
 import Banner from "../component/banner";
 import {Loading} from "../utilities/loading";
 import { mapPaymentMethod } from "../utilities/converter";
+import Footer from "../component/footer";
 
 const ProfilePage = () => {
   const [user, setUser] = useState<UserData>({ fullName: "", email: "", phone: "" });
@@ -136,7 +137,7 @@ const ProfilePage = () => {
       <div className="mt-20 h-full">
       <Banner page="Profile Page" text="Profile" />
         {/* <Banner imagePath="/banner.jpg" title="Profile" /> */}
-        <div className="w-full flex justify-center h-full px-8 py-6 bg-white">
+        <div className="w-full flex justify-center min-h-[100vh] px-8 pt-6 pb-20 bg-white">
           {loading ? (
             <p className="text-center text-lg font-medium">Loading...</p>
           ) : (
@@ -164,7 +165,7 @@ const ProfilePage = () => {
                       <table className="min-w-full text-left border border-gray-300">
                         <thead className="sticky top-0">
                           <tr className="bg-gray-200">
-                            <th className="py-2 px-4 border-b">Order Number</th>
+                            <th className="py-2 px-4 border border-gray-300">Order Number</th>
                             <th className="py-2 px-4 border-b">Date</th>
                             <th className="py-2 px-4 border-b">Payment</th>
                             <th className="py-2 px-4 border-b">Status</th>
@@ -185,7 +186,7 @@ const ProfilePage = () => {
                               }
                             >
                               <td className="py-2 px-4 border-b">
-                                {transaction.transactionId}
+                                {transaction.readableId}
                               </td>
                               <td className="py-2 px-4 border-b">
                                 {new Date(
@@ -294,6 +295,7 @@ const ProfilePage = () => {
             </div>
           )}
         </div>
+      <Footer/>
       </div>
     </div>
   );
