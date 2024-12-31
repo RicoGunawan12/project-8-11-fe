@@ -83,7 +83,7 @@ const ProductDetailPage = () => {
           ? [
             {
               promo: {
-                promoAmount: data.promo_details[0].promo.promoAmount,
+                promoAmount: data.promo_details[0].promo?.promoAmount,
               },
             },
           ]
@@ -220,7 +220,7 @@ const ProductDetailPage = () => {
                 data.promo_details[0] ? (
                   <div>
                     <span className="line-through mr-2 text-gray-600">Rp. {data.product_variants[buyVariant].productPrice}</span>
-                    <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0}</span>
+                    <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0}</span>
                   </div>
                 ) : (
                   <div>
@@ -282,7 +282,7 @@ const ProductDetailPage = () => {
               </div>
             </div>
             <div className=" hidden lg:block font-light text-sm mt-4">
-              Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
+              Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
             </div>
             <Button
               onClick={addToCart}
@@ -354,7 +354,7 @@ const ProductDetailPage = () => {
         >
           <span>Add to Cart</span>
           <span>
-            Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
+            Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
           </span>
           {data?.product_variants[buyVariant].productStock === "0" && (
             <span className="text-red-500 ml-2">Out of Stock</span>
