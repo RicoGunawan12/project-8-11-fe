@@ -133,7 +133,6 @@ const ProductPage = () => {
   }
 
   return (
-    <Suspense falback={<Loading/>}>
       <div className="w-screen min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 flex-grow">
@@ -261,8 +260,15 @@ const ProductPage = () => {
         <Footer />
       </div>
     </div>
+  );
+};
+
+const SuspenseWrapper = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductPage />
     </Suspense>
   );
 };
 
-export default ProductPage;
+export default SuspenseWrapper;
