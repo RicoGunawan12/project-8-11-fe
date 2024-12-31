@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { ProductCard } from "../model/productCard";
 import Link from "next/link";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
@@ -118,8 +118,6 @@ const ProductPage = () => {
     }
   };
 
-
-
   useEffect(() => {
     fetchSearchResults();
     console.log(activeCategory);
@@ -135,7 +133,8 @@ const ProductPage = () => {
   }
 
   return (
-    <div className="w-screen min-h-screen bg-white">
+    <Suspense falback={<Loading/>}>
+      <div className="w-screen min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 flex-grow">
         <Banner page="Product Page" text="Product" />
@@ -262,6 +261,7 @@ const ProductPage = () => {
         <Footer />
       </div>
     </div>
+    </Suspense>
   );
 };
 
