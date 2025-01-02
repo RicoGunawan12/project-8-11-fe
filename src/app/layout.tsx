@@ -17,9 +17,6 @@ const poppinsFont = Poppins({
 export const metadata: Metadata = {
   title: "TYESO Indonesia",
   description: "TYESO Official Indonesia Website",
-  icons: {
-    icon: '/favicon.ico'
-  }
 };
 
 type RootLayoutProps = {
@@ -30,6 +27,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <GoogleTagManager gtmId="G-GVMJMRDV3G" />
+
       <body className={poppinsFont.className}>
         {children}
         <ToastContainer />

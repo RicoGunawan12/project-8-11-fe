@@ -253,7 +253,7 @@ const CartPage = () => {
     })
 
     const result = await fetchData.json()
-    console.log(fetchData)
+    console.log(result)
     let discount = 0
 
     if (result.voucherType == "percentage") {
@@ -264,7 +264,7 @@ const CartPage = () => {
       }
     }
     else {
-      discount = result.discount
+      discount = (result.discount ? result.discount : 0)
     }
 
     setPrice((prev) => ({ ...prev, voucher: discount }))
@@ -590,12 +590,12 @@ const CartPage = () => {
                     <span className="font-light text-primary">Rp. {price.shippingFee}</span>
                   </div>
                 )}
-                {price.voucher !== 0 && (
+                {price.voucher != 0 ? (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold">Voucher:</span>
                     <span className="font-light text-primary">- Rp. {price.voucher}</span>
                   </div>
-                )}
+                ) : null}
                 <div className="flex justify-between">
                   <span className="text-lg sm:text-xl font-semibold">Grand Total:</span>
                   <span className="font-light text-primary">

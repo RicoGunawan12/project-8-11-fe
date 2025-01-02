@@ -14,9 +14,9 @@ const HomePage = () => {
     <div className="w-screen h-fit p-0 m-0 bg-white">
       <NavigationBar />
       <Banner/>
+      <BestSellerProduct/>
       <NewCollection/>
       <BestItem/>
-      <BestSellerProduct/>
       <OurProductSection/>
       <Footer/>
     </div>

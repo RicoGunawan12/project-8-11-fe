@@ -32,7 +32,7 @@ const BestItem = () => {
   }
 
   return (
-    <div className="w-full h-auto lg:h-screen flex flex-col lg:flex-row-reverse relative lg:justify-center pt-6 lg:pt-24 px-4 lg:px-0">
+    <div className="w-full h-auto lg:h-screen flex flex-col lg:flex-row-reverse bg-[#D7CCC8] relative lg:justify-center pt-6 lg:pt-24 px-4 lg:px-0">
       {/* Left Section */}
       <div className="w-full lg:w-2/5 text-center lg:text-left">
         <div className="text-black text-3xl sm:text-4xl font-bold">
@@ -65,7 +65,7 @@ const BestItem = () => {
           width={550}
           height={550}
           alt="logo pic"
-          className="rounded-tl-banner w-[90%] max-w-[350px] lg:max-w-[550px] h-[95%%]"
+          className="rounded-tl-banner w-[90%] max-w-[350px] lg:max-w-[550px] h-[85%]"
         />
       </div>
 

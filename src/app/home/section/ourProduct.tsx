@@ -52,7 +52,7 @@ const OurProductSection = () => {
   );
 
   return (
-    <div className="w-screen flex flex-col items-center pb-20 pt-10">
+    <div className="w-screen flex flex-col items-center pb-20">
       <div className=" text-3xl font-bold text-black">Our Product</div>
 
       {/* Category Tabs */}
@@ -65,57 +65,6 @@ const OurProductSection = () => {
               scrollbarColor: "gray transparent", // For Firefox
             }}
           >
-            {/* Category Dummy Data */}
-            {/* <button
-              key={1}
-              onClick={() => setActiveCategoryId("1")}
-              className={`text-xs md:text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === "1"
-                  ? "border-secondary border-b-2"
-                  : null
-                }`}
-            >
-              {"Category 1"}
-            </button>
-            <button
-              key={2}
-              onClick={() => setActiveCategoryId("2")}
-              className={`text-xs md:text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === "2"
-                  ? "border-secondary border-b-2"
-                  : null
-                }`}
-            >
-              {"Category 2"}
-            </button>
-            <button
-              key={3}
-              onClick={() => setActiveCategoryId("3")}
-              className={`text-xs md:text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === "3"
-                  ? "border-secondary border-b-2"
-                  : null
-                }`}
-            >
-              {"Category 3"}
-            </button>
-            <button
-              key={4}
-              onClick={() => setActiveCategoryId("4")}
-              className={`text-xs md:text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === "4"
-                  ? "border-secondary border-b-2"
-                  : null
-                }`}
-            >
-              {"Category 4"}
-            </button>
-            <button
-              key={5}
-              onClick={() => setActiveCategoryId("5")}
-              className={`text-xs md:text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === "5"
-                  ? "border-secondary border-b-2"
-                  : null
-                }`}
-            >
-              {"Category 5"}
-            </button> */}
 
             {/* Category Real Data */}
             {products.map((category) => (
@@ -133,97 +82,10 @@ const OurProductSection = () => {
           </div>
         </div>
 
-        {/* Our Product dummy data */}
-        {/* <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16 ml-3 md:ml-0">
-          <Link key={`1`} href={`/product/1`}>
-            <div>
-              <Image
-                src={`${process.env.BACK_BASE_URL}`}
-                alt={"product 1"}
-                width={200}
-                height={200}
-                className="w-full"
-              />
-              <div className="text-lg font-semibold text-black w-full text-center mt-6">{"Product 1"}</div>
-              <p className="text-sm text-black w-full text-center">Rp. {100000}</p>
-            </div>
-          </Link>
-
-          <Link key={`2`} href={`/product/1`}>
-            <div>
-              <Image
-                src={`${process.env.BACK_BASE_URL}`}
-                alt={"product 1"}
-                width={200}
-                height={200}
-                className="w-full"
-              />
-              <div className="text-lg font-semibold text-black w-full text-center mt-6">{"Product 1"}</div>
-              <p className="text-sm text-black w-full text-center">Rp. {100000}</p>
-            </div>
-          </Link>
-
-          <Link key={`3`} href={`/product/1`}>
-            <div>
-              <Image
-                src={`${process.env.BACK_BASE_URL}`}
-                alt={"product 1"}
-                width={200}
-                height={200}
-                className="w-full"
-              />
-              <div className="text-lg font-semibold text-black w-full text-center mt-6">{"Product 1"}</div>
-              <p className="text-sm text-black w-full text-center">Rp. {100000}</p>
-            </div>
-          </Link>
-
-          <Link key={`4`} href={`/product/1`}>
-            <div>
-              <Image
-                src={`${process.env.BACK_BASE_URL}`}
-                alt={"product 1"}
-                width={200}
-                height={200}
-                className="w-full"
-              />
-              <div className="text-lg font-semibold text-black w-full text-center mt-6">{"Product 1"}</div>
-              <p className="text-sm text-black w-full text-center">Rp. {100000}</p>
-            </div>
-          </Link>
-
-          <Link key={`5`} href={`/product/1`}>
-            <div>
-              <Image
-                src={`${process.env.BACK_BASE_URL}`}
-                alt={"product 1"}
-                width={200}
-                height={200}
-                className="w-full"
-              />
-              <div className="text-lg font-semibold text-black w-full text-center mt-6">{"Product 1"}</div>
-              <p className="text-sm text-black w-full text-center">Rp. {100000}</p>
-            </div>
-          </Link>
-
-          <Link key={`6`} href={`/product/1`}>
-            <div>
-              <Image
-                src={`${process.env.BACK_BASE_URL}`}
-                alt={"product 1"}
-                width={200}
-                height={200}
-                className="w-full"
-              />
-              <div className="text-lg font-semibold text-black w-full text-center mt-6">{"Product 1"}</div>
-              <p className="text-sm text-black w-full text-center">Rp. {100000}</p>
-            </div>
-          </Link>
-        </div> */}
-
         {/* Products of the active category */}
         {activeCategory ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16">
+            <div className="grid grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16">
               {activeCategory.products.map((product: ProductCard) => (
                 <Link key={product.productId} href={`/product/${product.productId}`}>
                   <div>
@@ -232,7 +94,7 @@ const OurProductSection = () => {
                       alt={product.productName}
                       width={200}
                       height={200}
-                      className="w-full object-contain"
+                      className="w-full object-fill aspect-square "
                     />
                     <div className="text-lg font-semibold text-black w-full text-center mt-6">{product.productName}</div>
                     {

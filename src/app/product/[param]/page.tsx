@@ -28,6 +28,7 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(`${process.env.PRODUCTS}/${id}`)
       const response = await fetch(`${process.env.PRODUCTS}/${id}`, {
         method: "GET",
         headers: {
@@ -36,6 +37,7 @@ const ProductDetailPage = () => {
       });
 
       const data = await response.json();
+      console.log(data)
       if (!response.ok) {
         throw new Error(data.message);
       }
