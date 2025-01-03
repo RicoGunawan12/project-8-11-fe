@@ -2,12 +2,12 @@ import React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { ToastContainer} from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContactButton from "./component/contact";
 import Head from "next/head";
 import Script from "next/script";
-import { GoogleTagManager } from '@next/third-parties/google'
+import { GoogleTagManager } from "@next/third-parties/google";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -26,12 +26,26 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-GVMJMRDV3G"
+        ></Script>
+        <Script id="google-analytics">
+          {`
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-GVMJMRDV3G');`}
+        </Script>
+      </head>
       <GoogleTagManager gtmId="G-GVMJMRDV3G" />
 
       <body className={poppinsFont.className}>
         {children}
         <ToastContainer />
-        <ContactButton/>
+        <ContactButton />
       </body>
     </html>
   );
