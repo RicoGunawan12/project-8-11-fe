@@ -283,9 +283,14 @@ const ProfilePage = () => {
                                 >
                                   Delete
                                 </div>
-                                {activeAddress === address.addressId
-                                  ? "Hide"
-                                  : "Show"}
+                                <div
+                                  className=" hover:text-white hover:font-semibold transition"
+                                  onClick={() =>
+                                    router.push(`/address/${address.addressId}`)
+                                  }
+                                >
+                                  Update
+                                </div>
                               </span>
                             </div>
                           </button>
