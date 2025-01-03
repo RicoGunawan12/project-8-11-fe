@@ -217,7 +217,7 @@ const ProductDetailPage = () => {
             <h2 className="text-2xl md:text-3xl font-bold border-b-2 pb-2">
               {data?.productName}
             </h2>
-            <div className="mt-2 text-lg md:text-xl font-light border-b-2 pb-2">
+            <div className="mt-2 text-lg md:text-xl font-light pb-2">
               {
                 data.promo_details[0] ? (
                   <div>

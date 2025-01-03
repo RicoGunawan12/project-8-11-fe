@@ -12,6 +12,7 @@ import Footer from "../component/footer";
 import {Loading} from "../utilities/loading";
 import { Categories } from "../model/category";
 import { useSearchParams } from "next/navigation";
+import StarRating from "../utilities/rating";
 
 const ProductPage = () => {
   const searchParams = useSearchParams();
@@ -72,6 +73,7 @@ const ProductPage = () => {
         throw new Error(data.message);
       }
 
+      console.log(data)
 
       setFetchedPages((prev) => ({
         ...prev,
@@ -185,12 +187,12 @@ const ProductPage = () => {
                 key={index}
                 className="w-11/12"
               >
-                <Card className="py-4 mt-6 lg:h-[425px]">
-                  <CardBody className="overflow-visible flex justify-center items-center">
+                <div className="py-4 mt-6 lg:h-[450px]">
+                  <div className="overflow-visible flex justify-center items-center">
                     {result ? (
                       <Image
                         alt="Card background"
-                        className="object-contain rounded-xl w-[450px] lg:h-[300px] md:h-[250px] h-[200px] py-6"
+                        className="object-fill w-[450px] lg:h-[325px] md:h-[250px] h-[200px]"
                         src={`${process.env.BACK_BASE_URL}${result.defaultImage}`}
                         width={300}
                         height={200}
@@ -198,16 +200,19 @@ const ProductPage = () => {
                     ) : (
                       <Image
                         alt="Card background"
-                        className="object-contain rounded-xl w-[450px] h-[300px] md:h-[250px] sm:h-[200px] py-6"
+                        className="object-fill w-[450px] h-full md:h-[250px] sm:h-[200px]"
                         src="/d.jpg"
                         width={300}
                         height={200}
                       />
                     )}
-                  </CardBody>
-                  <CardFooter className="pb-0 pt-2 px-4 flex-col justify-center">
-                    <p className="text-sm uppercase font-bold truncate max-w-[200px]">
+                  </div>
+                  <div className="pb-0 pt-2 px-4 flex-col text-xs text-black justify-start items-start">
+                    <StarRating rating={parseFloat(result?.averageRating) ? parseFloat(result?.averageRating) : 0} disabled />
+                    <p className="text-medium uppercase font-bold truncate max-w-[200px]">
                       {result.productName}
+                    </p>
+                    <p>
                     </p>
                     {
                         result.promo_details[0]? 
@@ -220,8 +225,8 @@ const ProductPage = () => {
                         Rp. {result.product_variants[0].productPrice}
                         </div>
                       }
-                  </CardFooter>
-                </Card>
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
