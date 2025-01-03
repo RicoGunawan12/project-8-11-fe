@@ -26,39 +26,46 @@ const ProductDetailPage = () => {
   const [comment, setComment] = useState<string>("");
   const [buyVariant, setBuyVariant] = useState(0)
 
+  const fetchProductDetail = async() => {
+    const response = await fetch(`${process.env.PRODUCTS}/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    console.log(data)
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+    setData(data);
+  }
+
+  const fetchRating = async() => {
+    const ratingResponse = await fetch(`${process.env.RATINGS}/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const ratingData = await ratingResponse.json();
+    if (!ratingResponse.ok) {
+      throw new Error(ratingData.message);
+    }
+
+    console.log(data)
+    
+    setRatingData(ratingData.ratings);
+  }
+
   useEffect(() => {
     const fetchData = async () => {
-      console.log(`${process.env.PRODUCTS}/${id}`)
-      const response = await fetch(`${process.env.PRODUCTS}/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      console.log(data)
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-
-      const ratingResponse = await fetch(`${process.env.RATINGS}/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const ratingData = await ratingResponse.json();
-      if (!ratingResponse.ok) {
-        throw new Error(ratingData.message);
-      }
-
-      console.log(data)
-      setData(data);
-      setRatingData(ratingData.ratings); // Set fetched rating
       const clientToken = getTokenCookie();
       setToken(clientToken);
+      fetchProductDetail()
+      fetchRating()
     };
 
     fetchData();
@@ -161,6 +168,9 @@ const ProductDetailPage = () => {
       }
 
       toastSuccess("Rating submitted successfully!");
+      fetchProductDetail()
+      fetchRating()
+
     } catch (error: any) {
       toastError(error.message);
     }
