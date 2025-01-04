@@ -207,7 +207,7 @@ const ProductPage = () => {
                       />
                     )}
                   </div>
-                  <div className="pb-0 pt-2 px-4 flex-col text-xs text-black justify-start items-start">
+                  <div className="pb-0 p-4 flex-col text-xs text-black justify-start items-start">
                     <StarRating rating={parseFloat(result?.averageRating) ? parseFloat(result?.averageRating) : 0} disabled />
                     <p className="text-medium uppercase font-bold truncate max-w-[200px]">
                       {result.productName}

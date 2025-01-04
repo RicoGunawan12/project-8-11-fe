@@ -5,3 +5,15 @@ export interface AboutPage{
     contentEng : string,
     contentIndo : string
 }
+
+interface WhyPageContent{
+    content: string,
+    contentId : string,
+    photo : string
+}
+
+export interface WhyPage{
+    whyId : string,
+    whyContentJSONEng : WhyPageContent[]
+    whyContentJSONIndo : WhyPageContent[]
+}
