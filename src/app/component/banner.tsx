@@ -43,7 +43,7 @@ const Banner: React.FC<BannerProps> = ({ page, text }) => {
     <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px]">
       <Image
         src={`${process.env.BACK_BASE_URL}${banner.image}`}
-        alt={banner.page}
+        alt={banner.page || ""}
         width={1000}
         height={500}
         className="w-full h-full object-cover brightness-50"

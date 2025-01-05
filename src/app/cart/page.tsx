@@ -582,23 +582,23 @@ const CartPage = () => {
               <div className="flex flex-col space-y-2 mt-6">
                 <div className="flex justify-between">
                   <span className="text-sm sm:text-lg font-semibold">Total Price:</span>
-                  <span className="font-light text-primary">Rp. {price.totalPrice}</span>
+                  <span className="font-light text-black">Rp. {price.totalPrice}</span>
                 </div>
                 {selectedShipping && (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold">Shipping Fee:</span>
-                    <span className="font-light text-primary">Rp. {price.shippingFee}</span>
+                    <span className="font-light text-black">Rp. {price.shippingFee}</span>
                   </div>
                 )}
                 {price.voucher != 0 ? (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold">Voucher:</span>
-                    <span className="font-light text-primary">- Rp. {price.voucher}</span>
+                    <span className="font-light text-black">- Rp. {price.voucher}</span>
                   </div>
                 ) : null}
                 <div className="flex justify-between">
                   <span className="text-lg sm:text-xl font-semibold">Grand Total:</span>
-                  <span className="font-light text-primary">
+                  <span className="font-light text-black">
                     Rp. {price.totalPrice + price.shippingFee - (price.voucher ? price.voucher : 0)}
                   </span>
                 </div>
