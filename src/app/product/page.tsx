@@ -215,7 +215,7 @@ const ProductPage = () => {
                     <p>
                     </p>
                     {
-                        result.promo_details[0]? 
+                        result.promo_details[0] && result.promo_details[0].promo != null ? 
                         <div className="w-full flex justify-center">
                           <span className="line-through mr-2 text-gray-600">Rp. {result.product_variants[0].productPrice}</span>
                           <span className="font-semibold">Rp. {result.product_variants[0].productPrice - result.promo_details[0].promo?.promoAmount > 0 ? result.product_variants[0].productPrice - result.promo_details[0].promo?.promoAmount : 0}</span>
