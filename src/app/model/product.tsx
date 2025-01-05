@@ -76,5 +76,6 @@ export interface ExploreProduct {
       }
     }
   ],
-  averageRating: string
+  averageRating: string,
+  countRating: string
 }

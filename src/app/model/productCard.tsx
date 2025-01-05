@@ -20,6 +20,7 @@ export interface ProductCard {
     sku : string
   }],
   averageRating : string,
+  countRating : string,
   productSize : string,
   promo_details:[
     {
