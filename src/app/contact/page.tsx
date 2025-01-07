@@ -111,7 +111,6 @@ const ContactPage: React.FC = () => {
                             alt="Acc Icon"
                             width={24}
                             height={24}
-                            className="filter invert hover:invert-0"
                           />
                           <Link href={src.contactAccount} target="_blank" className="hover:underline">
                             {src.contact}

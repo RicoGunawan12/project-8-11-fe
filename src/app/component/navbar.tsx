@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faSearch, faUser, faRightToBracket, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { ExploreProduct, Product } from "../model/product";
 import { useLocaleStore } from "./locale";
+import Image from "next/image";
 
 const NavigationBar = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -140,7 +141,7 @@ const NavigationBar = () => {
       {/* Logo */}
       <div className="flex items-center">
         <Link href="/" className="text-3xl font-bold text-white">
-          TYESO
+          <Image src="/logo.png" width={0} height={50} alt="not found"/>
         </Link>
       </div>
 
