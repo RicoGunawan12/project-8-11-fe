@@ -32,7 +32,7 @@ const OurProductSection = () => {
         });
 
         const data = await response.json();
-        console.log(data)
+        // console.log(data)
         setProducts(data.products);
 
         // Set the first category as active by default
