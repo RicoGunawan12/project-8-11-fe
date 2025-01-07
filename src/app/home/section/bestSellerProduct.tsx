@@ -30,12 +30,12 @@ const BestSellerProduct = () => {
       console.log(productsCompLeftPoint, descriptionCompWidth, percentageCovered);
 
       if (percentageCovered > 100) percentageCovered = 100;
-      // console.log("ubah")
+
       const divisionResult = Math.ceil(percentageCovered / 5);
       if (divisionResult !== lastDivisionResult) {
         console.log('change');
         setLastDivisionResult(divisionResult)
-        let printedToClass = 100 - (divisionResult * 5 * 2); 
+        let printedToClass = 100 - (divisionResult * 5 * 3); // divisionResult * 5 * speed to lower lg:opacity
         if (printedToClass < 0) printedToClass = 0;
 
         const printedClass = `lg:opacity-${printedToClass}`;
@@ -76,12 +76,11 @@ const BestSellerProduct = () => {
 
 
     const bestSellerDescriptionComponent = document.querySelector('#best-seller-desc');
-    bestSellerDescriptionComponent?.classList.add('opacity-100');
+    bestSellerDescriptionComponent?.classList.add('lg:opacity-100');
 
     const bestSellerProductsComponent = document.querySelector('#best-seller-products');
     bestSellerProductsComponent?.addEventListener('scroll', handleScrollAnimation);
-    
-    window.addEventListener("resize", handleScrollAnimation)
+
     return () => {
       bestSellerProductsComponent?.removeEventListener('scroll', handleScrollAnimation);
     }
@@ -120,7 +119,7 @@ const BestSellerProduct = () => {
     <div className="relative flex w-full h-auto lg:h-screen bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-6">
       {/* Fade effect container */}
       <div className="relative w-full">
-        <div className="w-full h-full z-10 lg:w-3/5  text-center lg:text-left lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
+      <div className="w-full h-full z-10 lg:w-3/5  text-center lg:text-left lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
           <div className="text-white text-3xl sm:text-4xl font-bold">
             {(page && page[0]?.[locale]?.[3]?.title) || "Loading"}
           </div>
@@ -132,27 +131,28 @@ const BestSellerProduct = () => {
           </div>
         </div>
 
-        <div className="flex flex-col z-10 lg:flex-row gap-6 items-center overflow-x-auto pl-4 lg:pl-12 pr-4 lg:pr-12" id="best-seller-products">
+        <div className="flex flex-col z-10 lg:flex-row gap-6 overflow-x-auto pl-4 lg:pl-12 pr-4 lg:pr-12" id="best-seller-products">
           {/* Content container */}
-          <div className="hidden lg:block w-full lg:w-3/5 text-center lg:text-left opacity-0">
-            <div className="text-white text-3xl lg:text-4xl font-bold">
+          <div className="lg:w-3/5 text-center sm:text-left hidden lg:flex opacity-0">
+            <div className="text-white text-3xl sm:text-4xl font-bold">
               {(page && page[0]?.[locale]?.[3]?.title) || "Loading"}
             </div>
             <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
               {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
             </div>
-            <div className="border-white text-white border w-fit py-4 px-8 text-lg mt-4 mx-auto lg:mx-0">
+            <div className="border-white text-white border w-fit py-4 px-8 text-lg mt-4 mx-auto sm:mx-0">
               <button>click here</button>
               <Link href="/product">View More</Link>
             </div>
           </div>
 
           {/* Product display */}
-          <div className="w-full lg:w-2/5 z-20 flex justify-items-center overflow-x-auto lg:flex-nowrap pt-6 lg:justify-start gap-6 lg:gap-12">
+          <div className="w-2/3 lg:w-2/5 z-20 flex flex-nowrap justify-start gap-6 mt-6 lg:gap-12">
+            
               {products?.map((product, idx) => (
                 <Link
                   key={idx}
-                  className="flex-shrink-0 w-2/3 sm:w-1/2 h-full lg:w-[300px]"
+                  className="flex-shrink-0 w-full sm:w-[200px] lg:w-[300px]"
                   href={`/product/${product.productId}`}
                 >
                   <Image
@@ -160,9 +160,9 @@ const BestSellerProduct = () => {
                     width={400}
                     height={550}
                     alt="logo pic"
-                    className="w-full h-[300px] object-fill"
+                    className="w-full h-[300px] object-cover"
                   />
-                  <div className="bg-white py-6 flex flex-col flex-grow px-4">
+                  <div className="bg-white py-6 px-10">
                     {/* <div className="text-black">{renderStars(product.)}</div> */}
                     <div className="text-black font-semibold">
                       {product.productName}

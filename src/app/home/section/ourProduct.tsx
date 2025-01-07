@@ -139,7 +139,7 @@ const OurProductSection = () => {
                     />
                     
                     <div className="text-lg font-semibold text-black w-full text-left p-2">
-                    <div className="flex gap-2 text-xs items-center">
+                    <div className="flex flex-col sm:flex-row gap-2 text-xs items-start">
                       <StarRating rating={parseFloat(product?.averageRating) ? parseFloat(product?.averageRating) : 0} disabled />
                       <p>{product.countRating} reviews</p>
                     </div>

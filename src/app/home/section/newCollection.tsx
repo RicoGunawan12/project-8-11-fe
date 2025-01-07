@@ -57,7 +57,7 @@ const NewCollection = () => {
   }
 
   return (
-    <div className="w-full h-auto flex flex-col items-center pt-10 lg:py-20 px-4 lg:px-0">
+    <div className="w-full h-auto flex flex-col items-center py-10 lg:py-20 px-4 lg:px-0">
       <div className="text-black text-3xl lg:text-4xl font-bold text-center">
         {page && page[0]?.[locale]?.[1]?.title || ""}
       </div>
@@ -65,7 +65,7 @@ const NewCollection = () => {
         {page && page[0]?.[locale]?.[1]?.content || ""}
       </div>
 
-      <div className="flex flex-col flex-wrap lg:flex-row w-full lg:w-2/3 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
+      <div className="grid lg:flex grid-cols-2 flex-wrap lg:flex-row w-full lg:w-2/3 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
         {
           data.map((datum: Categories) => {
             return (
