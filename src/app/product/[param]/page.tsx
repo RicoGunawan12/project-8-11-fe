@@ -273,8 +273,12 @@ const ProductDetailPage = () => {
             {data?.product_variants.map((product, idx) => (
               <div
                 key={idx}
-                className={`flex justify-center cursor-pointer border-2 px-4 py-2 rounded-md transition-all ${buyVariant === idx ? "border-secondary shadow-lg" : ""}`}
-                onClick={() => setBuyVariant(idx)}
+                className={`flex justify-center ${ product.productStock === 0 ? "" : "cursor-pointer"} border-2 px-4 py-2 rounded-md transition-all ${ product.productStock === 0 ? "bg-gray-200 text-gray-400" : "" } ${buyVariant === idx ? "border-secondary shadow-lg" : ""}`}
+                onClick={() => {
+                  if (product.productStock > 0) {
+                    setBuyVariant(idx)
+                  }
+                }}
               >
                 <Image
                   src={`${process.env.BACK_BASE_URL}${product.productImage}`}

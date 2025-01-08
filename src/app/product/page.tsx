@@ -197,7 +197,7 @@ const ProductPage = () => {
                     )}
                   </div>
                   <div className="pb-0 p-4 flex-col text-xs text-black justify-start items-start">
-                    <div className="flex gap-2 text-xs items-center">
+                    <div className="flex gap-2 flex-col sm:flex-row md:flex-row text-xs items-center">
                       <StarRating rating={parseFloat(result?.averageRating) ? parseFloat(result?.averageRating) : 0} disabled />
                       <p>{result.countRating} reviews</p>
                     </div>

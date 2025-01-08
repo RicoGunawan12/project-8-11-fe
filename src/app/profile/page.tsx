@@ -155,11 +155,11 @@ const ProfilePage = () => {
       <div className="mt-20 h-full">
         <Banner page="Profile Page" text="Profile" />
         {/* <Banner imagePath="/banner.jpg" title="Profile" /> */}
-        <div className="w-full flex justify-center min-h-[100vh] px-8 pt-6 pb-20 bg-white">
+        <div className="w-full flex justify-center min-h-[80vh] px-8 pt-6 pb-20 bg-white">
           {loading ? (
             <p className="text-center text-lg font-medium">Loading...</p>
           ) : (
-            <div className="flex w-3/4 flex-col space-y-8">
+            <div className="flex w-3/4 max-sm:w-full flex-col space-y-8">
               {/* User Details */}
               <div className="bg-gray-100 p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-bold text-gray-700">
