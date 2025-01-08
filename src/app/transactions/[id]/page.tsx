@@ -197,7 +197,7 @@ const TransactionPage = () => {
                                 className="text-sm font-semibold bg-blue-500 p-2 flex justify-center text-white rounded-lg"
                                 onClick={() => setShowCancelModal(true)}
                               >
-                                Cancel Shipping
+                                Cancel Order
                               </button>
                             </span>
                           </div>
