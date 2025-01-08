@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import NavigationBar from "@/app/component/navbar";
@@ -11,7 +11,6 @@ import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Footer from "@/app/component/footer";
 import StarRating from "@/app/utilities/rating";
 import { Rating } from "@/app/model/rating";
-import { useRouter } from "next/router";
 import Link from "next/link";
 
 const TABS = ["Product Descriptions", "Product Review"];
