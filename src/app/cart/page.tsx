@@ -208,6 +208,9 @@ const CartPage = () => {
       const resp = await response.json();
 
       if (!response.ok) {
+        if (response.status === 401) {
+          router.push("/auth/login");
+        }
         throw new Error(resp.message);
       }
 
@@ -216,7 +219,6 @@ const CartPage = () => {
       );
 
     } catch (error: any) {
-      
       toastError(error.message || "Failed to complete the checkout process");
     }
   };
@@ -275,8 +277,8 @@ const CartPage = () => {
     } else {
 
       
-      if (result.status === 401) {
-        router.push("/login");
+      if (fetchData.status === 401) {
+        router.push("/auth/login");
       }
       toastError(result.message || "Something went wrong")
     }
@@ -304,7 +306,7 @@ const CartPage = () => {
     } else {
       
       if (result.status === 401) {
-        router.push("/login");
+        router.push("/auth/login");
       }
       toastError(resp.message || "Something went wrong")
     }
@@ -340,7 +342,7 @@ const CartPage = () => {
   
       
       if (result.status === 401) {
-        router.push("/login");
+        router.push("/auth/login");
       }
       toastError(resp.message || "Something went wrong")
     }

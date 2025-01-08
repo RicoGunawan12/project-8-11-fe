@@ -11,11 +11,13 @@ import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Footer from "@/app/component/footer";
 import StarRating from "@/app/utilities/rating";
 import { Rating } from "@/app/model/rating";
+import { useRouter } from "next/router";
 import Link from "next/link";
 
 const TABS = ["Product Descriptions", "Product Review"];
 
 const ProductDetailPage = () => {
+  const route = useRouter();
   const router = useParams();
   const id = router.param;
   const [token, setToken] = useState<string | null>(null);
@@ -139,6 +141,9 @@ const ProductDetailPage = () => {
 
       const resp = await response.json();
       if (!response.ok) {
+        if (response.status === 401) {
+          route.push("/auth/login");
+        }
         throw new Error(resp.message);
       }
 
@@ -396,7 +401,7 @@ const ProductDetailPage = () => {
                     <div className="text-lg font-semibold text-black w-full text-left p-2">
                       <p><StarRating rating={parseFloat(product?.averageRating) ? parseFloat(product?.averageRating) : 0} disabled /></p>
                       <p>{product.productName}</p>
-                      {product.promo_details[0] ? (
+                      {product.promo_details[0] && product.promo_details[0].promo != null ? (
                         <div className="flex text-xs font-normal justify-start">
                           <span className="line-through mr-2 text-gray-600">
                             Rp. {product.product_variants[0].productPrice}

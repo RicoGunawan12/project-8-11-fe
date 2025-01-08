@@ -122,6 +122,9 @@ const AddressForm = () => {
 
           const data = await response.json();
           if (!response.ok) {
+              if (response.status === 401) {
+                router.push('/auth/login')
+              }
               throw new Error(data.message);
           }
 

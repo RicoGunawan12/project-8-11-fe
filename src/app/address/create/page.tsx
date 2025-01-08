@@ -164,7 +164,7 @@ const AddressForm = () => {
             
         } catch (error: any) {
             if (error.status === 401) {
-                router.push("/login");
+                router.push("/auth/login");
             }
             toastError(error instanceof Error ? error.message : "Failed to create address");
         } finally {

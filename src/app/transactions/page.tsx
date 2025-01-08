@@ -5,8 +5,10 @@ import { getTokenCookie } from "../utilities/token";
 import { Transaction } from "../model/transactions";
 import NavigationBar from "../component/navbar";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const TransactionPage = () => {
+  const router = useRouter();
   const [data, setData] = useState<Transaction[]>([]);
   const clientToken = getTokenCookie();
 
@@ -22,6 +24,10 @@ const TransactionPage = () => {
 
         const resp = await response.json();
         if (!response.ok) {
+          
+          if (response.status === 401) {
+            router.push("/auth/login");
+          }
           throw new Error(resp.message);
         }
 
