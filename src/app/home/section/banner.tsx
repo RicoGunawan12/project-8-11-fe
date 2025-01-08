@@ -137,7 +137,7 @@ const Banner = () => {
           <p className="text-white text-lg leading-relaxed text-center ">
             {pageData.content}
           </p>
-          <div className="flex justify-center">
+          <div className="flex justify-center items-center">
             <Link
               href="/product"
               className="bg-white text-stone-800 py-3 px-8 rounded-md text-lg font-medium 
