@@ -11,10 +11,12 @@ import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Footer from "@/app/component/footer";
 import StarRating from "@/app/utilities/rating";
 import { Rating } from "@/app/model/rating";
+import { useRouter } from "next/router";
 
 const TABS = ["Product Descriptions", "Product Review"];
 
 const ProductDetailPage = () => {
+  const route = useRouter();
   const router = useParams();
   const id = router.param;
   const [token, setToken] = useState<string | null>(null);
@@ -126,6 +128,9 @@ const ProductDetailPage = () => {
 
       const resp = await response.json();
       if (!response.ok) {
+        if (response.status === 401) {
+          route.push("/auth/login");
+        }
         throw new Error(resp.message);
       }
 

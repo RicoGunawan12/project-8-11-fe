@@ -68,6 +68,9 @@ const TransactionPage = () => {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          router.push("/auth/login");
+        }
         throw new Error("Failed to cancel the transaction");
       }
 

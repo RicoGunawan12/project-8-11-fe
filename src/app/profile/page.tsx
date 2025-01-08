@@ -127,7 +127,7 @@ const ProfilePage = () => {
         throw new Error(data.message);
       }
     } catch (error) {
-      
+
     }
   }
 
