@@ -401,7 +401,7 @@ const ProductDetailPage = () => {
                     <div className="text-lg font-semibold text-black w-full text-left p-2">
                       <p><StarRating rating={parseFloat(product?.averageRating) ? parseFloat(product?.averageRating) : 0} disabled /></p>
                       <p>{product.productName}</p>
-                      {product.promo_details[0] ? (
+                      {product.promo_details[0] && product.promo_details[0].promo != null ? (
                         <div className="flex text-xs font-normal justify-start">
                           <span className="line-through mr-2 text-gray-600">
                             Rp. {product.product_variants[0].productPrice}
