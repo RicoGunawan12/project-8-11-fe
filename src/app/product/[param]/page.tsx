@@ -252,7 +252,7 @@ const ProductDetailPage = () => {
             </h2>
             <div className="mt-2 text-lg md:text-xl font-light pb-2">
               {
-                data.promo_details[0] ? (
+                data.promo_details[0] && data.promo_details[0].promo != null ? (
                   <div>
                     <span className="line-through mr-2 text-gray-600">Rp. {data.product_variants[buyVariant].productPrice}</span>
                     <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0}</span>

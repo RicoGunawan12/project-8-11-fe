@@ -35,7 +35,8 @@ const nextConfig = {
     BANNERS: process.env.BANNERS,
     RATINGS: process.env.RATINGS,
     META_PIXEL: process.env.META_PIXEL,
-    GOOGLE_ANALYTICS: process.env.GOOGLE_ANALYTICS
+    GOOGLE_ANALYTICS: process.env.GOOGLE_ANALYTICS,
+    CAROUSELS : process.env.CAROUSELS 
   },
   eslint: {
     ignoreDuringBuilds: true,
