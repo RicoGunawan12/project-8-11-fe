@@ -14,7 +14,7 @@ export interface ProductCard {
     productWeight : string,
     productWidth : string,
     productPrice : string,
-    productStock : string,
+    productStock : number,
     productSize : string,
     productVariantId : string,
     sku : string

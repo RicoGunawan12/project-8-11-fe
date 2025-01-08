@@ -197,8 +197,23 @@ const TransactionPage = () => {
                           <div className="flex">
                             <span className="ml-2">
                               <button
-                                className="text-sm font-semibold bg-blue-500 p-2 flex justify-center text-white rounded-lg"
+                                className="text-sm font-semibold bg-red-500 p-2 flex justify-center text-white rounded-lg"
                                 onClick={() => setShowCancelModal(true)}
+                              >
+                                Cancel Order
+                              </button>
+                            </span>
+                          </div>
+                        );
+
+                      case "Shipping":
+                        return (
+                          <div className="flex">
+                            <span className="ml-2">
+                              <button
+                                className="text-sm font-semibold bg-gray-500 p-2 flex justify-center text-white rounded-lg"
+                                // onClick={() => setShowCancelModal(true)}
+                                disabled={true}
                               >
                                 Cancel Order
                               </button>

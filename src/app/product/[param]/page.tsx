@@ -307,7 +307,7 @@ const ProductDetailPage = () => {
                 +
               </button>
               <div className="ml-4 font-semibold">
-                {data?.product_variants[buyVariant].productStock === "0" ? (
+                {data?.product_variants[buyVariant].productStock === 0 ? (
                   <span className="text-red-500">Out of Stock</span>
                 ) : (
                   <span className="text-green-400">
@@ -426,14 +426,14 @@ const ProductDetailPage = () => {
       <div className="lg:hidden w-full p-2  flex justify-around fixed bottom-2">
         <button
           onClick={addToCart}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-between font-semibold text-lg px-6 py-2 w-3/5 ${data?.product_variants[buyVariant].productStock === "0" ? "bg-gray-300 cursor-not-allowed" : ""}`}
-          disabled={data?.product_variants[buyVariant].productStock === "0"}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-between font-semibold text-lg px-6 py-2 w-3/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          disabled={data?.product_variants[buyVariant].productStock === 0}
         >
           <span>Add to Cart</span>
           <span>
             Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
           </span>
-          {data?.product_variants[buyVariant].productStock === "0" && (
+          {data?.product_variants[buyVariant].productStock === 0 && (
             <span className="text-red-500 ml-2">Out of Stock</span>
           )}
         </button>
