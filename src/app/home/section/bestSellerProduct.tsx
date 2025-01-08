@@ -27,13 +27,12 @@ const BestSellerProduct = () => {
       const descriptionCompWidth = bestSellerDescriptionComponent.clientWidth;
 
       let percentageCovered = productsCompLeftPoint / descriptionCompWidth * 100;
-      console.log(productsCompLeftPoint, descriptionCompWidth, percentageCovered);
+
 
       if (percentageCovered > 100) percentageCovered = 100;
 
       const divisionResult = Math.ceil(percentageCovered / 5);
       if (divisionResult !== lastDivisionResult) {
-        console.log('change');
         setLastDivisionResult(divisionResult)
         let printedToClass = 100 - (divisionResult * 5 * 3); // divisionResult * 5 * speed to lower lg:opacity
         if (printedToClass < 0) printedToClass = 0;

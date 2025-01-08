@@ -67,7 +67,6 @@ const CartPage = () => {
             addressData.message || "Failed to fetch address data"
           );
         }
-        console.log(cartData)
         setData(cartData);
         setQuantities(
           cartData.reduce((acc: { [key: string]: number }, item: Cart) => {
@@ -94,7 +93,6 @@ const CartPage = () => {
       if (!Array.isArray(cartData) || cartData.length === 0) {
         return;
       }
-      console.log(cartData)
       setData(cartData);
       setQuantities(
         cartData?.reduce((acc: { [key: string]: number }, item: Cart) => {
@@ -131,8 +129,7 @@ const CartPage = () => {
 
     let totalWeight = 0;
     const cartTotal = data.reduce((total, item) => {
-      console.log(item);
-      
+
       const quantity = quantities[item.productVariantId] || 1;
       totalWeight += item.product_variant.product.productWeight * quantity;
       if (item.product_variant.product.promo_details[0]?.promo) {
@@ -157,12 +154,8 @@ const CartPage = () => {
     if (!response.ok) throw new Error(resp.message);
 
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
-    console.log(chosenAddress)
-    console.log(chosenAddress.komshipAddressId)
-    console.log(totalWeight)
 
     const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${literalTotal}`;
-    console.log(url)
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -183,7 +176,6 @@ const CartPage = () => {
 
   useEffect(() => {
     if (clientToken && debouncedChosenAddress && debouncedQuantities) {
-      console.log("test")
       calculateShippingOptions();
     }
   }, [debouncedChosenAddress, debouncedQuantities, clientToken]);
@@ -214,16 +206,7 @@ const CartPage = () => {
       });
 
       const resp = await response.json();
-      console.log({
-        addressId: chosenAddress?.addressId,
-        paymentMethod: paymentMethod,
-        expedition: selectedShipping?.shipping_name,
-        shippingType: selectedShipping?.service_name,
-        deliveryFee: selectedShipping?.grandtotal,
-        deliveryCashback: selectedShipping?.shipping_cashback,
-        notes: "",
-        voucherCode: voucherCode
-      });
+
       if (!response.ok) {
         throw new Error(resp.message);
       }
@@ -243,7 +226,6 @@ const CartPage = () => {
 
     url.searchParams.append("code", String(voucherCode));
 
-    console.log(url)
     const fetchData = await fetch(url, {
       method: "GET",
       headers: {
@@ -253,7 +235,7 @@ const CartPage = () => {
     })
 
     const result = await fetchData.json()
-    console.log(result)
+
     let discount = 0
 
     if (result.voucherType == "percentage") {
@@ -291,7 +273,7 @@ const CartPage = () => {
       setUpdate(!update);
       toastSuccess("Item removed")
     } else {
-      console.log(result);
+
       
       if (result.status === 401) {
         router.push("/login");
@@ -320,7 +302,6 @@ const CartPage = () => {
     if (result.ok) {
       
     } else {
-      console.log(result);
       
       if (result.status === 401) {
         router.push("/login");
@@ -356,7 +337,7 @@ const CartPage = () => {
         [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
       }));
     } else {
-      console.log(result);
+  
       
       if (result.status === 401) {
         router.push("/login");

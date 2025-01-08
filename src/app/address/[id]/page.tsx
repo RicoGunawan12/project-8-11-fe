@@ -92,8 +92,7 @@ const AddressForm = () => {
         const res = data;
         setFormData(res)
         setDestination(res.komshipLabel)
-        // setChose(res.komshipLabel)
-        console.log(res);
+
     } catch (error) {
         toastError(error instanceof Error ? error.message : "Failed to fetch provinces");
     } finally {
@@ -164,8 +163,6 @@ const AddressForm = () => {
             komshipAddressId: chose?.id,
             label: chose?.label
         };
-
-        console.log(payLoad)
 
         setIsLoading(true);
         try {
@@ -272,7 +269,6 @@ const AddressForm = () => {
                                         className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                         onClick={() => {
                                                 setDestination(dest.label)
-                                                console.log(dest)
                                                 setChose(dest);
                                             } 
                                         }

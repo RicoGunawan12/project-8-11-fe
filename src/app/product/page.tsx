@@ -30,12 +30,6 @@ const ProductPage = () => {
 
   const fetchSearchResults = async () => {
 
-    // if (fetchedPages[currentPage]) {
-    //   setSearchResults(fetchedPages[currentPage]);
-    //   return;
-    // }
-    console.log("test: ", activeCategory);
-
     try {
       const counturl = new URL(`${process.env.PRODUCTS}/getCount`);
       counturl.searchParams.append("search", "");
@@ -72,8 +66,6 @@ const ProductPage = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
-
-      console.log(data)
 
       setFetchedPages((prev) => ({
         ...prev,
@@ -122,7 +114,6 @@ const ProductPage = () => {
 
   useEffect(() => {
     fetchSearchResults();
-    console.log(activeCategory);
 
   }, [currentPage, activeCategory]);
 

@@ -26,17 +26,6 @@ const NewCollection = () => {
 
         setPages(res.pages);
 
-        // before: newest product
-        // const dataReq = await fetch(`${process.env.PRODUCTS}/newest`, {
-        //   method: "GET",
-        // });
-
-        // const dataRes = await dataReq.json();
-
-        // console.log(dataRes)
-        // setData(dataRes.products)
-
-        // after: category
         const dataReq = await fetch(`${process.env.CATEGORIES}?limit=6`, {
           method: "GET",
         });

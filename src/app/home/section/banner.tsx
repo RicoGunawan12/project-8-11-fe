@@ -97,7 +97,7 @@ const Banner = () => {
         }
 
         const data = await response.json();
-        console.log(data)
+
         // setPages(data.pages);
       } catch (error: any) {
         toastError(error.message || "An unexpected error occurred.");

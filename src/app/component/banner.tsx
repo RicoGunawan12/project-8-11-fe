@@ -23,7 +23,6 @@ const Banner: React.FC<BannerProps> = ({ page, text }) => {
         const response = await fetch(`${process.env.BANNERS}`); // Adjust the API endpoint as needed
         const data = (await response.json()).banners;
         const selectedBanner = data.find((banner: BannerData) => banner.page === page);
-        console.log(selectedBanner, page)
         setBanner(selectedBanner || {
           image : page
         });

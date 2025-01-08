@@ -98,7 +98,6 @@ const AddressForm = () => {
             }
             
             const res = data.searchResult.data;
-            console.log(res);
             
 
             setDestinations(res);
