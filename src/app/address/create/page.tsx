@@ -17,31 +17,6 @@ interface DestinationOption {
     zip_code: string    
 }
 
-interface ProvinceOption {
-    province_id: string;
-    province: string;
-}
-
-interface CityOption {
-    city_id: string;
-    district_id: string;
-    city_name: string;
-    province: string;
-    postal_code: string;
-    type: string;
-}
-
-interface SubdistrictOption {
-    city_id: string;
-    city: string;
-    postal_code: string;
-    province: string;
-    province_id: string;
-    subdistrict_id: string;
-    subdistrict_name: string;
-    type: string;
-}
-
 interface FormData {
     receiverName: string;
     receiverPhoneNumber: string;
@@ -70,9 +45,6 @@ const useDebounce = (value: string, delay: number) => {
 const AddressForm = () => {
     const [destinations, setDestinations] = useState<DestinationOption[]>([]);
     const [chose, setChose] = useState<DestinationOption | null>(null)
-    // const [provinces, setProvinces] = useState<ProvinceOption[]>([]);
-    // const [cities, setCities] = useState<CityOption[]>([]);
-    // const [subdistricts, setSubdistricts] = useState<SubdistrictOption[]>([]);
     const [destination, setDestination] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<Array<ErrorMessage>>([]);
@@ -98,7 +70,7 @@ const AddressForm = () => {
         setClientToken(token);
     }, [router]);
 
-    const debouncedDestination = useDebounce(destination, 1000); // 300ms delay
+    const debouncedDestination = useDebounce(destination, 1000);
 
     useEffect(() => {
         if (debouncedDestination.length > 0) {
@@ -126,7 +98,6 @@ const AddressForm = () => {
             }
             
             const res = data.searchResult.data;
-            console.log(res);
             
 
             setDestinations(res);
@@ -136,62 +107,6 @@ const AddressForm = () => {
             setIsLoading(false);
         }
     };
-
-    // const fetchCities = async (provinceId: string) => {
-    //     if (!provinceId || !clientToken) return;
-
-    //     setIsLoading(true);
-    //     try {
-    //         const response = await fetch(
-    //             `${process.env.ADDRESS}/city?province=${provinceId}`,
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${clientToken}`,
-    //                 },
-    //             }
-    //         );
-
-    //         const data = await response.json();
-    //         if (!response.ok) {
-    //             throw new Error(data.message);
-    //         }
-    //         const res = data.cities
-
-    //         setCities(res)
-    //     } catch (error) {
-    //         toastError(error instanceof Error ? error.message : "Failed to fetch cities");
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
-
-    // const fetchSubdistricts = async (cityId: string) => {
-    //     if (!cityId || !clientToken) return;
-
-    //     setIsLoading(true);
-    //     try {
-    //         const response = await fetch(
-    //             `${process.env.ADDRESS}/subdistrict?city=${cityId}`,
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${clientToken}`,
-    //                 },
-    //             }
-    //         );
-
-    //         const data = await response.json();
-    //         if (!response.ok) {
-    //             throw new Error(data.message);
-    //         }
-    //         const res = data.subdistrict.rajaongkir.results
-
-    //         setSubdistricts(res);
-    //     } catch (error) {
-    //         toastError(error instanceof Error ? error.message : "Failed to fetch subdistricts");
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
 
     const handleChange = (
         e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
@@ -203,12 +118,6 @@ const AddressForm = () => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (!clientToken) return;
-
-        // const phoneRegex = /^[0-9]{10,13}$/;
-        // if (!phoneRegex.test(formData.receiverPhoneNumber)) {
-        //     toastError("Please enter a valid phone number (10-13 digits)");
-        //     return;
-        // }
 
         const [subdistrict_id, postal_code] = formData.subdistrict.split(',');
 
@@ -309,10 +218,8 @@ const AddressForm = () => {
                     <div className="space-y-2 text-gray-700">
                         <label className="block text-sm font-medium text-gray-700">City / Subdistrict / District / Postal Code</label>
                         <input
-                            // type="tel"
                             name="receiverPhoneNumber"
                             value={destination}
-                            // onChange={handleChange}
                             onChange={(e) => {
                                 setDestination(e.target.value)
                                 if (chose) {
@@ -323,8 +230,6 @@ const AddressForm = () => {
                             className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'receiverPhoneNumber') ? "border-red-300" : "border-gray-300"
                             }`}
                             placeholder="Enter receiver's city / subdistrict / district / postal code"
-                            // pattern="[0-9]{10,13}"
-                            // title="Phone number must be between 10 and 13 digits"
                         />
                          {
                             destination.length > 0 && !chose && (
@@ -344,71 +249,9 @@ const AddressForm = () => {
                                 ))}
                             </div>
                         )}
-                        {/* <select
-                            name="province"
-                            value={formData.province}
-                            onChange={handleChange}
-                            disabled={isLoading}
-                            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'province') ? "border-red-300" : "border-gray-300"}`}
-                        >
-                            
-                            <option value="">Select Province</option>
-                            {provinces.map((province) => (
-                                <option key={province.province_id} value={JSON.stringify(province)}>
-                                    {province.province}
-                                </option>
-                            ))}
-                        </select> */}
+
                     </div>
                     <p hidden={!errors?.find(e => e.path === 'province')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'province')?.msg}</p>
-
-                    {/* <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">City</label>
-                        <select
-                            name="city"
-                            value={formData.city}
-                            onChange={handleChange}
-                            disabled={isLoading || !formData.province}
-                            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'city') ? "border-red-300" : "border-gray-300"}`}
-                        >
-                            <option value="">Select City</option>
-                            {cities.map((city) => (
-                                <option key={city.city_id} value={JSON.stringify(city)}>
-                                    {city.city_name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <p hidden={!errors?.find(e => e.path === 'city')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'city')?.msg}</p>
-
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Subdistrict</label>
-                        <select
-                            name="subdistrict"
-                            value={formData.subdistrict}
-                            onChange={(e) => {
-                                const [subdistrict_id, postal_code] = e.target.value.split(',');
-                                const syntheticEvent = {
-                                    target: {
-                                        name: 'subdistrict',
-                                        value: `${subdistrict_id},${postal_code}`,
-                                    },
-                                } as React.ChangeEvent<HTMLSelectElement>;
-
-                                handleChange(syntheticEvent);
-                            }}
-                            disabled={isLoading || !formData.city}
-                            className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 text-gray-700 ${errors?.find(e => e.path == 'subdistrict') ? "border-red-300" : "border-gray-300"}`}
-                        >
-                            <option value="">Select Subdistrict</option>
-                            {subdistricts.map((subdistrict) => (
-                                <option key={subdistrict.subdistrict_id} value={`${subdistrict.subdistrict_name},${subdistrict.postal_code}`}>
-                                    {subdistrict.subdistrict_name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <p hidden={!errors?.find(e => e.path === 'subdistrict')} className="text-red-500 text-sm !mt-1">{errors?.find((e) => e.path === 'subdistrict')?.msg}</p> */}
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">Address Detail</label>

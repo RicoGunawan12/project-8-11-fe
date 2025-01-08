@@ -16,8 +16,9 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors:{
-        primary: "#000000",
-        secondary: "#405362"
+        primary: "#D7CCC8",
+        secondary: "#405362",
+
       },
       dropShadow:{
         default: "0 3px 10px rgba(0,0,0,1)"

@@ -12,6 +12,7 @@ import Footer from "@/app/component/footer";
 import StarRating from "@/app/utilities/rating";
 import { Rating } from "@/app/model/rating";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const TABS = ["Product Descriptions", "Product Review"];
 
@@ -27,38 +28,50 @@ const ProductDetailPage = () => {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const [buyVariant, setBuyVariant] = useState(0)
+  const [relatedProduct, setRelatedProduct] = useState<ProductCard[]>([])
+
+  const fetchProductDetail = async() => {
+    const response = await fetch(`${process.env.PRODUCTS}/related/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    console.log(data)
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+    setData(data.product);
+    setRelatedProduct(data.relatedProducts)
+  }
+
+  const fetchRating = async() => {
+    const ratingResponse = await fetch(`${process.env.RATINGS}/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const ratingData = await ratingResponse.json();
+    if (!ratingResponse.ok) {
+      throw new Error(ratingData.message);
+    }
+
+    console.log(data)
+    
+    setRatingData(ratingData.ratings);
+  }
+
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`${process.env.PRODUCTS}/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-
-      const ratingResponse = await fetch(`${process.env.RATINGS}/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const ratingData = await ratingResponse.json();
-      if (!ratingResponse.ok) {
-        throw new Error(ratingData.message);
-      }
-
-      console.log(data)
-      setData(data);
-      setRatingData(ratingData.ratings); // Set fetched rating
       const clientToken = getTokenCookie();
       setToken(clientToken);
+      fetchProductDetail()
+      fetchRating()
     };
 
     fetchData();
@@ -164,10 +177,28 @@ const ProductDetailPage = () => {
       }
 
       toastSuccess("Rating submitted successfully!");
+      fetchProductDetail()
+      fetchRating()
+
     } catch (error: any) {
       toastError(error.message);
     }
   };
+
+    const trackViewProduct = (product: ProductCard) => {
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'ViewContent', {
+          content_type: 'product',
+          content_ids: [product.productId],
+          content_name: product.productName,
+          currency: 'IDR',
+          value: product.promo_details[0] 
+            ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount 
+            : parseInt(product.product_variants[0].productPrice)
+        });
+      }
+    };
+  
 
   if (!data) {
     return <Loading />;
@@ -220,7 +251,7 @@ const ProductDetailPage = () => {
             <h2 className="text-2xl md:text-3xl font-bold border-b-2 pb-2">
               {data?.productName}
             </h2>
-            <div className="mt-2 text-lg md:text-xl font-light border-b-2 pb-2">
+            <div className="mt-2 text-lg md:text-xl font-light pb-2">
               {
                 data.promo_details[0] ? (
                   <div>
@@ -349,6 +380,48 @@ const ProductDetailPage = () => {
             <p className="pb-4 mb-4">No reviews yet.</p>
           )}
         </div>
+      </div>
+      <div>
+      <div className="grid grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16 mb-6">
+              {relatedProduct.map((product: ProductCard) => (
+                <Link
+                  key={product.productId} 
+                  onClick={() => trackViewProduct(product)}
+                  href={`/product/${product.productId}`}
+                >
+                  <div className="text-xs">
+                    <Image
+                      src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
+                      alt={product.productName}
+                      width={200}
+                      height={200}
+                      className="w-full object-fill aspect-square"
+                    />
+                    
+                    <div className="text-lg font-semibold text-black w-full text-left p-2">
+                      <p><StarRating rating={parseFloat(product?.averageRating) ? parseFloat(product?.averageRating) : 0} disabled /></p>
+                      <p>{product.productName}</p>
+                      {product.promo_details[0] ? (
+                        <div className="flex text-xs font-normal justify-start">
+                          <span className="line-through mr-2 text-gray-600">
+                            Rp. {product.product_variants[0].productPrice}
+                          </span>
+                          <span className="font-semibold">
+                            Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount > 0 
+                              ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount 
+                              : 0}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex text-xs font-normal justify-start">
+                          <p>Rp. {product.product_variants[0].productPrice}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
       </div>
       <Footer className="lg:mb-0 pb-16 "/>
       <div className="lg:hidden w-full p-2  flex justify-around fixed bottom-2">

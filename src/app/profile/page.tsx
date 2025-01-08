@@ -8,24 +8,29 @@ import { Transaction } from "../model/transactions";
 import { useRouter } from "next/navigation";
 import { Button } from "@nextui-org/react";
 import Banner from "../component/banner";
-import {Loading} from "../utilities/loading";
+import { Loading } from "../utilities/loading";
 import { mapPaymentMethod } from "../utilities/converter";
 import Footer from "../component/footer";
+import { Bounce, toast } from "react-toastify";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState<UserData>({ fullName: "", email: "", phone: "" });
+  const [user, setUser] = useState<UserData>({
+    fullName: "",
+    email: "",
+    phone: "",
+  });
   const [totalTransaction, setTotalTransaction] = useState<Transaction[]>([]);
   const [addressData, setAddressData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingAddress, setLoadingAddress] = useState(true);
   const [activeAddress, setActiveAddress] = useState<string | null>(null); // For active accordion
+  const [update, setUpdate] = useState(false);
   const clientToken = getTokenCookie();
   const router = useRouter();
 
   const fetchData = async () => {
-
-    if(!clientToken){
-      router.push("/auth/login")
+    if (!clientToken) {
+      router.push("/auth/login");
     }
 
     try {
@@ -53,7 +58,6 @@ const ProfilePage = () => {
           },
         }
       );
-      
 
       if (!transactionResponse.ok) {
         throw new Error("Failed to fetch transaction data");
@@ -94,8 +98,11 @@ const ProfilePage = () => {
 
   useEffect(() => {
     fetchData();
-    fetchAddressData();
   }, []);
+
+  useEffect(() => {
+    fetchAddressData();
+  }, [update]);
 
   if (loading || loadingAddress) {
     return <Loading />;
@@ -114,28 +121,39 @@ const ProfilePage = () => {
   };
 
   const handleDeleteAddress = async (addressId: string) => {
-    try {
-      const response = await fetch(`${process.env.ADDRESS}/${addressId}`, {
+    toast.promise(
+      fetch(`${process.env.ADDRESS}/${addressId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${clientToken}`,
         },
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message);
+      }).then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to delete the address.");
+        }
+        return data;
+      }),
+      {
+        pending: "Deleting address...",
+        success: "Address deleted successfully!",
+        error: {
+          render({ data }: any) {
+            return (
+              data?.message || "An error occurred while deleting the address."
+            );
+          },
+        },
       }
-    } catch (error) {
-
-    }
-  }
+    );
+    setUpdate(!update);
+  };
 
   return (
     <div className="w-screen h-screen bg-white text-black flex flex-col">
       <NavigationBar />
       <div className="mt-20 h-full">
-      <Banner page="Profile Page" text="Profile" />
+        <Banner page="Profile Page" text="Profile" />
         {/* <Banner imagePath="/banner.jpg" title="Profile" /> */}
         <div className="w-full flex justify-center min-h-[100vh] px-8 pt-6 pb-20 bg-white">
           {loading ? (
@@ -144,7 +162,9 @@ const ProfilePage = () => {
             <div className="flex w-3/4 flex-col space-y-8">
               {/* User Details */}
               <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-bold text-gray-700">User Details</h2>
+                <h2 className="text-xl font-bold text-gray-700">
+                  User Details
+                </h2>
                 <p className="mt-2 text-gray-600">
                   <strong>Full Name :</strong> {user?.fullName || "N/A"}
                 </p>
@@ -165,7 +185,9 @@ const ProfilePage = () => {
                       <table className="min-w-full text-left border border-gray-300">
                         <thead className="sticky top-0">
                           <tr className="bg-gray-200">
-                            <th className="py-2 px-4 border border-gray-300">Order Number</th>
+                            <th className="py-2 px-4 border border-gray-300">
+                              Order Number
+                            </th>
                             <th className="py-2 px-4 border-b">Date</th>
                             <th className="py-2 px-4 border-b">Payment</th>
                             <th className="py-2 px-4 border-b">Status</th>
@@ -198,7 +220,9 @@ const ProfilePage = () => {
                                 })}
                               </td>
                               <td className="py-2 px-4 border-b">
-                                {mapPaymentMethod(transaction.paymentMethod || "N/A")}
+                                {mapPaymentMethod(
+                                  transaction.paymentMethod || "N/A"
+                                )}
                               </td>
                               <td className="py-2 px-4 border-b">
                                 {transaction.status || "N/A"}
@@ -232,70 +256,86 @@ const ProfilePage = () => {
 
                 <div className="mt-4 space-y-4">
                   {loadingAddress ? (
-                    <p className="text-center text-lg font-medium">Loading...</p>
+                    <p className="text-center text-lg font-medium">
+                      Loading...
+                    </p>
                   ) : (
                     <>
-                        {addressData.map((address: any) => (
-                          <motion.div
-                            key={address.addressId}
-                            className="border-b"
+                      {addressData.map((address: any) => (
+                        <motion.div
+                          key={address.addressId}
+                          className="border-b"
+                        >
+                          <button
+                            onClick={() => toggleAccordion(address.addressId)}
+                            className="w-full text-left p-4 bg-gray-200 hover:bg-gray-300"
                           >
-                            <button
-                              onClick={() => toggleAccordion(address.addressId)}
-                              className="w-full text-left p-4 bg-gray-200 hover:bg-gray-300"
-                            >
-                              <div className="flex justify-between items-center">
-                                <span>
-                                  {address.addressCity} - {address.addressDetail}
-                                </span>
-                                <span className="text-sm flex gap-6 text-gray-500">
-                                  <div className="text-red-500 hover:text-red-600 hover:font-semibold transition" onClick={() => handleDeleteAddress(address.addressId)}>Delete</div>
-                                  {activeAddress === address.addressId
-                                    ? "Hide"
-                                    : "Show"}
-                                </span>
-                              </div>
-                            </button>
-
-                            {/* Dropdown content with smooth animation */}
-                            <AnimatePresence>
-                              {activeAddress === address.addressId && (
-                                <motion.div
-                                  initial={{ opacity: 0, height: 0 }}
-                                  animate={{ opacity: 1, height: "auto" }}
-                                  exit={{ opacity: 0, height: 0 }}
-                                  transition={{ duration: 0.3 }}
-                                  className="p-4 bg-gray-50"
+                            <div className="flex justify-between items-center">
+                              <span>
+                                {address.addressCity} - {address.addressDetail}
+                              </span>
+                              <span className="text-sm flex gap-6 text-gray-500">
+                                <div
+                                  className="text-red-500 hover:text-red-600 hover:font-semibold transition"
+                                  onClick={() =>
+                                    handleDeleteAddress(address.addressId)
+                                  }
                                 >
-                                  <p>
-                                    <strong>City:</strong> {address.addressCity}
-                                  </p>
-                                  <p>
-                                    <strong>Detail:</strong> {address.addressDetail}
-                                  </p>
-                                  <p>
-                                    <strong>Label:</strong> {address.komshipLabel}
-                                  </p>
-                                  <p>
-                                    <strong>Receiver:</strong> {address.receiverName}
-                                  </p>
-                                  <p>
-                                    <strong>Phone:</strong>{" "}
-                                    {address.receiverPhoneNumber}
-                                  </p>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </motion.div>
-                        ))}
-                  </>
+                                  Delete
+                                </div>
+                                <div
+                                  className=" hover:text-white hover:font-semibold transition"
+                                  onClick={() =>
+                                    router.push(`/address/${address.addressId}`)
+                                  }
+                                >
+                                  Update
+                                </div>
+                              </span>
+                            </div>
+                          </button>
+
+                          {/* Dropdown content with smooth animation */}
+                          <AnimatePresence>
+                            {activeAddress === address.addressId && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="p-4 bg-gray-50"
+                              >
+                                <p>
+                                  <strong>City:</strong> {address.addressCity}
+                                </p>
+                                <p>
+                                  <strong>Detail:</strong>{" "}
+                                  {address.addressDetail}
+                                </p>
+                                <p>
+                                  <strong>Label:</strong> {address.komshipLabel}
+                                </p>
+                                <p>
+                                  <strong>Receiver:</strong>{" "}
+                                  {address.receiverName}
+                                </p>
+                                <p>
+                                  <strong>Phone:</strong>{" "}
+                                  {address.receiverPhoneNumber}
+                                </p>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </motion.div>
+                      ))}
+                    </>
                   )}
                 </div>
               </div>
             </div>
           )}
         </div>
-      <Footer/>
+        <Footer />
       </div>
     </div>
   );

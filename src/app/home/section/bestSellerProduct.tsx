@@ -27,41 +27,40 @@ const BestSellerProduct = () => {
       const descriptionCompWidth = bestSellerDescriptionComponent.clientWidth;
 
       let percentageCovered = productsCompLeftPoint / descriptionCompWidth * 100;
-      console.log(productsCompLeftPoint, descriptionCompWidth, percentageCovered);
+
 
       if (percentageCovered > 100) percentageCovered = 100;
 
       const divisionResult = Math.ceil(percentageCovered / 5);
       if (divisionResult !== lastDivisionResult) {
-        console.log('change');
         setLastDivisionResult(divisionResult)
-        let printedToClass = 100 - (divisionResult * 5 * 3); // divisionResult * 5 * speed to lower opacity
+        let printedToClass = 100 - (divisionResult * 5 * 3); // divisionResult * 5 * speed to lower lg:opacity
         if (printedToClass < 0) printedToClass = 0;
 
-        const printedClass = `opacity-${printedToClass}`;
+        const printedClass = `lg:opacity-${printedToClass}`;
 
         bestSellerDescriptionComponent.classList.remove(
-          "opacity-100",
-          "opacity-95",
-          "opacity-90",
-          "opacity-85",
-          "opacity-80",
-          "opacity-75",
-          "opacity-70",
-          "opacity-65",
-          "opacity-60",
-          "opacity-55",
-          "opacity-50",
-          "opacity-45",
-          "opacity-40",
-          "opacity-35",
-          "opacity-30",
-          "opacity-25",
-          "opacity-20",
-          "opacity-15",
-          "opacity-10",
-          "opacity-5",
-          "opacity-0"
+          "lg:opacity-100",
+          "lg:opacity-95",
+          "lg:opacity-90",
+          "lg:opacity-85",
+          "lg:opacity-80",
+          "lg:opacity-75",
+          "lg:opacity-70",
+          "lg:opacity-65",
+          "lg:opacity-60",
+          "lg:opacity-55",
+          "lg:opacity-50",
+          "lg:opacity-45",
+          "lg:opacity-40",
+          "lg:opacity-35",
+          "lg:opacity-30",
+          "lg:opacity-25",
+          "lg:opacity-20",
+          "lg:opacity-15",
+          "lg:opacity-10",
+          "lg:opacity-5",
+          "lg:opacity-0"
         );
 
         bestSellerDescriptionComponent.classList.add(printedClass);
@@ -76,7 +75,7 @@ const BestSellerProduct = () => {
 
 
     const bestSellerDescriptionComponent = document.querySelector('#best-seller-desc');
-    bestSellerDescriptionComponent?.classList.add('opacity-100');
+    bestSellerDescriptionComponent?.classList.add('lg:opacity-100');
 
     const bestSellerProductsComponent = document.querySelector('#best-seller-products');
     bestSellerProductsComponent?.addEventListener('scroll', handleScrollAnimation);
@@ -116,10 +115,10 @@ const BestSellerProduct = () => {
   }
 
   return (
-    <div className="relative flex w-full h-auto lg:h-screen bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-2">
+    <div className="relative flex w-full h-auto lg:h-screen bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-6">
       {/* Fade effect container */}
       <div className="relative w-full">
-        <div className="w-full h-full z-10 sm:w-3/5 lg:w-2/5 text-center sm:text-left sm:absolute lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
+      <div className="w-full h-full z-10 lg:w-3/5  text-center lg:text-left lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
           <div className="text-white text-3xl sm:text-4xl font-bold">
             {(page && page[0]?.[locale]?.[3]?.title) || "Loading"}
           </div>
@@ -131,9 +130,9 @@ const BestSellerProduct = () => {
           </div>
         </div>
 
-        <div className="flex flex-col z-10 lg:flex-row gap-6 items-center overflow-x-auto pl-4 lg:pl-12 pr-4 lg:pr-12" id="best-seller-products">
+        <div className="flex flex-col z-10 lg:flex-row gap-6 overflow-x-auto pl-4 lg:pl-12 pr-4 lg:pr-12" id="best-seller-products">
           {/* Content container */}
-          <div className="w-full sm:w-3/5 lg:w-2/5 text-center sm:text-left opacity-0">
+          <div className="lg:w-3/5 text-center sm:text-left hidden lg:flex opacity-0">
             <div className="text-white text-3xl sm:text-4xl font-bold">
               {(page && page[0]?.[locale]?.[3]?.title) || "Loading"}
             </div>
@@ -147,11 +146,12 @@ const BestSellerProduct = () => {
           </div>
 
           {/* Product display */}
-          <div className="w-full lg:w-3/5 z-20 flex flex-wrap lg:flex-nowrap justify-center lg:justify-start gap-6 lg:gap-12">
+          <div className="w-2/3 lg:w-2/5 z-20 flex flex-nowrap justify-start gap-6 mt-6 lg:gap-12">
+            
               {products?.map((product, idx) => (
                 <Link
                   key={idx}
-                  className="flex-shrink-0 w-full sm:w-[150px] lg:w-[300px]"
+                  className="flex-shrink-0 w-full sm:w-[200px] lg:w-[300px]"
                   href={`/product/${product.productId}`}
                 >
                   <Image

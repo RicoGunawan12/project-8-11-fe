@@ -9,14 +9,15 @@ import NavigationBar from "../component/navbar";
 import Banner from "../component/banner";
 import { ExploreProduct } from "../model/product";
 import Footer from "../component/footer";
-import {Loading} from "../utilities/loading";
+import { Loading } from "../utilities/loading";
 import { Categories } from "../model/category";
 import { useSearchParams } from "next/navigation";
+import StarRating from "../utilities/rating";
 
 const ProductPage = () => {
   const searchParams = useSearchParams();
   const category = searchParams.get('category');
-  
+
   const [searchResults, setSearchResults] = useState<ExploreProduct[]>();
   const [categories, setCategories] = useState<Categories[]>();
   const [activeCategory, setActiveCategory] = useState(category ? category : "All");
@@ -29,16 +30,10 @@ const ProductPage = () => {
 
   const fetchSearchResults = async () => {
 
-    // if (fetchedPages[currentPage]) {
-    //   setSearchResults(fetchedPages[currentPage]);
-    //   return;
-    // }
-    console.log("test: ", activeCategory);
-    
     try {
       const counturl = new URL(`${process.env.PRODUCTS}/getCount`);
       counturl.searchParams.append("search", "");
-      counturl.searchParams.append("category", activeCategory === "All" ? "": activeCategory);
+      counturl.searchParams.append("category", activeCategory === "All" ? "" : activeCategory);
       const countResponse = await fetch(counturl, {
         method: "GET",
         headers: {
@@ -58,7 +53,7 @@ const ProductPage = () => {
       url.searchParams.append("limit", String(limit));
       url.searchParams.append("offset", String((currentPage - 1) * limit));
       url.searchParams.append("search", "");
-      url.searchParams.append("category", activeCategory === "All" ? "": activeCategory);
+      url.searchParams.append("category", activeCategory === "All" ? "" : activeCategory);
 
       const response = await fetch(url, {
         method: "GET",
@@ -71,7 +66,6 @@ const ProductPage = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
-
 
       setFetchedPages((prev) => ({
         ...prev,
@@ -102,7 +96,7 @@ const ProductPage = () => {
       setCategories(data);
     } catch (error) {
       console.error("Error fetching search results:", error);
-      
+
     }
   }
 
@@ -120,26 +114,25 @@ const ProductPage = () => {
 
   useEffect(() => {
     fetchSearchResults();
-    console.log(activeCategory);
-    
+
   }, [currentPage, activeCategory]);
 
   useEffect(() => {
     getCategories();
   }, []);
 
-  if(!searchResults){
-    return <Loading/>
+  if (!searchResults) {
+    return <Loading />
   }
 
   return (
-      <div className="w-screen min-h-screen bg-white">
+    <div className="w-screen min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 flex-grow">
         <Banner page="Product Page" text="Product" />
 
         <div className="w-full flex justify-center">
-          <div 
+          <div
             className="flex gap-8 mt-6 mb-2 pb-4 overflow-x-auto mx-8"
             style={{
               scrollbarWidth: "thin", // For Firefox
@@ -148,11 +141,10 @@ const ProductPage = () => {
           >
             <button
               onClick={() => setActiveCategory("All")}
-              className={`text-md text-secondary font-semibold p-2 rounded ${
-                activeCategory === "All"
+              className={`text-md text-secondary font-semibold p-2 rounded ${activeCategory === "All"
                   ? "border-secondary border-b-2"
                   : null
-              }`}
+                }`}
             >
               All
             </button>
@@ -161,11 +153,10 @@ const ProductPage = () => {
                 <button
                   key={category.productCategoryId}
                   onClick={() => setActiveCategory(category.productCategoryName)}
-                  className={`text-md text-secondary font-semibold p-2 rounded ${
-                    activeCategory === category.productCategoryName
+                  className={`text-md text-secondary font-semibold p-2 rounded ${activeCategory === category.productCategoryName
                       ? "border-secondary border-b-2"
                       : null
-                  }`}
+                    }`}
                 >
                   {category.productCategoryName}
                 </button>
@@ -185,12 +176,12 @@ const ProductPage = () => {
                 key={index}
                 className="w-11/12"
               >
-                <Card className="py-4 mt-6 lg:h-[425px]">
-                  <CardBody className="overflow-visible flex justify-center items-center">
+                <div className="py-4 mt-6 lg:h-[450px]">
+                  <div className="overflow-visible flex justify-center items-center">
                     {result ? (
                       <Image
                         alt="Card background"
-                        className="object-contain rounded-xl w-[450px] lg:h-[300px] md:h-[250px] h-[200px] py-6"
+                        className="object-fill w-[450px] lg:h-[325px] md:h-[250px] h-[200px]"
                         src={`${process.env.BACK_BASE_URL}${result.defaultImage}`}
                         width={300}
                         height={200}
@@ -198,30 +189,36 @@ const ProductPage = () => {
                     ) : (
                       <Image
                         alt="Card background"
-                        className="object-contain rounded-xl w-[450px] h-[300px] md:h-[250px] sm:h-[200px] py-6"
+                        className="object-fill w-[450px] h-full md:h-[250px] sm:h-[200px]"
                         src="/d.jpg"
                         width={300}
                         height={200}
                       />
                     )}
-                  </CardBody>
-                  <CardFooter className="pb-0 pt-2 px-4 flex-col justify-center">
-                    <p className="text-sm uppercase font-bold truncate max-w-[200px]">
+                  </div>
+                  <div className="pb-0 p-4 flex-col text-xs text-black justify-start items-start">
+                    <div className="flex gap-2 text-xs items-center">
+                      <StarRating rating={parseFloat(result?.averageRating) ? parseFloat(result?.averageRating) : 0} disabled />
+                      <p>{result.countRating} reviews</p>
+                    </div>
+                    <p className="text-medium uppercase font-bold truncate max-w-[200px]">
                       {result.productName}
                     </p>
+                    <p>
+                    </p>
                     {
-                        result.promo_details[0]? 
+                      result.promo_details[0] && result.promo_details[0].promo != null ?
                         <div className="w-full flex justify-center">
                           <span className="line-through mr-2 text-gray-600">Rp. {result.product_variants[0].productPrice}</span>
                           <span className="font-semibold">Rp. {result.product_variants[0].productPrice - result.promo_details[0].promo?.promoAmount > 0 ? result.product_variants[0].productPrice - result.promo_details[0].promo?.promoAmount : 0}</span>
                         </div>
                         :
                         <div >
-                        Rp. {result.product_variants[0].productPrice}
+                          Rp. {result.product_variants[0].productPrice}
                         </div>
-                      }
-                  </CardFooter>
-                </Card>
+                    }
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
@@ -233,11 +230,10 @@ const ProductPage = () => {
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 1}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === 1
+              className={`px-4 py-2 rounded-lg ${currentPage === 1
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-primary text-white"
-              }`}
+                }`}
             >
               Previous
             </button>
@@ -247,11 +243,10 @@ const ProductPage = () => {
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === totalPages
+              className={`px-4 py-2 rounded-lg ${currentPage === totalPages
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-primary text-white"
-              }`}
+                }`}
             >
               Next
             </button>

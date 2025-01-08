@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import NavigationBar from "../component/navbar";
@@ -6,40 +6,39 @@ import Footer from "../component/footer";
 import Banner from "../component/banner";
 import { toastError } from "../utilities/toast";
 import { useLocaleStore } from "../component/locale";
-import { AboutPage } from "../model/aboutPage";
+import { AboutPage, WhyPage } from "../model/aboutPage";
 import { Loading } from "../utilities/loading";
 
 const AboutUsPage = () => {
-
-  const [page, setPage] = useState<AboutPage[]>()
-  const { locale, change } = useLocaleStore()
+  const [page, setPage] = useState<AboutPage[] | null>(null);
+  const [about, setAbout] = useState<WhyPage | null>(null); // Initialize as null
+  const { locale } = useLocaleStore();
 
   useEffect(() => {
-
     const fetchData = async () => {
-
       try {
-
         const response = await fetch(`${process.env.PAGES}/about`, {
-          method: "GET"
-        })
+          method: "GET",
+        });
+        const result = await response.json();
+        setPage(result.response);
 
-        const result = await response.json()
+        const aboutResponse = await fetch(`${process.env.PAGES}/about/why`, {
+          method: "GET",
+        });
+        const aboutResult = await aboutResponse.json();
 
-        setPage(result.response)
-
+        setAbout(aboutResult.response[0] || null);
       } catch (error: any) {
-        toastError(error.message)
+        toastError(error.message || "An error occurred while fetching data.");
       }
+    };
 
-    }
+    fetchData();
+  }, []);
 
-    fetchData()
-
-  }, [])
-
-  if(!page){
-    return <Loading/>
+  if (!page) {
+    return <Loading />;
   }
 
   return (
@@ -48,84 +47,51 @@ const AboutUsPage = () => {
       <div className="mt-20 flex-grow">
         <Banner page="About Page" text="About Us" />
         <div className="text-black flex flex-col items-center tracking-widest leading-[2]">
-          <h1 className="font-bold text-5xl mt-12">
-            Hello! We make water bottles
-          </h1>
+          <h1 className="font-bold text-5xl mt-12">Hello! We make water bottles</h1>
           <h2 className="mt-12 font-semibold text-lg w-3/5">
-            {(page &&
-              (locale === "contentJSONEng"
-                ? page[0]?.titleEng
-                : page[0]?.titleIndo)) ||
-              "Loading"}
+            {locale === "contentJSONEng"
+              ? page[0]?.titleEng || "Loading"
+              : page[0]?.titleIndo || "Loading"}
           </h2>
           <div className="mt-6 w-3/5">
-            {(page &&
-              (locale === "contentJSONEng"
-                ? page[0]?.contentEng
-                : page[0]?.contentIndo)) ||
-              "Loading"}
+            {locale === "contentJSONEng"
+              ? page[0]?.contentEng || "Loading"
+              : page[0]?.contentIndo || "Loading"}
           </div>
-          <div className="w-full flex items-center flex-col bg-secondary mt-6 py-8">
-            <h1 className="text-white text-2xl font-semibold">
-              Why you should choose TYESO?
-            </h1>
-            <div className="flex justify-center items-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-12 my-6 px-6">
-                {/* Product 1 */}
-                <div className="flex flex-col items-center max-w-xs">
-                  <img
-                    src="/a.jpg"
-                    alt="Product 1"
-                    className="w-32 h-32 object-cover rounded-lg shadow-md"
-                  />
-                  <p className="mt-4 text-white text-center text-xs font-light">
-                    Tumbler eksklusif dengan bahan premium, memberikan kualitas
-                    tinggi dan daya tahan maksimal.
-                  </p>
-                </div>
-
-                {/* Product 2 */}
-                <div className="flex flex-col items-center max-w-xs">
-                  <img
-                    src="/a.jpg"
-                    alt="Product 2"
-                    className="w-32 h-32 object-cover rounded-lg shadow-md"
-                  />
-                  <p className="mt-4 text-white text-center text-xs font-light">
-                    Dirancang untuk menjaga suhu minuman, memberikan pengalaman
-                    minum yang optimal dalam berbagai kondisi.
-                  </p>
-                </div>
-
-                {/* Product 3 */}
-                <div className="flex flex-col items-center max-w-xs">
-                  <img
-                    src="/a.jpg"
-                    alt="Product 3"
-                    className="w-32 h-32 object-cover rounded-lg shadow-md"
-                  />
-                  <p className="mt-4 text-white text-center text-xs font-light">
-                    Tampil stylish dan modern dengan berbagai pilihan desain yang
-                    trendi, menjadikannya aksesori gaya hidup yang sempurna.
-                  </p>
-                </div>
-
-                {/* Product 4 */}
-                <div className="flex flex-col items-center max-w-xs">
-                  <img
-                    src="/a.jpg"
-                    alt="Product 4"
-                    className="w-32 h-32 object-cover rounded-lg shadow-md"
-                  />
-                  <p className="mt-4 text-white text-center text-xs font-light">
-                    Dibuat dari material ramah lingkungan yang dapat didaur ulang,
-                    mendukung gaya hidup berkelanjutan dan mengurangi penggunaan
-                    kemasan sekali pakai.
-                  </p>
-                </div>
-              </div>
+          <div className="w-full flex items-center flex-col text-black bg-primary mt-6 py-8">
+            <h1 className="text-2xl font-semibold">Why you should choose TYESO?</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-12 my-6 px-6">
+              {about &&
+                (locale === "contentJSONEng"
+                  ? about.whyContentJSONEng.map((content, idx) => (
+                      <div className="flex flex-col items-center max-w-xs" key={idx}>
+                        <Image
+                          src={content.photo}
+                          alt={"Image"}
+                          width={128}
+                          height={128}
+                          className="object-cover rounded-lg shadow-md"
+                        />
+                        <p className="mt-4 text-center text-xs font-light">
+                          {content.content || "No description available."}
+                        </p>
+                      </div>
+                    ))
+                  : about.whyContentJSONIndo.map((content, idx) => (
+                      <div className="flex flex-col items-center max-w-xs" key={idx}>
+                        <Image
+                          src={content.photo}
+                          alt={"Image"}
+                          width={128}
+                          height={128}
+                          className="object-cover rounded-lg shadow-md"
+                        />
+                        <p className="mt-4 text-center text-xs font-light">
+                          {content.content || "Tidak ada deskripsi tersedia."}
+                        </p>
+                      </div>
+                    )))}
             </div>
-
           </div>
         </div>
       </div>

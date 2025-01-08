@@ -34,6 +34,8 @@ const nextConfig = {
     VOUCHER: process.env.VOUCHER,
     BANNERS: process.env.BANNERS,
     RATINGS: process.env.RATINGS,
+    META_PIXEL: process.env.META_PIXEL,
+    GOOGLE_ANALYTICS: process.env.GOOGLE_ANALYTICS
   },
   eslint: {
     ignoreDuringBuilds: true,

@@ -67,7 +67,6 @@ const CartPage = () => {
             addressData.message || "Failed to fetch address data"
           );
         }
-        console.log(cartData)
         setData(cartData);
         setQuantities(
           cartData.reduce((acc: { [key: string]: number }, item: Cart) => {
@@ -94,7 +93,6 @@ const CartPage = () => {
       if (!Array.isArray(cartData) || cartData.length === 0) {
         return;
       }
-      console.log(cartData)
       setData(cartData);
       setQuantities(
         cartData?.reduce((acc: { [key: string]: number }, item: Cart) => {
@@ -131,8 +129,7 @@ const CartPage = () => {
 
     let totalWeight = 0;
     const cartTotal = data.reduce((total, item) => {
-      console.log(item);
-      
+
       const quantity = quantities[item.productVariantId] || 1;
       totalWeight += item.product_variant.product.productWeight * quantity;
       if (item.product_variant.product.promo_details[0]?.promo) {
@@ -157,12 +154,8 @@ const CartPage = () => {
     if (!response.ok) throw new Error(resp.message);
 
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
-    console.log(chosenAddress)
-    console.log(chosenAddress.komshipAddressId)
-    console.log(totalWeight)
 
     const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${literalTotal}`;
-    console.log(url)
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -183,7 +176,6 @@ const CartPage = () => {
 
   useEffect(() => {
     if (clientToken && debouncedChosenAddress && debouncedQuantities) {
-      console.log("test")
       calculateShippingOptions();
     }
   }, [debouncedChosenAddress, debouncedQuantities, clientToken]);
@@ -214,16 +206,7 @@ const CartPage = () => {
       });
 
       const resp = await response.json();
-      console.log({
-        addressId: chosenAddress?.addressId,
-        paymentMethod: paymentMethod,
-        expedition: selectedShipping?.shipping_name,
-        shippingType: selectedShipping?.service_name,
-        deliveryFee: selectedShipping?.grandtotal,
-        deliveryCashback: selectedShipping?.shipping_cashback,
-        notes: "",
-        voucherCode: voucherCode
-      });
+
       if (!response.ok) {
         if (response.status === 401) {
           router.push("/auth/login");
@@ -245,7 +228,6 @@ const CartPage = () => {
 
     url.searchParams.append("code", String(voucherCode));
 
-    console.log(url)
     const fetchData = await fetch(url, {
       method: "GET",
       headers: {
@@ -255,7 +237,7 @@ const CartPage = () => {
     })
 
     const result = await fetchData.json()
-    console.log(fetchData)
+
     let discount = 0
 
     if (result.voucherType == "percentage") {
@@ -266,7 +248,7 @@ const CartPage = () => {
       }
     }
     else {
-      discount = result.discount
+      discount = (result.discount ? result.discount : 0)
     }
 
     setPrice((prev) => ({ ...prev, voucher: discount }))
@@ -293,7 +275,7 @@ const CartPage = () => {
       setUpdate(!update);
       toastSuccess("Item removed")
     } else {
-      console.log(result);
+
       
       if (fetchData.status === 401) {
         router.push("/auth/login");
@@ -322,7 +304,6 @@ const CartPage = () => {
     if (result.ok) {
       
     } else {
-      console.log(result);
       
       if (result.status === 401) {
         router.push("/auth/login");
@@ -358,7 +339,7 @@ const CartPage = () => {
         [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
       }));
     } else {
-      console.log(result);
+  
       
       if (result.status === 401) {
         router.push("/auth/login");
@@ -584,23 +565,23 @@ const CartPage = () => {
               <div className="flex flex-col space-y-2 mt-6">
                 <div className="flex justify-between">
                   <span className="text-sm sm:text-lg font-semibold">Total Price:</span>
-                  <span className="font-light text-primary">Rp. {price.totalPrice}</span>
+                  <span className="font-light text-black">Rp. {price.totalPrice}</span>
                 </div>
                 {selectedShipping && (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold">Shipping Fee:</span>
-                    <span className="font-light text-primary">Rp. {price.shippingFee}</span>
+                    <span className="font-light text-black">Rp. {price.shippingFee}</span>
                   </div>
                 )}
-                {price.voucher !== 0 && (
+                {price.voucher != 0 ? (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold">Voucher:</span>
-                    <span className="font-light text-primary">- Rp. {price.voucher}</span>
+                    <span className="font-light text-black">- Rp. {price.voucher}</span>
                   </div>
-                )}
+                ) : null}
                 <div className="flex justify-between">
                   <span className="text-lg sm:text-xl font-semibold">Grand Total:</span>
-                  <span className="font-light text-primary">
+                  <span className="font-light text-black">
                     Rp. {price.totalPrice + price.shippingFee - (price.voucher ? price.voucher : 0)}
                   </span>
                 </div>

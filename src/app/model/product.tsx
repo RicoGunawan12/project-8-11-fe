@@ -75,5 +75,7 @@ export interface ExploreProduct {
         startDate : string
       }
     }
-  ]
+  ],
+  averageRating: string,
+  countRating: string
 }
