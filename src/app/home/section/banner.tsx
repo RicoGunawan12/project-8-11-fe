@@ -131,13 +131,13 @@ const Banner = () => {
 
       <div className="relative h-full flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-24 p-6 max-w-7xl mx-auto">
         <div className="w-full lg:w-2/5 space-y-6 animate-fadeIn">
-          <h1 className="text-white text-3xl lg:text-5xl font-bold text-center lg:text-left">
+          <h1 className="text-white text-3xl lg:text-5xl font-bold text-center">
             {pageData.title}
           </h1>
-          <p className="text-white text-lg leading-relaxed text-center lg:text-left">
+          <p className="text-white text-lg leading-relaxed text-center ">
             {pageData.content}
           </p>
-          <div className="flex justify-center lg:justify-start">
+          <div className="flex justify-center">
             <Link
               href="/product"
               className="bg-white text-stone-800 py-3 px-8 rounded-md text-lg font-medium 
@@ -148,7 +148,7 @@ const Banner = () => {
           </div>
         </div>
 
-        <div className="w-full lg:w-2/5 animate-fadeIn">
+        {/* <div className="w-full lg:w-2/5 animate-fadeIn">
           {pageData.photo && (
             <div className="relative aspect-square max-w-[500px] mx-auto">
               <Image
@@ -160,7 +160,7 @@ const Banner = () => {
               />
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* Navigation Buttons */}
