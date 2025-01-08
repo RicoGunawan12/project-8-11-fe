@@ -5,7 +5,7 @@ import { getTokenCookie } from "../utilities/token";
 import { Transaction } from "../model/transactions";
 import NavigationBar from "../component/navbar";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const TransactionPage = () => {
   const router = useRouter();
