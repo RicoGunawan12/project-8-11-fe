@@ -56,7 +56,7 @@ const MapComponent = () => {
       {activeLocation && (
         <div className="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-lg z-[1000]">
           <h3 className="font-bold text-lg">{activeLocation.name}</h3>
-          <p className="mt-1">{activeLocation.description}</p>
+          <p className="mt-1">{activeLocation.description}.</p>
           <button
             onClick={() => setActiveLocation(null)}
             className="mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
