@@ -39,32 +39,38 @@ const RegisterPage = () => {
   };
 
   const register = async () => {
-    try {
-      const response = await fetch(`${process.env.USER_REGISTER}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newUserData),
-      });
 
-      const data = await response.json();
-      if (!response.ok) {
-        if (data.errors) {
-          setCustomErr('')
-          setErrors(data.errors)
+    if(newUserData.confirmPassword != newUserData.password){
+      setCustomErr("Confirm password and password does not match")
+    }
+    else{
+      try {
+        const response = await fetch(`${process.env.USER_REGISTER}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUserData),
+        });
+  
+        const data = await response.json();
+        if (!response.ok) {
+          if (data.errors) {
+            setCustomErr('')
+            setErrors(data.errors)
+          }
+          else {
+            setErrors([])
+            setCustomErr(data.message)
+          }
+        } else {
+          toastSuccess(data.message)
+          router.push("/auth/login")
         }
-        else {
-          setErrors([])
-          setCustomErr(data.message)
-        }
-      } else {
-        toastSuccess(data.message)
-        router.push("/auth/login")
+      } catch (error: any) {
+        setCustomErr(error.message)
+        toastError(error.message)
       }
-    } catch (error: any) {
-      setCustomErr(error.message)
-      toastError(error.message)
     }
   }
 

@@ -46,7 +46,7 @@ const AboutUsPage = () => {
       <NavigationBar />
       <div className="mt-20 flex-grow">
         <Banner page="About Page" text="About Us" />
-        <div className="text-black flex flex-col items-center tracking-widest leading-[2]">
+        <div className="text-black flex flex-col p-6 items-center tracking-widest leading-[2]">
           <h1 className="font-bold text-5xl mt-12">Hello! We make water bottles</h1>
           <h2 className="mt-12 font-semibold text-lg w-3/5">
             {locale === "contentJSONEng"

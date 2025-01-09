@@ -141,7 +141,7 @@ const NavigationBar = () => {
       {/* Logo */}
       <div className="flex items-center">
         <Link href="/" className="text-3xl font-bold text-white">
-          <Image src="/logo.png" width={50} height={50} alt="not found"/>
+          <Image src="/logo.png" width={75} height={75} alt="not found"/>
         </Link>
       </div>
 

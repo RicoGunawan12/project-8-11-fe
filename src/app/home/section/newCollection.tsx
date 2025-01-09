@@ -64,7 +64,7 @@ const NewCollection = () => {
                   width={400}
                   height={400}
                   alt="logo pic"
-                  className="aspect-square w-1/2 h-auto lg:w-[400px] lg:h-[400px] object-cover"
+                  className="aspect-square w-3/4 h-auto lg:w-[400px] lg:h-[400px] object-cover"
                 />
                 <div className="w-full text-center font-semibold text-black text-md">
                   {datum.productCategoryName}

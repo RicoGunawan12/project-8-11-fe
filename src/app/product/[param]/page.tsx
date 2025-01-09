@@ -270,23 +270,26 @@ const ProductDetailPage = () => {
           </div>
 
           <div className="flex flex-wrap w-3/4 gap-4">
-            {data?.product_variants.map((product, idx) => (
-              <div
-                key={idx}
-                className={`flex justify-center cursor-pointer border-2 px-4 py-2 rounded-md transition-all ${buyVariant === idx ? "border-secondary shadow-lg" : ""}`}
-                onClick={() => setBuyVariant(idx)}
-              >
-                <Image
-                  src={`${process.env.BACK_BASE_URL}${product.productImage}`}
-                  width={120}
-                  height={120}
-                  alt="Not Found"
-                  className="w-8 h-6 object-contain"
-                />
-                {product.productColor}
-              </div>
-            ))}
-          </div>
+  {data?.product_variants.map((product, idx) => (
+    <button
+      key={idx}
+      className={`flex justify-center border-2 gap-2 px-4 py-2 rounded-md transition-all ${
+        buyVariant === idx ? "border-secondary shadow-lg" : ""
+      } ${parseInt(product.productStock) <= 0 ? "bg-gray-200 cursor-not-allowed" : "cursor-pointer"}`}
+      onClick={() => setBuyVariant(idx)}
+      disabled={parseInt(product.productStock) <= 0}
+    >
+      <Image
+        src={`${process.env.BACK_BASE_URL}${product.productImage}`}
+        width={120}
+        height={120}
+        alt="Not Found"
+        className="w-8 h-6 object-contain"
+      />
+      {product.productColor}
+    </button>
+  ))}
+</div>
 
           <div className="w-3/4">
             <span className="text-sm font-semibold">Quantity: </span>
@@ -423,10 +426,10 @@ const ProductDetailPage = () => {
             </div>
       </div>
       <Footer className="lg:mb-0 pb-16 "/>
-      <div className="lg:hidden w-full p-2  flex justify-around fixed bottom-2">
+      <div className="lg:hidden w-full p-2 flex justify-around fixed bottom-2">
         <button
           onClick={addToCart}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-between font-semibold text-lg px-6 py-2 w-3/5 ${data?.product_variants[buyVariant].productStock === "0" ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-between font-semibold text-xs px-6 py-2 w-3/5 ${data?.product_variants[buyVariant].productStock === "0" ? "bg-gray-300 cursor-not-allowed" : ""}`}
           disabled={data?.product_variants[buyVariant].productStock === "0"}
         >
           <span>Add to Cart</span>

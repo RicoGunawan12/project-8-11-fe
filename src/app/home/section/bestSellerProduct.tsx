@@ -125,7 +125,7 @@ const BestSellerProduct = () => {
           <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
             {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
           </div>
-          <div className="border-white text-white border w-fit py-4 px-8 text-lg mt-4 mx-auto sm:mx-0">
+          <div className="border-white text-white border w-fit py-2 px-4 lg:py-4 lg:px-8 text-lg mt-4 mx-auto sm:mx-0">
             <Link href="/product">View More</Link>
           </div>
         </div>
@@ -139,8 +139,8 @@ const BestSellerProduct = () => {
             <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
               {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
             </div>
-            <div className="border-white text-white border w-fit py-4 px-8 text-lg mt-4 mx-auto sm:mx-0">
-              <button>click here</button>
+            <div className="border-white text-white border w-fit py-2 px-4 lg:py-4 lg:px-8 text-lg mt-4 mx-auto sm:mx-0">
+              {/* <button>click here</button> */}
               <Link href="/product">View More</Link>
             </div>
           </div>
