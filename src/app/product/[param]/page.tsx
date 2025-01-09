@@ -252,7 +252,7 @@ const ProductDetailPage = () => {
             </h2>
             <div className="mt-2 text-lg md:text-xl font-light pb-2">
               {
-                data.promo_details[0] ? (
+                data.promo_details[0] && data.promo_details[0].promo != null ? (
                   <div>
                     <span className="line-through mr-2 text-gray-600">Rp. {data.product_variants[buyVariant].productPrice}</span>
                     <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0}</span>
@@ -275,9 +275,9 @@ const ProductDetailPage = () => {
       key={idx}
       className={`flex justify-center border-2 gap-2 px-4 py-2 rounded-md transition-all ${
         buyVariant === idx ? "border-secondary shadow-lg" : ""
-      } ${parseInt(product.productStock) <= 0 ? "bg-gray-200 cursor-not-allowed" : "cursor-pointer"}`}
+      } ${product.productStock <= 0 ? "bg-gray-200 cursor-not-allowed" : "cursor-pointer"}`}
       onClick={() => setBuyVariant(idx)}
-      disabled={parseInt(product.productStock) <= 0}
+      disabled={product.productStock <= 0}
     >
       <Image
         src={`${process.env.BACK_BASE_URL}${product.productImage}`}
@@ -310,7 +310,7 @@ const ProductDetailPage = () => {
                 +
               </button>
               <div className="ml-4 font-semibold">
-                {data?.product_variants[buyVariant].productStock === "0" ? (
+                {data?.product_variants[buyVariant].productStock === 0 ? (
                   <span className="text-red-500">Out of Stock</span>
                 ) : (
                   <span className="text-green-400">
@@ -429,14 +429,14 @@ const ProductDetailPage = () => {
       <div className="lg:hidden w-full p-2 flex justify-around fixed bottom-2">
         <button
           onClick={addToCart}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-between font-semibold text-xs px-6 py-2 w-3/5 ${data?.product_variants[buyVariant].productStock === "0" ? "bg-gray-300 cursor-not-allowed" : ""}`}
-          disabled={data?.product_variants[buyVariant].productStock === "0"}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-between font-semibold text-xs px-6 py-2 w-3/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          disabled={data?.product_variants[buyVariant].productStock === 0}
         >
           <span>Add to Cart</span>
           <span>
             Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
           </span>
-          {data?.product_variants[buyVariant].productStock === "0" && (
+          {data?.product_variants[buyVariant].productStock === 0 && (
             <span className="text-red-500 ml-2">Out of Stock</span>
           )}
         </button>

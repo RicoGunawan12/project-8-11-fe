@@ -34,7 +34,7 @@ const BestItem = () => {
   return (
     <div className="w-full h-auto lg:h-screen flex flex-col lg:flex-row-reverse bg-primary relative lg:justify-center py-6 lg:pt-24 px-4 lg:px-0">
       {/* Left Section */}
-      <div className="w-full lg:w-2/5 text-center lg:text-left">
+      <div className="w-full lg:w-2/5 text-center lg:text-left max-lg:mb-10 max-sm:mb-10">
         <div className="text-black text-3xl sm:text-4xl font-bold">
           {page && page[0]?.[locale]?.[2]?.title || ""}
         </div>
@@ -43,7 +43,7 @@ const BestItem = () => {
         </div>
         {/* stats sections when */}
         <div className="hidden lg:flex bg-white text-black lg:w-fit shadow-2xl justify-between rounded-lg py-3 px-12 mt-6">
-          <div className="border-r-2 pr-2 lg:pr-6 my-4 lg:my-6 border-black flex flex-col items-center">
+          <div className="border-r-2 pr-2 lg:pr-6 my-4 lg:my-6 border-black flex flex-col items-center max-sm:pr-10">
             <div className="text-sm lg:text-3xl font-semibold">{page && page[0]?.[locale]?.[2]?.bestNumber1 || ""}</div>
             <div className="text-xs lg:text-sm">{page && page[0]?.[locale]?.[2]?.bestTitle1 || null}</div>
           </div>
@@ -70,8 +70,8 @@ const BestItem = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="flex lg:hidden bg-white text-black lg:w-fit shadow-2xl justify-between rounded-lg py-3 px-12 mt-6">
-          <div className="border-r-2 pr-2 lg:pr-6 my-4 lg:my-6 border-black flex flex-col items-center">
+      <div className="flex lg:hidden bg-white text-black lg:w-fit shadow-2xl justify-between rounded-lg py-3 px-12 mt-6 max-sm:px-8">
+          <div className="border-r-2 pr-2 lg:pr-6 my-4 lg:my-6 border-black flex flex-col items-center max-sm:pr-8">
             <div className="text-sm lg:text-3xl font-semibold">{page && page[0]?.[locale]?.[2]?.bestNumber1 || ""}</div>
             <div className="text-xs lg:text-sm">{page && page[0]?.[locale]?.[2]?.bestTitle1 || null}</div>
           </div>
@@ -79,7 +79,7 @@ const BestItem = () => {
             <div className="text-sm lg:text-3xl font-semibold">{page && page[0]?.[locale]?.[2]?.bestNumber2 || ""}</div>
             <div className="text-xs lg:text-sm">{page && page[0]?.[locale]?.[2]?.bestTitle2 || null}</div>
           </div>
-          <div className="border-l-2 pl-2 lg:pl-6 my-4 lg:my-6 border-black flex flex-col items-center">
+          <div className="border-l-2 pl-2 lg:pl-6 my-4 lg:my-6 border-black flex flex-col items-center max-sm:pl-8">
             <div className="text-sm lg:text-3xl font-semibold">{page && page[0]?.[locale]?.[2]?.bestNumber3 || ""}</div>
             <div className="text-xs lg:text-sm">{page && page[0]?.[locale]?.[2]?.bestTitle3 || null}</div>
           </div>

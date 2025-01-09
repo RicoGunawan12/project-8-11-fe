@@ -59,8 +59,8 @@ const AboutUsPage = () => {
               : page[0]?.contentIndo || "Loading"}
           </div>
           <div className="w-full flex items-center flex-col text-black bg-primary mt-6 py-8">
-            <h1 className="text-2xl font-semibold">Why you should choose TYESO?</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-12 my-6 px-6">
+            <h1 className="text-2xl font-semibold text-white">Why you should choose TYESO?</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-12 my-6 px-6 text-white">
               {about &&
                 (locale === "contentJSONEng"
                   ? about.whyContentJSONEng.map((content, idx) => (

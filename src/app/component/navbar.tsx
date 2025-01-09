@@ -54,6 +54,7 @@ const NavigationBar = () => {
   const fetchSearchResults = async () => {
 
     if(!searchQuery.trim()){
+      setSearchResults([]);
       return
     }
 
@@ -417,10 +418,10 @@ const NavigationBar = () => {
                         <div className="flex flex-col">
                           <span>{product.productName}</span>
                           {
-                        product.promo_details[0]? 
+                        product.promo_details[0] && product.promo_details[0].promo != null ? 
                         <div className="flex justify-start">
                           <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0].productPrice}</span>
-                          <span className="font-semibold">Rp. {product.product_variants[0].productPrice - product.promo_details[0].promo.promoAmount > 0 ? product.product_variants[0].productPrice - product.promo_details[0].promo.promoAmount : 0}</span>
+                          <span className="font-semibold">Rp. {product.product_variants[0].productPrice - product.promo_details[0].promo?.promoAmount > 0 ? product.product_variants[0].productPrice - product.promo_details[0].promo?.promoAmount : 0}</span>
                         </div>
                         :
                         <div >
@@ -434,9 +435,11 @@ const NavigationBar = () => {
                 </ul>
               ) : (
                 <p>
-                {searchQuery.trim()
+                  No products found.
+                {/* {searchQuery.trim()
                   ? "No products found."
-                  : "Please insert what you want to search."}
+                  : "Please insert what you want to search."} */}
+                  {/* Please insert what you want to search. */}
               </p>
               )}
             </div>

@@ -54,7 +54,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
         <div className="flex flex-col items-center lg:items-start w-full lg:w-1/4 mt-6 lg:mt-0">
           <div className="flex items-center gap-6">
             <Link href="/" className="text-3xl font-semibold text-white">
-              TYESO
+              <Image src="/logo.png" width={100} height={100} alt="not found"/>
             </Link>
           </div>
           <div className="flex gap-4 mt-6 justify-center lg:justify-start">
