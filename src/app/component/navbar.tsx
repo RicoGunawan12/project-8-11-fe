@@ -148,7 +148,7 @@ const NavigationBar = () => {
 
       {/* Desktop Menu */}
       <div className="hidden lg:flex items-center gap-6">
-        {["product", "blog", "FAQ", "contact", "about"].map((item) => (
+        {["product", "blog", "FAQ", "contact", "about", "location"].map((item) => (
           <Link
             key={item}
             href={`/${item.toLowerCase()}`}
@@ -181,7 +181,7 @@ const NavigationBar = () => {
         <div className="absolute top-20 left-0 w-full bg-secondary shadow-lg z-50 lg:hidden text-xs">
           <div className="flex flex-col items-center gap-4 py-4">
             {/* Navigation Links */}
-            {["product", "blog", "faq", "contact", "about"].map((item) => (
+            {["product", "blog", "faq", "contact", "about", "location"].map((item) => (
               <Link
                 key={item}
                 href={`/${item}`}

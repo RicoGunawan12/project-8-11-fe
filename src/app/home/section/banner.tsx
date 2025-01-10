@@ -23,7 +23,8 @@ const Banner = () => {
         }
 
         const data = await response.json();
-        setPages(data.carousels); // Assuming the data is an array of CarouselItem
+        console.log(data)
+        setPages(data.carousels);
       } catch (error: any) {
         toastError(error.message || "An unexpected error occurred.");
       }
@@ -58,20 +59,35 @@ const Banner = () => {
   const content = isEnglish ? pageData.contentEng : pageData.contentIndo;
   const buttonText = isEnglish ? pageData.buttonEng : pageData.buttonIndo;
   const backgroundImageUrl = process.env.BACK_BASE_URL + pageData.carouselImage;
+  const backgroundImageUrlMobile = process.env.BACK_BASE_URL + pageData.carouselImageMobile;
+
+  console.log(backgroundImageUrl, backgroundImageUrlMobile)
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background */}
-      <div
-        className="absolute inset-0 transition-transform duration-500 ease-out"
-        style={{
-          backgroundImage: `url('${backgroundImageUrl}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 transition-transform duration-500 ease-out">
+        {/* Default Background for Mobile */}
+        <div
+          className="absolute inset-0 bg-black/40"
+          style={{
+            backgroundImage: `url('${backgroundImageUrlMobile}')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+
+        {/* Background for Larger Screens */}
+        <div
+          className="hidden sm:block absolute inset-0 bg-black/40"
+          style={{
+            backgroundImage: `url('${backgroundImageUrl}')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
       </div>
+
 
       {/* Content */}
       <div className="relative h-full flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-24 p-6 max-w-7xl mx-auto">

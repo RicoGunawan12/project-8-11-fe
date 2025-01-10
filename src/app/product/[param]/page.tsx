@@ -29,7 +29,7 @@ const ProductDetailPage = () => {
   const [buyVariant, setBuyVariant] = useState(0)
   const [relatedProduct, setRelatedProduct] = useState<ProductCard[]>([])
 
-  const fetchProductDetail = async() => {
+  const fetchProductDetail = async () => {
     const response = await fetch(`${process.env.PRODUCTS}/related/${id}`, {
       method: "GET",
       headers: {
@@ -46,7 +46,7 @@ const ProductDetailPage = () => {
     setRelatedProduct(data.relatedProducts)
   }
 
-  const fetchRating = async() => {
+  const fetchRating = async () => {
     const ratingResponse = await fetch(`${process.env.RATINGS}/${id}`, {
       method: "GET",
       headers: {
@@ -60,7 +60,7 @@ const ProductDetailPage = () => {
     }
 
     console.log(data)
-    
+
     setRatingData(ratingData.ratings);
   }
 
@@ -148,7 +148,7 @@ const ProductDetailPage = () => {
 
       toastSuccess("Product added to cart!");
     } catch (error: any) {
-      
+
       toastError(error.message);
     }
   };
@@ -184,20 +184,20 @@ const ProductDetailPage = () => {
     }
   };
 
-    const trackViewProduct = (product: ProductCard) => {
-      if (typeof window !== 'undefined' && window.fbq) {
-        window.fbq('track', 'ViewContent', {
-          content_type: 'product',
-          content_ids: [product.productId],
-          content_name: product.productName,
-          currency: 'IDR',
-          value: product.promo_details[0] 
-            ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount 
-            : parseInt(product.product_variants[0].productPrice)
-        });
-      }
-    };
-  
+  const trackViewProduct = (product: ProductCard) => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'ViewContent', {
+        content_type: 'product',
+        content_ids: [product.productId],
+        content_name: product.productName,
+        currency: 'IDR',
+        value: product.promo_details[0]
+          ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount
+          : parseInt(product.product_variants[0].productPrice)
+      });
+    }
+  };
+
 
   if (!data) {
     return <Loading />;
@@ -270,26 +270,41 @@ const ProductDetailPage = () => {
           </div>
 
           <div className="flex flex-wrap w-3/4 gap-4">
-  {data?.product_variants.map((product, idx) => (
-    <button
-      key={idx}
-      className={`flex justify-center border-2 gap-2 px-4 py-2 rounded-md transition-all ${
-        buyVariant === idx ? "border-secondary shadow-lg" : ""
-      } ${product.productStock <= 0 ? "bg-gray-200 cursor-not-allowed" : "cursor-pointer"}`}
-      onClick={() => setBuyVariant(idx)}
-      disabled={product.productStock <= 0}
-    >
-      <Image
-        src={`${process.env.BACK_BASE_URL}${product.productImage}`}
-        width={120}
-        height={120}
-        alt="Not Found"
-        className="w-8 h-6 object-contain"
-      />
-      {product.productColor}
-    </button>
-  ))}
-</div>
+            {data?.product_variants.map((product, idx) => (
+              <button
+                key={idx}
+                className={`relative flex justify-center items-center border-2 gap-2 px-4 py-2 rounded-md transition-all 
+    ${buyVariant === idx
+                    ? "border-secondary shadow-lg"
+                    : "border-gray-300"
+                  } 
+    ${product.productStock <= 0
+                    ? "bg-gray-100 text-gray-500 opacity-50"
+                    : "bg-white hover:bg-gray-50"
+                  }`}
+                onClick={() => setBuyVariant(idx)}
+                title={product.productStock <= 0 ? "Out of Stock" : "Select this variant"}
+              >
+                <div
+                  className={`absolute inset-0 bg-gray-300 ${product.productStock <= 0 ? "opacity-30" : "opacity-0"
+                    } rounded-md`}
+                  aria-hidden="true"
+                ></div>
+                <Image
+                  src={`${process.env.BACK_BASE_URL}${product.productImage}`}
+                  width={120}
+                  height={120}
+                  alt="Product"
+                  className="w-8 h-6 object-contain"
+                />
+                <span
+                >
+                  {product.productColor}
+                </span>
+              </button>
+
+            ))}
+          </div>
 
           <div className="w-3/4">
             <span className="text-sm font-semibold">Quantity: </span>
@@ -384,48 +399,48 @@ const ProductDetailPage = () => {
         </div>
       </div>
       <div>
-      <div className="grid grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16 mb-6">
-              {relatedProduct.map((product: ProductCard) => (
-                <Link
-                  key={product.productId} 
-                  onClick={() => trackViewProduct(product)}
-                  href={`/product/${product.productId}`}
-                >
-                  <div className="text-xs">
-                    <Image
-                      src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
-                      alt={product.productName}
-                      width={200}
-                      height={200}
-                      className="w-full object-fill aspect-square"
-                    />
-                    
-                    <div className="text-lg font-semibold text-black w-full text-left p-2">
-                      <p><StarRating rating={parseFloat(product?.averageRating) ? parseFloat(product?.averageRating) : 0} disabled /></p>
-                      <p>{product.productName}</p>
-                      {product.promo_details[0] && product.promo_details[0].promo != null ? (
-                        <div className="flex text-xs font-normal justify-start">
-                          <span className="line-through mr-2 text-gray-600">
-                            Rp. {product.product_variants[0].productPrice}
-                          </span>
-                          <span className="font-semibold">
-                            Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount > 0 
-                              ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount 
-                              : 0}
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="flex text-xs font-normal justify-start">
-                          <p>Rp. {product.product_variants[0].productPrice}</p>
-                        </div>
-                      )}
+        <div className="grid grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16 mb-6">
+          {relatedProduct.map((product: ProductCard) => (
+            <Link
+              key={product.productId}
+              onClick={() => trackViewProduct(product)}
+              href={`/product/${product.productId}`}
+            >
+              <div className="text-xs">
+                <Image
+                  src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
+                  alt={product.productName}
+                  width={200}
+                  height={200}
+                  className="w-full object-fill aspect-square"
+                />
+
+                <div className="text-lg font-semibold text-black w-full text-left p-2">
+                  <p><StarRating rating={parseFloat(product?.averageRating) ? parseFloat(product?.averageRating) : 0} disabled /></p>
+                  <p>{product.productName}</p>
+                  {product.promo_details[0] && product.promo_details[0].promo != null ? (
+                    <div className="flex text-xs font-normal justify-start">
+                      <span className="line-through mr-2 text-gray-600">
+                        Rp. {product.product_variants[0].productPrice}
+                      </span>
+                      <span className="font-semibold">
+                        Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount > 0
+                          ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount
+                          : 0}
+                      </span>
                     </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                  ) : (
+                    <div className="flex text-xs font-normal justify-start">
+                      <p>Rp. {product.product_variants[0].productPrice}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
-      <Footer className="lg:mb-0 pb-16 "/>
+      <Footer className="lg:mb-0 pb-16 " />
       <div className="lg:hidden w-full p-2 flex justify-around fixed bottom-2">
         <button
           onClick={addToCart}

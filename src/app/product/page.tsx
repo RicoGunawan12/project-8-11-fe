@@ -181,7 +181,7 @@ const ProductPage = () => {
                     {result ? (
                       <Image
                         alt="Card background"
-                        className="object-fill w-[450px] lg:h-[325px] md:h-[250px] h-[200px]"
+                        className="object-fill w-full aspect-square"
                         src={`${process.env.BACK_BASE_URL}${result.defaultImage}`}
                         width={300}
                         height={200}
