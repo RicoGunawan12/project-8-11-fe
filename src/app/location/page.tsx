@@ -16,7 +16,7 @@ import { useLocaleStore } from "../component/locale";
 const LocationPage: React.FC = () => {
   const [data, setData] = useState<Location[]>();
   const [selectedProvince, setSelectedProvince] = useState<string>("");
-  const {locale} = useLocaleStore()
+  const {locale} = useLocaleStore();
 
   useEffect(() => {
     const getData = async () => {
@@ -33,7 +33,6 @@ const LocationPage: React.FC = () => {
           throw new Error(resp.message);
         }
         setData(resp.locations);
-        // Set the first province as default selected
         if (resp.locations.length > 0) {
           const firstProvince = resp.locations[0].province;
           setSelectedProvince(firstProvince);
@@ -60,9 +59,9 @@ const LocationPage: React.FC = () => {
       <div className="mt-20 flex-grow">
         <Banner page="Location Page" text="Locations"/>
         <div className="p-6 md:p-12 text-black">
-          <h1 className="text-2xl font-bold mb-6 ">{
-            locale == "contentJSONEng" ?   "Find our offline store" : "Temukan toko offline kami"
-            }</h1>
+          <h1 className="text-2xl font-bold mb-6 truncate">
+            {locale == "contentJSONEng" ? "Find our offline store" : "Temukan toko offline kami"}
+          </h1>
           <div className="flex gap-8">
             {/* Left sidebar - Provinces */}
             <div className="w-1/4">
@@ -74,8 +73,8 @@ const LocationPage: React.FC = () => {
                     selectedProvince === province ? 'font-medium' : ''
                   }`}
                 >
-                  <span>{province}</span>
-                  <span className="text-gray-500">
+                  <span className="truncate">{province}</span>
+                  <span className="text-gray-500 flex-shrink-0">
                     ({data?.filter(loc => loc.province === province).length})
                   </span>
                 </button>
@@ -86,41 +85,39 @@ const LocationPage: React.FC = () => {
             <div className="w-3/4">
               {selectedProvince && (
                 <div className="mb-6">
-                  <h2 className="text-xl font-bold mb-4">{selectedProvince}</h2>
+                  <h2 className="text-xl font-bold mb-4 truncate">{selectedProvince}</h2>
                   <div className="space-y-8">
                     {selectedLocations.map((location) => (
                       <div
                         key={location.locationId}
                         className="bg-gray-100 rounded-lg p-6"
                       >
-                        <h3 className="text-lg font-medium mb-4">{location.addressDetail}</h3>
+                        <h3 className="text-lg font-medium mb-4 truncate">{location.addressDetail}</h3>
                         <div className="flex flex-col gap-3 text-gray-600">
-                          <p className="flex items-center gap-2">
-                            <FontAwesomeIcon icon={faLocationArrow} className="w-4" />
-                            {location.addressDetail}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <FontAwesomeIcon icon={faLocationArrow} className="w-4 flex-shrink-0" />
+                            <p className="truncate">{location.addressDetail}</p>
+                          </div>
                           <p>
                             <a
                               href={location.link}
-                              className="text-orange-500 hover:underline"
+                              className="text-orange-500 hover:underline truncate inline-block max-w-full"
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              {
-            locale == "contentJSONEng" ?   "View on google maps" : "Lihat di google maps"
-            }
+                              {locale == "contentJSONEng" ? "View on google maps" : "Lihat di google maps"}
                             </a>
                           </p>
-                          <p className="flex items-center gap-2">
-                            <FontAwesomeIcon icon={faClock} className="w-4" />
-                            {location.openTime} - {location.closeTime} WIB
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <FontAwesomeIcon icon={faPhone} className="w-4" />
-                            <a href={`tel:${location.phoneNumber}`} className="text-orange-500">
+                          <div className="flex items-center gap-2">
+                            <FontAwesomeIcon icon={faClock} className="w-4 flex-shrink-0" />
+                            <p className="truncate">{location.openTime} - {location.closeTime} WIB</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <FontAwesomeIcon icon={faPhone} className="w-4 flex-shrink-0" />
+                            <a href={`tel:${location.phoneNumber}`} className="text-orange-500 truncate">
                               {location.phoneNumber}
                             </a>
-                          </p>
+                          </div>
                         </div>
                       </div>
                     ))}
