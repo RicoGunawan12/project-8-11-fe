@@ -36,7 +36,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
         <div className="flex flex-col lg:flex-row w-full lg:w-3/4 gap-6 lg:gap-12 px-6">
           <div className="text-sm">
             <h1 className="mb-6 text-xl font-semibold">COMPANY</h1>
-            <div className="flex flex-col gap-y-1">
+            <div className="flex flex-col gap-y-6">
               <Link href={"/about"} className="hover:text-primary">About</Link>
               <Link href={"/product"} className="hover:text-primary">Product</Link>
               <Link href={"/contact"} className="hover:text-primary">Contact</Link>
@@ -44,9 +44,10 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           </div>
           <div className="text-sm">
             <h1 className="mb-6 text-xl font-semibold">SUPPORT</h1>
-            <div className="flex flex-col gap-y-1">
+            <div className="flex flex-col gap-y-6">
               <Link href={"/faq"} className="hover:text-primary">FAQ</Link>
               <Link href={"/blog"} className="hover:text-primary">Blog</Link>
+              <Link href={"/location"} className="hover:text-primary">Location</Link>
             </div>
           </div>
         </div>

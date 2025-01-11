@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import NavigationBar from "../component/navbar";
 import { toastError } from "../utilities/toast";
 import Footer from "../component/footer";
@@ -10,12 +9,14 @@ import {
   faClock,
   faLocationArrow,
   faPhone,
-  faPlus,
-  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
+import Banner from "../component/banner";
+import { useLocaleStore } from "../component/locale";
 
 const LocationPage: React.FC = () => {
   const [data, setData] = useState<Location[]>();
+  const [selectedProvince, setSelectedProvince] = useState<string>("");
+  const {locale} = useLocaleStore()
 
   useEffect(() => {
     const getData = async () => {
@@ -32,6 +33,11 @@ const LocationPage: React.FC = () => {
           throw new Error(resp.message);
         }
         setData(resp.locations);
+        // Set the first province as default selected
+        if (resp.locations.length > 0) {
+          const firstProvince = resp.locations[0].province;
+          setSelectedProvince(firstProvince);
+        }
       } catch (error: any) {
         toastError(error.message);
       }
@@ -44,108 +50,88 @@ const LocationPage: React.FC = () => {
     new Set(data?.map((location) => location.province))
   );
 
+  const selectedLocations = data?.filter(
+    (location) => location.province === selectedProvince
+  ) || [];
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 flex-grow">
-        <div className="p-6 md:p-12 gap-6 flex flex-col items-center">
-          {provinces.map((province) => (
-            <ProvinceDropdown
-              key={province}
-              province={province}
-              locations={data?.filter(
-                (location) => location.province === province
-              ) || []}
-            />
-          ))}
+        <Banner page="Location Page" text="Locations"/>
+        <div className="p-6 md:p-12 text-black">
+          <h1 className="text-2xl font-bold mb-6 ">{
+            locale == "contentJSONEng" ?   "Find our offline store" : "Temukan toko offline kami"
+            }</h1>
+          <div className="flex gap-8">
+            {/* Left sidebar - Provinces */}
+            <div className="w-1/4">
+              {provinces.map((province) => (
+                <button
+                  key={province}
+                  onClick={() => setSelectedProvince(province)}
+                  className={`w-full text-left py-2 px-4 text-base hover:text-gray-600 focus:outline-none flex items-center gap-2 ${
+                    selectedProvince === province ? 'font-medium' : ''
+                  }`}
+                >
+                  <span>{province}</span>
+                  <span className="text-gray-500">
+                    ({data?.filter(loc => loc.province === province).length})
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Right side - Locations */}
+            <div className="w-3/4">
+              {selectedProvince && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-bold mb-4">{selectedProvince}</h2>
+                  <div className="space-y-8">
+                    {selectedLocations.map((location) => (
+                      <div
+                        key={location.locationId}
+                        className="bg-gray-100 rounded-lg p-6"
+                      >
+                        <h3 className="text-lg font-medium mb-4">{location.addressDetail}</h3>
+                        <div className="flex flex-col gap-3 text-gray-600">
+                          <p className="flex items-center gap-2">
+                            <FontAwesomeIcon icon={faLocationArrow} className="w-4" />
+                            {location.addressDetail}
+                          </p>
+                          <p>
+                            <a
+                              href={location.link}
+                              className="text-orange-500 hover:underline"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {
+            locale == "contentJSONEng" ?   "View on google maps" : "Lihat di google maps"
+            }
+                            </a>
+                          </p>
+                          <p className="flex items-center gap-2">
+                            <FontAwesomeIcon icon={faClock} className="w-4" />
+                            {location.openTime} - {location.closeTime} WIB
+                          </p>
+                          <p className="flex items-center gap-2">
+                            <FontAwesomeIcon icon={faPhone} className="w-4" />
+                            <a href={`tel:${location.phoneNumber}`} className="text-orange-500">
+                              {location.phoneNumber}
+                            </a>
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
       <Footer />
-    </div>
-  );
-};
-
-interface ProvinceDropdownProps {
-  province: string;
-  locations: Location[];
-}
-
-const ProvinceDropdown: React.FC<ProvinceDropdownProps> = ({
-  province,
-  locations,
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null
-  );
-
-  return (
-    <div className="border rounded-lg shadow-sm p-4 w-4/5">
-      <button
-        className="w-full text-left text-lg font-semibold text-gray-800 focus:outline-none flex justify-between items-center"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {province} ({locations.length})
-        <span className="text-xl">{isOpen ? <FontAwesomeIcon icon={faMinus} /> : <FontAwesomeIcon icon={faPlus} />}</span>
-      </button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden mt-2"
-          >
-            {locations.map((location) => (
-              <div
-                key={location.locationId}
-                className="border-b py-2 last:border-none flex gap-6"
-                onClick={() => setSelectedLocation(location)}
-              >
-                <div className="w-1/2">
-                  <h3 className="text-md font-medium text-gray-900 flex gap-2 items-center">
-                    <FontAwesomeIcon icon={faLocationArrow} />{" "}
-                    {location.addressDetail}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    <a
-                      href={location.link}
-                      className="text-blue-500 underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Visit Website
-                    </a>
-                  </p>
-                  <p className="text-sm text-gray-600 flex items-center gap-2">
-                    <FontAwesomeIcon icon={faClock} />
-                    {location.openTime} - {location.closeTime}
-                  </p>
-                  <p className="text-sm text-gray-600 flex gap-2 items-center">
-                    <FontAwesomeIcon icon={faPhone} />
-                    {location.phoneNumber}
-                  </p>
-                </div>
-                {selectedLocation && selectedLocation.locationId === location.locationId && (
-                  <div className="w-1/2">
-                    <iframe
-                      title="Google Maps Preview"
-                      src={`https://www.google.com/maps/embed/v1/place?key=${process.env.GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(
-                        location.addressDetail
-                      )}`}
-                      width="100%"
-                      height="200"
-                      allowFullScreen
-                      className="rounded-md shadow"
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
