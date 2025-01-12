@@ -10,6 +10,7 @@ import { Loading } from "@/app/utilities/loading";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import { formatDate, mapPaymentMethod } from "@/app/utilities/converter";
 import Image from "next/image";
+import { useLocaleStore } from "@/app/component/locale";
 
 const TransactionPage = () => {
   const router = useRouter();
@@ -24,8 +25,46 @@ const TransactionPage = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [reason, setReason] = useState("");
+  const [adminAddress, setAdminAddress] = useState<any>()
+  const {locale} = useLocaleStore()
+
+  const fetchData = async () => {
+
+    const clientToken = getTokenCookie();
+    if (!clientToken) {
+      router.push("/auth/login");
+    }
+
+    try {
+      setLoading(true);
+
+      const adminAddress = await fetch(
+        `${process.env.ADDRESS}/admin`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!adminAddress.ok) {
+        throw new Error("Failed to fetch transaction data");
+      }
+      const data = await adminAddress.json();
+
+      console.log(data)
+      setAdminAddress(data.response[0]);
+    } catch (error) {
+      // console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
+    fetchData()
     const clientToken = getTokenCookie();
     if (!clientToken) {
       router.push("/");
@@ -263,7 +302,8 @@ const TransactionPage = () => {
                       {transaction?.totalPrice}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {transaction?.status}
+                      {transaction?.status == "Waiting for Return" ? transaction?.status + ` (send to ${adminAddress.addressDetail})` : transaction?.status == "Cancelled" ?transaction?.status + `(${transaction?.notes})` : transaction?.status == "Return" ? transaction?.status + ` (${locale == "contentJSONEng"? "Check you bank balance regularly" : "Pastikan cek uang bank secara berkala"})` : transaction?.status}
+
                     </td>
                     <td className="py-2 px-4 border-b">
                       {transaction?.shippingType}
