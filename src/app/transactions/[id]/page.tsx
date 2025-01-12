@@ -263,7 +263,7 @@ const TransactionPage = () => {
                       {transaction?.totalPrice}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {transaction?.status}
+                      {transaction?.status == "Canceled" ? transaction?.status: transaction?.status + `(${transaction?.notes})`}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {transaction?.shippingType}
