@@ -10,6 +10,7 @@ import { Loading } from "@/app/utilities/loading";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import { formatDate, mapPaymentMethod } from "@/app/utilities/converter";
 import Image from "next/image";
+import DeleteConfirmationModal from "@/app/component/modal/deleteConfirmation";
 
 const TransactionPage = () => {
   const router = useRouter();
@@ -19,11 +20,12 @@ const TransactionPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>();
-  
+
   // New state for modals
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [reason, setReason] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     const clientToken = getTokenCookie();
@@ -86,6 +88,7 @@ const TransactionPage = () => {
     } catch (err: any) {
       toastError(err.message || "Failed to cancel transaction");
     }
+    setIsModalOpen(false)
   };
 
   const cancelWaitingForShipping = async () => {
@@ -168,6 +171,9 @@ const TransactionPage = () => {
             <div className="p-6 border-2 w-3/4 rounded-md shadow-2xl bg-gray-50">
               <h2 className="text-2xl font-semibold text-black mb-4 flex justify-between">
                 <span>Transactions Information</span>
+                <div className="relative">
+                  <DeleteConfirmationModal header={`Cancel Order`} description={`Are you sure you want to cancel your order?`} onDelete={cancelTransaction} isVisible={isModalOpen} onCancel={() => { setIsModalOpen(false) }} />
+                </div>
                 <div className="text-black">
                   {(() => {
                     switch (transaction?.status) {
@@ -184,7 +190,7 @@ const TransactionPage = () => {
                             </span>
                             <span className="ml-2">
                               <button
-                                onClick={cancelTransaction}
+                                onClick={() => { setIsModalOpen(true) }}
                                 className="text-sm font-semibold bg-red-500 p-2 flex justify-center text-white rounded-lg"
                               >
                                 Cancel
@@ -242,7 +248,7 @@ const TransactionPage = () => {
                   })()}
                 </div>
               </h2>
-              
+
               {/* Rest of the existing table code... */}
               <table className="min-w-full text-left border border-gray-300">
                 <thead className="bg-gray-200">
@@ -260,7 +266,7 @@ const TransactionPage = () => {
                       {formatDate(transaction?.transactionDate || "")}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {transaction?.totalPrice}
+                      Rp. {transaction?.totalPrice}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {transaction?.status}
@@ -307,10 +313,10 @@ const TransactionPage = () => {
                       </td>
                       <td className="py-2 px-4 border-b">{detail.quantity}</td>
                       <td className="py-2 px-4 border-b">
-                        {detail.paidProductPrice}
+                        Rp. {detail.paidProductPrice}
                       </td>
                       <td className="py-2 px-4 border-b">
-                        {detail.paidProductPrice * detail.quantity}
+                        Rp. {detail.paidProductPrice * detail.quantity}
                       </td>
                     </tr>
                   ))}
