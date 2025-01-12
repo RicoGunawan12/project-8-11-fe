@@ -10,6 +10,8 @@ import { Loading } from "@/app/utilities/loading";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import { formatDate, mapPaymentMethod } from "@/app/utilities/converter";
 import Image from "next/image";
+import DeleteConfirmationModal from "@/app/component/modal/deleteConfirmation";
+import { useLocaleStore } from "@/app/component/locale";
 
 const TransactionPage = () => {
   const router = useRouter();
@@ -19,13 +21,52 @@ const TransactionPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>();
-  
+
   // New state for modals
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [reason, setReason] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [adminAddress, setAdminAddress] = useState<any>()
+  const {locale} = useLocaleStore()
+
+  const fetchData = async () => {
+
+    const clientToken = getTokenCookie();
+    if (!clientToken) {
+      router.push("/auth/login");
+    }
+
+    try {
+      setLoading(true);
+
+      const adminAddress = await fetch(
+        `${process.env.ADDRESS}/admin`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!adminAddress.ok) {
+        throw new Error("Failed to fetch transaction data");
+      }
+      const data = await adminAddress.json();
+
+      console.log(data)
+      setAdminAddress(data.response[0]);
+    } catch (error) {
+      // console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
+    fetchData()
     const clientToken = getTokenCookie();
     if (!clientToken) {
       router.push("/");
@@ -86,6 +127,7 @@ const TransactionPage = () => {
     } catch (err: any) {
       toastError(err.message || "Failed to cancel transaction");
     }
+    setIsModalOpen(false)
   };
 
   const cancelWaitingForShipping = async () => {
@@ -159,7 +201,7 @@ const TransactionPage = () => {
   }
 
   return (
-    <div className="w-screen h-screen bg-white">
+    <div className="w-screen h-auto min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
         <Banner text="Transaction Details" page="Transaction Page" />
@@ -168,6 +210,9 @@ const TransactionPage = () => {
             <div className="p-6 border-2 w-3/4 rounded-md shadow-2xl bg-gray-50">
               <h2 className="text-2xl font-semibold text-black mb-4 flex justify-between">
                 <span>Transactions Information</span>
+                <div className="relative">
+                  <DeleteConfirmationModal header={`Cancel Order`} description={`Are you sure you want to cancel your order?`} onDelete={cancelTransaction} isVisible={isModalOpen} onCancel={() => { setIsModalOpen(false) }} />
+                </div>
                 <div className="text-black">
                   {(() => {
                     switch (transaction?.status) {
@@ -184,7 +229,7 @@ const TransactionPage = () => {
                             </span>
                             <span className="ml-2">
                               <button
-                                onClick={cancelTransaction}
+                                onClick={() => { setIsModalOpen(true) }}
                                 className="text-sm font-semibold bg-red-500 p-2 flex justify-center text-white rounded-lg"
                               >
                                 Cancel
@@ -242,7 +287,7 @@ const TransactionPage = () => {
                   })()}
                 </div>
               </h2>
-              
+
               {/* Rest of the existing table code... */}
               <table className="min-w-full text-left border border-gray-300">
                 <thead className="bg-gray-200">
@@ -260,10 +305,15 @@ const TransactionPage = () => {
                       {formatDate(transaction?.transactionDate || "")}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {transaction?.totalPrice}
+                      Rp. {transaction?.totalPrice}
                     </td>
                     <td className="py-2 px-4 border-b">
+<<<<<<< HEAD
                       {transaction?.status == "Canceled" ? transaction?.status: transaction?.status + `(${transaction?.notes})`}
+=======
+                      {transaction?.status == "Waiting for Return" ? transaction?.status + ` (send to ${adminAddress.addressDetail})` : transaction?.status == "Cancelled" ?transaction?.status + `(${transaction?.notes})` : transaction?.status == "Return" ? transaction?.status + ` (${locale == "contentJSONEng"? "Check you bank balance regularly" : "Pastikan cek uang bank secara berkala"})` : transaction?.status}
+
+>>>>>>> 5a32999106bd53ab8d9871ca219ba71b8a8ae5d2
                     </td>
                     <td className="py-2 px-4 border-b">
                       {transaction?.shippingType}
@@ -307,10 +357,10 @@ const TransactionPage = () => {
                       </td>
                       <td className="py-2 px-4 border-b">{detail.quantity}</td>
                       <td className="py-2 px-4 border-b">
-                        {detail.paidProductPrice}
+                        Rp. {detail.paidProductPrice}
                       </td>
                       <td className="py-2 px-4 border-b">
-                        {detail.paidProductPrice * detail.quantity}
+                        Rp. {detail.paidProductPrice * detail.quantity}
                       </td>
                     </tr>
                   ))}

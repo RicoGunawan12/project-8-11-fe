@@ -14,6 +14,7 @@ import { Payment } from "../model/transactions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../component/footer";
+import { useLocaleStore } from "../component/locale";
 
 const CartPage = () => {
   const router = useRouter();
@@ -39,6 +40,7 @@ const CartPage = () => {
     grandTotal: 0
   })
   const [update, setUpdate] = useState(false);
+  const {locale} = useLocaleStore()
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -364,8 +366,8 @@ const CartPage = () => {
           loading ? <LoadingOverlay/> : null
         }
         <div className="flex-1 h-full bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-2">Shopping Bag</h2>
-          <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} items in your bag</p>
+          <h2 className="text-xl sm:text-2xl font-semibold mb-2">{locale == "contentJSONEng" ? "Shopping Bag" : "Keranjang"}</h2>
+          <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} {locale == "contentJSONEng" ? "items in your bag" : "jumlah barang di keranjang"}</p>
           {data.length > 0 ? (
             <div className="space-y-4">
               {data.map((item) => (
@@ -385,7 +387,7 @@ const CartPage = () => {
                       {item.product_variant.product.productName}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-500">
-                      Color: {item.product_variant.productColor} | Size:{" "}
+                      {locale == "contentJSONEng" ? "Color" : "Warna"}: {item.product_variant.productColor} | {locale == "contengJSONEng" ? "Size" : "Ukuran"}:{" "}
                       {item.product_variant.product.productSize}
                     </p>
                   </div>
@@ -463,7 +465,7 @@ const CartPage = () => {
                 onClick={() => router.push("/product")}
                 className="bg-secondary py-2 px-4 rounded-xl text-white text-sm sm:text-base"
               >
-                Explore Our Products
+                {locale == "contentJSONEng" ? "Explore Our Products" : "Jelajahi Produk Kami"}
               </button>
             </div>
           )}
@@ -479,12 +481,12 @@ const CartPage = () => {
                   onClick={() => router.push("/address/create")}
                   className="w-full bg-secondary text-white py-2 rounded-md mb-2 text-sm sm:text-base"
                 >
-                  Create Address
+                  {locale == "contentJSONEng" ? "Create Address" : "Daftarkan Alamat"}
                 </button>
               ) : (
                 <div>
                   <label htmlFor="shippingAddress" className="block text-sm font-medium text-gray-700">
-                    Shipping Address
+                    {locale == "contentJSONEng" ?  "Shipping Address" : "Alamat Pengiriman"}
                   </label>
                   <select
                     id="shippingAddress"
@@ -500,7 +502,7 @@ const CartPage = () => {
                     disabled={data.length === 0}
                     value={chosenAddress?.addressDetail || ""}
                   >
-                    <option value="">Select an Address</option>
+                    <option value="">{locale == "contentJSONEng" ? "Select an Address" : "Pilih alamat"}</option>
                     {address.map((addr) => (
                       <option key={addr.addressId} value={addr.addressDetail}>
                         {addr.addressDetail}
@@ -511,7 +513,7 @@ const CartPage = () => {
               )}
 
               <label htmlFor="shippingOption" className="block text-sm font-medium text-gray-700">
-                Shipping Option
+                {locale == "contentJSONEng" ? "Shipping Option" : "Opsi Pengiriman"}
               </label>
               <select
                 id="shippingOption"
@@ -532,7 +534,7 @@ const CartPage = () => {
                   }
                 }}
               >
-                <option value="">Select a Shipping Option</option>
+                <option value="">{locale == "contentJSONEng" ?  "Select a Shipping Option" : "Pilih Opsi Pengiriman"}</option>
                 {shippingOptions.map((option, index) => (
                   <option key={index} value={option.shipping_name}>
                     {option.shipping_name} - Rp. {option.shipping_cost}
@@ -542,7 +544,7 @@ const CartPage = () => {
 
               {/* Voucher Section */}
               <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
-                Voucher Code
+                {locale == "contentJSONEng" ? "Voucher Code" : "Kode Voucher"}
               </label>
               <div className="flex gap-2">
                 <input
@@ -557,19 +559,19 @@ const CartPage = () => {
                   className="p-2 bg-secondary rounded-md text-white text-sm sm:text-base"
                   onClick={checkVoucher}
                 >
-                  Check
+                  {locale == "contentJSONEng" ? "Check" : "Cek"}
                 </button>
               </div>
 
               {/* Price Summary */}
               <div className="flex flex-col space-y-2 mt-6">
                 <div className="flex justify-between">
-                  <span className="text-sm sm:text-lg font-semibold">Total Price:</span>
+                  <span className="text-sm sm:text-lg font-semibold">{locale == "contentJSONEng" ?  "Total Price" : "Total Harga"}:</span>
                   <span className="font-light text-black">Rp. {price.totalPrice}</span>
                 </div>
                 {selectedShipping && (
                   <div className="flex justify-between">
-                    <span className="text-sm sm:text-lg font-semibold">Shipping Fee:</span>
+                    <span className="text-sm sm:text-lg font-semibold">{locale == "contentJSONEng" ? "Shipping Fee" : "Biaya Pengiriman"}:</span>
                     <span className="font-light text-black">Rp. {price.shippingFee}</span>
                   </div>
                 )}
@@ -596,12 +598,12 @@ const CartPage = () => {
             </div>
           ) : (
             <div className="bg-white p-6 rounded-md shadow-md h-full flex flex-col items-center justify-center">
-              <p className="text-gray-600 mb-6">You need to login first to access this feature.</p>
+              <p className="text-gray-600 mb-6">{locale == "contentJSONEng" ? "You need to login first to access this feature." : "Kamu butuh login terlebih dahulu untuk menggunakan fitur ini"}</p>
               <button
                 onClick={() => (window.location.href = "/auth/login")}
                 className="bg-secondary text-white py-2 px-4 rounded-md"
               >
-                Login Now
+                {locale == "contentJSONEng" ? "Login Now" : "Login Sekarang"}
               </button>
             </div>
           )}

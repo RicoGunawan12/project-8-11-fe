@@ -12,6 +12,7 @@ import { Loading } from "../utilities/loading";
 import { mapPaymentMethod } from "../utilities/converter";
 import Footer from "../component/footer";
 import { Bounce, toast } from "react-toastify";
+import DeleteConfirmationModal from "../component/modal/deleteConfirmation";
 
 const ProfilePage = () => {
   const [user, setUser] = useState<UserData>({
@@ -27,6 +28,8 @@ const ProfilePage = () => {
   const [update, setUpdate] = useState(false);
   const clientToken = getTokenCookie();
   const router = useRouter();
+  const [selectedAddress, setSelectedAddress] = useState({ name: '', category: '', id: '' })
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const fetchData = async () => {
     if (!clientToken) {
@@ -147,10 +150,12 @@ const ProfilePage = () => {
       }
     );
     setUpdate(!update);
+    setIsModalOpen(false)
+    setSelectedAddress({ name: '', category: '', id: '' })
   };
 
   return (
-    <div className="w-screen h-screen bg-white text-black flex flex-col">
+    <div className="w-screen min-h-screen h-auto bg-white text-black flex flex-col">
       <NavigationBar />
       <div className="mt-20 h-full">
         <Banner page="Profile Page" text="Profile" />
@@ -198,9 +203,8 @@ const ProfilePage = () => {
                           {totalTransaction.map((transaction, index) => (
                             <tr
                               key={transaction.transactionId || index}
-                              className={`${
-                                index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                              } hover:bg-gray-100 cursor-pointer`}
+                              className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                } hover:bg-gray-100 cursor-pointer`}
                               onClick={() =>
                                 router.push(
                                   `/transactions/${transaction.transactionId}`
@@ -261,6 +265,10 @@ const ProfilePage = () => {
                     </p>
                   ) : (
                     <>
+
+                      <div className="relative">
+                        <DeleteConfirmationModal header={`Confirm Delete ${selectedAddress?.category || "Item"}`} description={`Are you sure you want to delete ${selectedAddress.name} ?`} onDelete={() => handleDeleteAddress(selectedAddress.id)} isVisible={isModalOpen} onCancel={() => { setIsModalOpen(false) }} />
+                      </div>
                       {addressData.map((address: any) => (
                         <motion.div
                           key={address.addressId}
@@ -277,8 +285,14 @@ const ProfilePage = () => {
                               <span className="text-sm flex gap-6 text-gray-500">
                                 <div
                                   className="text-red-500 hover:text-red-600 hover:font-semibold transition"
-                                  onClick={() =>
-                                    handleDeleteAddress(address.addressId)
+                                  onClick={() => {
+                                      setSelectedAddress({
+                                        name: address.addressDetail,
+                                        category: 'Address',
+                                        id: address.addressId
+                                      })
+                                      setIsModalOpen(true)
+                                    }
                                   }
                                 >
                                   Delete

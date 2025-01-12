@@ -213,7 +213,7 @@ const AddressForm = () => {
             <NavigationBar />
             <div className="min-w-[400px] w-[50vw] py-8 px-4">
                 <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg space-y-6">
-                    <h2 className="text-2xl font-semibold text-center text-gray-800">Add New Address</h2>
+                    <h2 className="text-2xl font-semibold text-center text-gray-800">Update Address</h2>
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">Receiver Name</label>
@@ -302,7 +302,7 @@ const AddressForm = () => {
                         disabled={isLoading}
                         className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-secondary text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {isLoading ? "Creating..." : "Create Address"}
+                        {isLoading ? "Updating..." : "Update Address"}
                     </Button>
                     <p hidden={!(customErr.length >= 1)} className="text-red-500 mt-2 text-center text-sm">{customErr}</p>
                 </form>

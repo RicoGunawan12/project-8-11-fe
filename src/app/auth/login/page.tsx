@@ -68,7 +68,7 @@ const LoginPage = () => {
           }
 
           localStorage.removeItem("cartItem");
-          toastSuccess("Cart items synced successfully!");
+          // toastSuccess("Cart items synced successfully!");
         }
         await setTokenCookie(data.token)
         router.push("/");
