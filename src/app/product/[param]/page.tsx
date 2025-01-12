@@ -341,8 +341,11 @@ const ProductDetailPage = () => {
                 )}
               </div>
             </div>
-            <div className=" hidden lg:block font-light text-sm mt-4">
-              Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
+            <div className="hidden lg:block font-light text-sm mt-4">
+              Rp. {quantity * (data.promo_details?.[0]
+                ? Math.max(Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount, 0)
+                : Number(data?.product_variants[buyVariant].productPrice)
+              )}
             </div>
             <Button
               onClick={addToCart}

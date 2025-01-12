@@ -241,7 +241,7 @@ const CartPage = () => {
     let discount = 0
 
     if (result.voucherType == "percentage") {
-      discount = (price.totalPrice + price.shippingFee) * result.discount / 100
+      discount = price.totalPrice * result.discount / 100
 
       if (discount > result.maxDiscount) {
         discount = result.maxDiscount

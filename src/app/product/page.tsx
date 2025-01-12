@@ -176,7 +176,7 @@ const ProductPage = () => {
                 key={index}
                 className="w-11/12"
               >
-                <div className="py-4 mt-6 lg:h-[450px]">
+                <div className="py-4 mt-6 lg:h-[500px]">
                   <div className="overflow-visible flex justify-center items-center">
                     {result ? (
                       <Image

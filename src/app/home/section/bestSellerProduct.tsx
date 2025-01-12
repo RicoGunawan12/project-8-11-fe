@@ -14,7 +14,24 @@ const BestSellerProduct = () => {
   const [page, setPages] = useState<Page[]>();
   const [lastDivisionResult, setLastDivisionResult] = useState<number>();
   const { locale, change } = useLocaleStore();
-  const [flag, setFlag ] = useState(false)
+  const [flag, setFlag] = useState(false)
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Handle window resize and set initial mobile state
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640); // 640px is Tailwind's 'sm' breakpoint
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const handleScrollAnimation = () => {
@@ -23,7 +40,7 @@ const BestSellerProduct = () => {
 
       if (bestSellerProductsComponent === null || bestSellerProductsComponent === undefined || bestSellerDescriptionComponent === null || bestSellerDescriptionComponent === undefined) return;
 
-      const productsCompLeftPoint = bestSellerProductsComponent.scrollLeft; 
+      const productsCompLeftPoint = bestSellerProductsComponent.scrollLeft;
       const descriptionCompWidth = bestSellerDescriptionComponent.clientWidth;
 
       let percentageCovered = productsCompLeftPoint / descriptionCompWidth * 100;
@@ -110,15 +127,15 @@ const BestSellerProduct = () => {
     }
   }, []);
 
-  if(!flag){
-    return <Loading/>
+  if (!flag) {
+    return <Loading />
   }
 
   return (
-    <div className="relative flex w-full h-auto lg:h-screen bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-6">
+    <div className="relative flex w-full h-auto lg:h-auto bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-6 lg:py-24">
       {/* Fade effect container */}
-      <div className="relative w-full">
-      <div className="w-full h-full z-10 lg:w-3/5  text-center lg:text-left lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
+      <div className="relative w-full h-full flex flex-col lg:flex-row items-center">
+        <div className="w-full h-full z-10 lg:w-3/5 lg:pr-6 text-center flex flex-col justify-center items-center lg:items-start lg:text-left lg:absolute bg-stone-800" id="best-seller-desc">
           <div className="text-white text-3xl sm:text-4xl font-bold">
             {(page && page[0]?.[locale]?.[3]?.title) || "Loading"}
           </div>
@@ -130,7 +147,7 @@ const BestSellerProduct = () => {
           </div>
         </div>
 
-        <div className="flex flex-col z-10 lg:flex-row gap-6 overflow-x-auto pl-4 lg:pl-12 pr-4 lg:pr-12" id="best-seller-products">
+        <div className="flex flex-col w-full h-full z-10 lg:flex-row gap-6 items-center overflow-x-auto" id="best-seller-products">
           {/* Content container */}
           <div className="lg:w-3/5 text-center sm:text-left hidden lg:flex opacity-0">
             <div className="text-white text-3xl sm:text-4xl font-bold">
@@ -139,42 +156,37 @@ const BestSellerProduct = () => {
             <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
               {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
             </div>
-            <div className="border-white text-white border w-fit py-2 px-4 lg:py-4 lg:px-8 text-lg mt-4 mx-auto sm:mx-0">
+            <div className="border-white text-white border w-full py-2 px-4 lg:py-4 lg:px-8 text-lg mt-4 mx-auto sm:mx-0">
               {/* <button>click here</button> */}
               <Link href="/product">View More</Link>
             </div>
           </div>
 
           {/* Product display */}
-          <div className="w-2/3 lg:w-2/5 z-20 flex flex-nowrap justify-start gap-6 mt-6 lg:gap-12">
-            
-              {products?.map((product, idx) => (
-                <Link
-                  key={idx}
-                  className="flex-shrink-0 w-full sm:w-[200px] lg:w-[300px]"
-                  href={`/product/${product.productId}`}
-                >
-                  <Image
-                    src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
-                    width={400}
-                    height={550}
-                    alt="logo pic"
-                    className="w-full h-[300px] object-cover"
-                  />
-                  <div className="bg-white py-6 px-10">
-                    {/* <div className="text-black">{renderStars(product.)}</div> */}
-                    <div className="text-black font-semibold">
-                      {product.productName}
-                    </div>
-                    <div className="text-black">
-                      Rp. {product.product_variants[0].productPrice}
-                    </div>
-                    {/* <div className="text-black flex gap-2">
-                  </div> */}
+          <div className={`w-full z-20 flex h-full ${isMobile ? "overflow-x-auto" : ""} scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 gap-4 lg:gap-12 mt-6 lg:w-2/5 lg:items-center`}>
+            {products?.map((product, idx) => (
+              <Link
+                key={idx}
+                className="flex-shrink-0 w-[75%] sm:w-[200px] lg:w-[300px]"
+                href={`/product/${product.productId}`}
+              >
+                <Image
+                  src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
+                  width={400}
+                  height={550}
+                  alt="logo pic"
+                  className="w-full h-[300px] object-cover"
+                />
+                <div className="bg-white py-6 px-10">
+                  <div className="text-black font-semibold">{product.productName}</div>
+                  <div className="text-black">
+                    Rp. {product.product_variants[0].productPrice}
                   </div>
-                </Link>
-              ))}
+                </div>
+              </Link>
+            ))}
           </div>
+
         </div>
       </div>
     </div>
