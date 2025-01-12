@@ -201,7 +201,7 @@ const TransactionPage = () => {
   }
 
   return (
-    <div className="w-screen h-screen bg-white">
+    <div className="w-screen h-auto min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
         <Banner text="Transaction Details" page="Transaction Page" />

@@ -155,7 +155,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="w-screen h-screen bg-white text-black flex flex-col">
+    <div className="w-screen min-h-screen h-auto bg-white text-black flex flex-col">
       <NavigationBar />
       <div className="mt-20 h-full">
         <Banner page="Profile Page" text="Profile" />
