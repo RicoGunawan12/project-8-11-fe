@@ -78,7 +78,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
             <Image src="/logo.png" width={100} height={100} alt="not found" />
           </Link>
         </div>
-        <div className="flex-grow flex-row columns-2 w-2/4 mb-12 max-w-lg:w-full">
+        <div className="flex-grow flex-row columns-2 lg:w-2/4 mb-12 w-full">
           <div className="text-sm max-w-lg:flex-1">
             <h1 className="mb-6 text-xl font-semibold">
               {locale === "contentJSONEng" ? content.company.en : content.company.id}
