@@ -308,12 +308,8 @@ const TransactionPage = () => {
                       Rp. {transaction?.totalPrice}
                     </td>
                     <td className="py-2 px-4 border-b">
-<<<<<<< HEAD
-                      {transaction?.status == "Canceled" ? transaction?.status: transaction?.status + `(${transaction?.notes})`}
-=======
                       {transaction?.status == "Waiting for Return" ? transaction?.status + ` (send to ${adminAddress.addressDetail})` : transaction?.status == "Cancelled" ?transaction?.status + `(${transaction?.notes})` : transaction?.status == "Return" ? transaction?.status + ` (${locale == "contentJSONEng"? "Check you bank balance regularly" : "Pastikan cek uang bank secara berkala"})` : transaction?.status}
 
->>>>>>> 5a32999106bd53ab8d9871ca219ba71b8a8ae5d2
                     </td>
                     <td className="py-2 px-4 border-b">
                       {transaction?.shippingType}
