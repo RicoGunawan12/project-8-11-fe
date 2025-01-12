@@ -389,8 +389,8 @@ const ProductDetailPage = () => {
           </Button>
         </div>
 
-        <div className=" w-1/2 mt-8">
-          <h4 className="text-xl font-semibold mb-4">What Customers are Saying:</h4>
+        <div className=" w-full mt-8 px-12 justify-items-center">
+          <h4 className="text-xl font-semibold mb-4">What customers are saying:</h4>
           {ratingData.length > 0 ? (
             <div className="max-h-80 overflow-y-auto">
               {ratingData.map((review, index) => (
