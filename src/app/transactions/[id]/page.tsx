@@ -8,7 +8,7 @@ import Banner from "@/app/component/banner";
 import Footer from "@/app/component/footer";
 import { Loading } from "@/app/utilities/loading";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
-import { mapPaymentMethod } from "@/app/utilities/converter";
+import { formatDate, mapPaymentMethod } from "@/app/utilities/converter";
 import Image from "next/image";
 
 const TransactionPage = () => {
@@ -49,6 +49,7 @@ const TransactionPage = () => {
         }
 
         const data = await response.json();
+        console.log(data)
         setTransaction(data.transaction);
       } catch (err: any) {
         setError("Error fetching data: " + err.message);
@@ -161,7 +162,7 @@ const TransactionPage = () => {
     <div className="w-screen h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
-        <Banner text="Transaction Details" page="/Transaction Page" />
+        <Banner text="Transaction Details" page="Transaction Page" />
         <div className="text-black p-12">
           <div className="flex justify-center items-center flex-col gap-6">
             <div className="p-6 border-2 w-3/4 rounded-md shadow-2xl bg-gray-50">
@@ -256,7 +257,7 @@ const TransactionPage = () => {
                 <tbody>
                   <tr className="bg-white hover:bg-gray-100">
                     <td className="py-2 px-4 border-b">
-                      {transaction?.transactionDate}
+                      {formatDate(transaction?.transactionDate || "")}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {transaction?.totalPrice}

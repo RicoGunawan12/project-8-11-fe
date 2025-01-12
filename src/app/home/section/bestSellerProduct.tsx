@@ -118,7 +118,7 @@ const BestSellerProduct = () => {
     <div className="relative flex w-full h-auto lg:h-screen bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-6">
       {/* Fade effect container */}
       <div className="relative w-full">
-      <div className="w-full h-full z-10 lg:w-3/5  text-center lg:text-left lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
+      <div className="w-full h-full z-10 lg:w-3/5  text-center flex flex-col items-center lg:items-start lg:text-left lg:absolute pl-4 lg:pl-12 pr-4 lg:pr-12 bg-stone-800" id="best-seller-desc">
           <div className="text-white text-3xl sm:text-4xl font-bold">
             {(page && page[0]?.[locale]?.[3]?.title) || "Loading"}
           </div>
@@ -126,7 +126,7 @@ const BestSellerProduct = () => {
             {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
           </div>
           <div className="border-white text-white border w-fit py-2 px-4 lg:py-4 lg:px-8 text-lg mt-4 mx-auto sm:mx-0">
-            <Link href="/product">View More</Link>
+            <Link href="/product">View Moreasdwa</Link>
           </div>
         </div>
 
@@ -139,7 +139,7 @@ const BestSellerProduct = () => {
             <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
               {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
             </div>
-            <div className="border-white text-white border w-fit py-2 px-4 lg:py-4 lg:px-8 text-lg mt-4 mx-auto sm:mx-0">
+            <div className="border-white text-white border w-full py-2 px-4 lg:py-4 lg:px-8 text-lg mt-4 mx-auto sm:mx-0">
               {/* <button>click here</button> */}
               <Link href="/product">View More</Link>
             </div>

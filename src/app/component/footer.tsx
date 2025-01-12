@@ -4,14 +4,15 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Contact } from "../model/contact";
 import { toastError } from "../utilities/toast";
+import { useLocaleStore } from "./locale";
 
-// Define the type for the component props, including className as an optional prop
 interface FooterProps {
   className?: string;
 }
 
 const Footer: React.FC<FooterProps> = ({ className = "" }) => {
   const [contacts, setContacts] = useState<Contact[]>();
+  const { locale } = useLocaleStore()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,62 +31,112 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
     fetchData();
   }, []);
 
+  const content = {
+    company: {
+      en: "Company",
+      id: "Perusahaan"
+    },
+    aboutUs: {
+      en: "About us",
+      id: "Tentang kami"
+    },
+    product: {
+      en: "Product",
+      id: "Produk"
+    },
+    contact: {
+      en: "Contact",
+      id: "Kontak"
+    },
+    support: {
+      en: "SUPPORT",
+      id: "DUKUNGAN"
+    },
+    faq: {
+      en: "FAQ",
+      id: "FAQ"
+    },
+    blog: {
+      en: "Blog",
+      id: "Blog"
+    },
+    location: {
+      en: "Location",
+      id: "Lokasi"
+    },
+    rights: {
+      en: "All rights reserved",
+      id: "Hak cipta dilindungi"
+    }
+  };
+
   return (
     <div className={`w-full bg-secondary text-white pt-12 ${className}`}>
       <div className="flex flex-col lg:flex-row w-full justify-between px-6 lg:px-12">
-        <div className="flex flex-col lg:flex-row w-full lg:w-3/4 gap-6 lg:gap-12 px-6">
-          <div className="text-sm">
-            <h1 className="mb-6 text-xl font-semibold">COMPANY</h1>
-            <div className="flex flex-col gap-y-6">
-              <Link href={"/about"} className="hover:text-primary">About</Link>
-              <Link href={"/product"} className="hover:text-primary">Product</Link>
-              <Link href={"/contact"} className="hover:text-primary">Contact</Link>
-            </div>
-          </div>
-          <div className="text-sm">
-            <h1 className="mb-6 text-xl font-semibold">SUPPORT</h1>
-            <div className="flex flex-col gap-y-6">
-              <Link href={"/faq"} className="hover:text-primary">FAQ</Link>
-              <Link href={"/blog"} className="hover:text-primary">Blog</Link>
-              <Link href={"/location"} className="hover:text-primary">Location</Link>
-            </div>
-          </div>
+        <div className="">
+          <Link href="/" className="text-3xl font-semibold text-white">
+            <Image src="/logo.png" width={100} height={100} alt="not found" />
+          </Link>
         </div>
-
-        <div className="flex flex-col items-center lg:items-start w-full lg:w-1/4 mt-6 lg:mt-0">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="text-3xl font-semibold text-white">
-              <Image src="/logo.png" width={100} height={100} alt="not found"/>
+        <div className="text-sm">
+          <h1 className="mb-6 text-xl font-semibold">
+            {locale === "contentJSONEng" ? content.company.en : content.company.id}
+          </h1>
+          <div className="flex flex-col gap-y-6">
+            <Link href={"/about"} className="hover:text-primary">
+              {locale === "contentJSONEng" ? content.aboutUs.en : content.aboutUs.id}
+            </Link>
+            <Link href={"/product"} className="hover:text-primary">
+              {locale === "contentJSONEng" ? content.product.en : content.product.id}
+            </Link>
+            <Link href={"/contact"} className="hover:text-primary">
+              {locale === "contentJSONEng" ? content.contact.en : content.contact.id}
             </Link>
           </div>
-          <div className="flex gap-4 mt-6 justify-center lg:justify-start">
-            {/* Social Media Icons */}
-            {contacts?.map((contact) => (
-              <a
-                key={contact.contactId}
-                href={`${contact.contactAccount}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Image
-                  src={`${process.env.BACK_BASE_URL}${contact.contactImage}`}
-                  alt={`${contact.contact}`}
-                  width={24}
-                  height={24}
-                  className="filter invert brightness-0"
-                />
-              </a>
-            ))}
+        </div>
+        <div className="text-sm">
+          <h1 className="mb-6 text-xl font-semibold">
+            {locale === "contentJSONEng" ? content.support.en : content.support.id}
+          </h1>
+          <div className="flex flex-col gap-y-6">
+            <Link href={"/faq"} className="hover:text-primary">
+              {locale === "contentJSONEng" ? content.faq.en : content.faq.id}
+            </Link>
+            <Link href={"/blog"} className="hover:text-primary">
+              {locale === "contentJSONEng" ? content.blog.en : content.blog.id}
+            </Link>
+            <Link href={"/location"} className="hover:text-primary">
+              {locale === "contentJSONEng" ? content.location.en : content.location.id}
+            </Link>
           </div>
         </div>
+        <div className="flex gap-4 justify-center lg:justify-start">
+          {contacts?.map((contact) => (
+            <Link
+              key={contact.contactId}
+              href={`${contact.contactAccount}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src={`${process.env.BACK_BASE_URL}${contact.contactImage}`}
+                alt={`${contact.contact}`}
+                width={24}
+                height={24}
+                className="filter invert brightness-0"
+              />
+            </Link>
+          ))}
+        </div>
+
       </div>
 
       <div className="flex flex-col items-center justify-center mt-12 bg-secondary border-t-2 border-white py-4">
         <span className="text-white text-md">
-          © TYESO, {new Date().getFullYear()}. All rights reserved.
+          © TYESO, {new Date().getFullYear()}. {locale === "contentJSONEng" ? content.rights.en : content.rights.id}.
         </span>
       </div>
-    </div>
+    </div >
   );
 };
 
