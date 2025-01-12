@@ -282,7 +282,10 @@ const ProductDetailPage = () => {
                     ? "bg-gray-100 text-gray-500 opacity-50"
                     : "bg-white hover:bg-gray-50"
                   }`}
-                onClick={() => setBuyVariant(idx)}
+                onClick={() => {
+                  setBuyVariant(idx);
+                  setQuantity(1);
+                }}
                 title={product.productStock <= 0 ? "Out of Stock" : "Select this variant"}
               >
                 <div
@@ -319,7 +322,11 @@ const ProductDetailPage = () => {
                 {quantity}
               </div>
               <button
-                onClick={() => setQuantity((prev) => prev + 1)}
+                onClick={() => {
+                  if (quantity < data?.product_variants[buyVariant].productStock){
+                    setQuantity((prev) => prev + 1)
+                  }
+                }}
                 className="px-4 py-2 border border-gray-300 rounded-r bg-gray-100 hover:bg-gray-200 text-gray-700"
               >
                 +
