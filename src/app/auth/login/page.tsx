@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserLogin } from "@/app/model/user";
 import { Button, Input } from "@nextui-org/react";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ErrorMessage } from "@/app/model/error";
 import { setTokenCookie } from "@/app/utilities/setToken";
+import { checkTokenCookieValid } from "@/app/utilities/token";
 
 const LoginPage = () => {
 
@@ -19,6 +20,13 @@ const LoginPage = () => {
     email: "",
     password: ""
   });
+
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const checkAuthenticated = async () => {
+    await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
+  };
+
+  checkAuthenticated();
 
   const handleChanges = (e: React.FocusEvent<Element>) => {
     const target = e.target as HTMLInputElement
@@ -83,7 +91,7 @@ const LoginPage = () => {
     setLoading(false);
   };
 
-  return (
+  return authenticated ? (
     <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
       <div className="absolute top-4 left-4">
         <button
@@ -150,7 +158,7 @@ const LoginPage = () => {
 
       </div>
     </div>
-  );
+  ) : <></>;
 };
 
 export default LoginPage;
