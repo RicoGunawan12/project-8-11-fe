@@ -17,6 +17,22 @@ export const getTokenCookie = () => {
   return null;
 };
 
+export const checkTokenCookieValid = async () => {
+  if (typeof document === undefined) return false;
+
+  const clientToken = getTokenCookie();
+
+  const response = await fetch(`${process.env.USER}/logged-in`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${clientToken}`,
+    },
+  });
+
+  return response.status === 200;
+}
+
 
 export const deleteTokenCookie = () => {
     document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
