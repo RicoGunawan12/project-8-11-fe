@@ -32,7 +32,7 @@ const TransactionPage = () => {
 
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const checkAuthenticated = async () => {
-    await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
+    await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
   };
 
   checkAuthenticated();
@@ -206,7 +206,7 @@ const TransactionPage = () => {
     return <Loading />;
   }
 
-  return (
+  return authenticated ? (
     <div className="w-screen h-auto min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 h-full">
@@ -442,7 +442,7 @@ const TransactionPage = () => {
         </div>
       )}
     </div>
-  );
+  ) : <></>;
 };
 
 export default TransactionPage;

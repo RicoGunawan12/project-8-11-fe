@@ -21,7 +21,7 @@ const LoginPage = () => {
     password: ""
   });
 
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [authenticated, setAuthenticated] = useState<boolean>(true);
   const checkAuthenticated = async () => {
     await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
   };
@@ -91,7 +91,7 @@ const LoginPage = () => {
     setLoading(false);
   };
 
-  return authenticated ? (
+  return !authenticated ? (
     <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
       <div className="absolute top-4 left-4">
         <button

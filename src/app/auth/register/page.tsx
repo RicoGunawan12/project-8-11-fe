@@ -22,7 +22,7 @@ const RegisterPage = () => {
     confirmPassword: ""
   });
 
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [authenticated, setAuthenticated] = useState<boolean>(true);
   const checkAuthenticated = async () => {
     await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
   };
@@ -83,7 +83,7 @@ const RegisterPage = () => {
     }
   }
 
-  return (
+  return !authenticated ? (
     <div className="w-screen h-screen px-4 flex justify-center flex-wrap content-center bg-white text-black">
       <div className="absolute top-4 left-4">
         <button
@@ -219,7 +219,7 @@ const RegisterPage = () => {
         </div>
       </div>
     </div>
-  );
+  ) : <></>;
 };
 
 export default RegisterPage;

@@ -182,7 +182,7 @@ const AddressForm = () => {
 
     if (!clientToken) return null;
 
-    return (
+    return authenticated ? (
         <div className="w-screen h-screen bg-white flex items-center justify-center">
             <NavigationBar />
             <div className="min-w-[400px] w-[50vw] py-8 px-4">
@@ -284,7 +284,7 @@ const AddressForm = () => {
                 </form>
             </div>
         </div>
-    );
+    ) : <></>;
 };
 
 export default AddressForm;
