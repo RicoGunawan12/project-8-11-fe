@@ -461,7 +461,8 @@ const ProductDetailPage = () => {
 
 
       <div>
-        <div className="grid grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16 mb-6">
+        <h1 className="text-black text-xl font-bold px-6 mb-6 lg:px-24">Related Products</h1>
+        <div className="grid grid-cols-2 text-black md:grid-cols-3 px-6  lg:px-24 lg:grid-cols-4 gap-16 mb-6">
           {relatedProduct.map((product: any) => (
             <Link
               key={product.productId}
