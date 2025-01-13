@@ -36,5 +36,7 @@ export interface ProductCard {
       averageRating : string,
       countRating : string
     }
-  ]
+  ],
+  averageRating : string,
+  countRating : string
 }

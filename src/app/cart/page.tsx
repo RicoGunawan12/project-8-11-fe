@@ -40,7 +40,7 @@ const CartPage = () => {
     grandTotal: 0
   })
   const [update, setUpdate] = useState(false);
-  const {locale} = useLocaleStore()
+  const { locale } = useLocaleStore()
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -77,7 +77,7 @@ const CartPage = () => {
           }, {})
         );
         setAddress(addressData);
-        
+
         const cartTotal = data.reduce((total, item) => total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * item.quantity, 0);
         setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
       } catch (error: any) {
@@ -122,7 +122,7 @@ const CartPage = () => {
 
   useEffect(() => {
     recalculateTotalPrice();
-  }, [quantities,data]);
+  }, [quantities, data]);
 
   const calculateShippingOptions = useCallback(async () => {
     if (!chosenAddress) return;
@@ -278,7 +278,7 @@ const CartPage = () => {
       toastSuccess("Item removed")
     } else {
 
-      
+
       if (fetchData.status === 401) {
         router.push("/auth/login");
       }
@@ -304,15 +304,15 @@ const CartPage = () => {
     const resp = await result.json()
 
     if (result.ok) {
-      
+
     } else {
-      
+
       if (result.status === 401) {
         router.push("/auth/login");
       }
       toastError(resp.message || "Something went wrong")
     }
-    
+
 
     recalculateTotalPrice()
     setLoading(false);
@@ -341,14 +341,14 @@ const CartPage = () => {
         [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
       }));
     } else {
-  
-      
+
+
       if (result.status === 401) {
         router.push("/auth/login");
       }
       toastError(resp.message || "Something went wrong")
     }
-    
+
     recalculateTotalPrice()
     setLoading(false);
   }
@@ -363,7 +363,7 @@ const CartPage = () => {
       <div className="flex flex-col flex-grow lg:flex-row gap-8 px-4 mt-24 sm:px-6 lg:px-8 min-h-[80vh] mb-[50px]">
         {/* Shopping Bag Section */}
         {
-          loading ? <LoadingOverlay/> : null
+          loading ? <LoadingOverlay /> : null
         }
         <div className="flex-1 h-full bg-white p-6 rounded-2xl shadow-md">
           <h2 className="text-xl sm:text-2xl font-semibold mb-2">{locale == "contentJSONEng" ? "Shopping Bag" : "Keranjang"}</h2>
@@ -392,17 +392,17 @@ const CartPage = () => {
                     </p>
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
-                  {
-                        item.product_variant.product.promo_details[0]? 
+                    {
+                      item.product_variant.product.promo_details[0] ?
                         <div>
                           <span className="line-through mr-2 text-gray-600">Rp. {item.product_variant.productPrice}</span>
-                          <span className="font-semibold">Rp. {item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount  > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0}</span>
+                          <span className="font-semibold">Rp. {item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0}</span>
                         </div>
                         :
                         <div >
-                        Rp. {item.product_variant.productPrice}
+                          Rp. {item.product_variant.productPrice}
                         </div>
-                      }
+                    }
                   </div>
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
                     <button
@@ -425,7 +425,7 @@ const CartPage = () => {
                               1
                             ),
                           }))
-                          
+
                         }
                       }
                       }
@@ -452,8 +452,8 @@ const CartPage = () => {
                       +
                     </button>
 
-                    <div className="ml-4"> 
-                    <FontAwesomeIcon color="red" className="hover:cursor-pointer" onClick={() => handleRemoveCart(item.cartItemId)} icon={faTrashCan}/>
+                    <div className="ml-4">
+                      <FontAwesomeIcon color="red" className="hover:cursor-pointer" onClick={() => handleRemoveCart(item.cartItemId)} icon={faTrashCan} />
                     </div>
                   </div>
                 </div>
@@ -486,7 +486,7 @@ const CartPage = () => {
               ) : (
                 <div>
                   <label htmlFor="shippingAddress" className="block text-sm font-medium text-gray-700">
-                    {locale == "contentJSONEng" ?  "Shipping Address" : "Alamat Pengiriman"}
+                    {locale == "contentJSONEng" ? "Shipping Address" : "Alamat Pengiriman"}
                   </label>
                   <select
                     id="shippingAddress"
@@ -496,7 +496,7 @@ const CartPage = () => {
                       const selectedAddress = address.find(
                         (addr) => addr.addressDetail === selectedId
                       );
-                      
+
                       setChosenAddress(selectedAddress);
                     }}
                     disabled={data.length === 0}
@@ -534,7 +534,7 @@ const CartPage = () => {
                   }
                 }}
               >
-                <option value="">{locale == "contentJSONEng" ?  "Select a Shipping Option" : "Pilih Opsi Pengiriman"}</option>
+                <option value="">{locale == "contentJSONEng" ? "Select a Shipping Option" : "Pilih Opsi Pengiriman"}</option>
                 {shippingOptions.map((option, index) => (
                   <option key={index} value={option.shipping_name}>
                     {option.shipping_name} - Rp. {option.shipping_cost}
@@ -566,7 +566,7 @@ const CartPage = () => {
               {/* Price Summary */}
               <div className="flex flex-col space-y-2 mt-6">
                 <div className="flex justify-between">
-                  <span className="text-sm sm:text-lg font-semibold">{locale == "contentJSONEng" ?  "Total Price" : "Total Harga"}:</span>
+                  <span className="text-sm sm:text-lg font-semibold">{locale == "contentJSONEng" ? "Total Price" : "Total Harga"}:</span>
                   <span className="font-light text-black">Rp. {price.totalPrice}</span>
                 </div>
                 {selectedShipping && (
@@ -577,7 +577,12 @@ const CartPage = () => {
                 )}
                 {price.voucher != 0 ? (
                   <div className="flex justify-between">
-                    <span className="text-sm sm:text-lg font-semibold">Voucher:</span>
+                    <span className="text-sm sm:text-lg font-semibold gap-2 flex">
+                      <div><button className="bg-red-500 text-white px-4 rounded-xl" onClick={() => {
+                        setPrice((prev) => ({ ...prev, voucher: 0 }))
+                        setVoucherCode("")
+                      }}>X</button></div>
+                      <div>Voucher:</div></span>
                     <span className="font-light text-black">- Rp. {price.voucher}</span>
                   </div>
                 ) : null}

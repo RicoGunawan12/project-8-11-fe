@@ -5,14 +5,13 @@ import Image from "next/image";
 import NavigationBar from "@/app/component/navbar";
 import { Button, Input } from "@nextui-org/react";
 import { ProductCard } from "@/app/model/productCard";
-import { Loading } from "@/app/utilities/loading";
+import { Loading, LoadingOverlay } from "@/app/utilities/loading";
 import { getTokenCookie } from "@/app/utilities/token";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Footer from "@/app/component/footer";
 import StarRating from "@/app/utilities/rating";
-import { Rating, RatingCount } from "@/app/model/rating";
+import { Rating } from "@/app/model/rating";
 import Link from "next/link";
-import { renderStars } from "@/app/utilities/icons";
 
 const TABS = ["Product Descriptions", "Product Review"];
 
@@ -29,7 +28,7 @@ const ProductDetailPage = () => {
   const [comment, setComment] = useState<string>("");
   const [buyVariant, setBuyVariant] = useState(0)
   const [relatedProduct, setRelatedProduct] = useState<ProductCard[]>([])
-  const [ratingDistribution, setRatingDistribution] = useState<RatingCount>()
+  const [loading, setLoading] = useState(false)
 
   const fetchProductDetail = async () => {
     const response = await fetch(`${process.env.PRODUCTS}/related/${id}`, {
@@ -44,25 +43,8 @@ const ProductDetailPage = () => {
     if (!response.ok) {
       throw new Error(data.message);
     }
-
-    const defaultRatingDistribution: RatingCount = {
-      1: 0,
-      2: 0,
-      3: 0,
-      4: 0,
-      5: 0,
-  };
-
-  const ratingDistribution = {
-      ...defaultRatingDistribution,
-      ...data.ratingDistributionObject,
-  };
-
-  console.log(ratingDistribution)
-
     setData(data.product);
     setRelatedProduct(data.relatedProducts)
-    setRatingDistribution(ratingDistribution)
   }
 
   const fetchRating = async () => {
@@ -77,6 +59,8 @@ const ProductDetailPage = () => {
     if (!ratingResponse.ok) {
       throw new Error(ratingData.message);
     }
+
+    console.log(data)
 
     setRatingData(ratingData.ratings);
   }
@@ -215,7 +199,6 @@ const ProductDetailPage = () => {
     }
   };
 
-
   if (!data) {
     return <Loading />;
   }
@@ -224,7 +207,9 @@ const ProductDetailPage = () => {
     <div className="bg-white w-screen h-screen pt-20">
       <NavigationBar />
       <div className="px-4 flex flex-col lg:flex-row lg:h-full items-start md:items-center space-y-8 md:space-y-0">
-
+      {
+          loading ? <LoadingOverlay/> : null
+        }
         {/* Center Column: Selected Product */}
         <div className="w-full py-6 lg:w-1/2 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
           {/* Main Product Image */}
@@ -282,7 +267,7 @@ const ProductDetailPage = () => {
               }
             </div>
             <div>
-              <StarRating rating={parseFloat(data?.ratings[0]?.averageRating) ? parseFloat(data?.ratings[0].averageRating) : 0} disabled />
+              <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
             </div>
           </div>
 
@@ -358,18 +343,24 @@ const ProductDetailPage = () => {
                 )}
               </div>
             </div>
-            <div className="hidden lg:block font-light text-sm mt-4">
-              Rp. {quantity * (data.promo_details?.[0]
-                ? Math.max(Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount, 0)
-                : Number(data?.product_variants[buyVariant].productPrice)
-              )}
-            </div>
-            <Button
+           <div className="flex justify-start gap-6">
+           <Button
               onClick={addToCart}
-              className="hidden lg:block w-full bg-secondary text-white font-semibold text-lg mt-6 py-2"
+              className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
             >
               Add to Cart
             </Button>
+            <Button
+              onClick={async() =>  {
+                setLoading(true)
+                await addToCart()
+                route.push("/cart")
+              }}
+              className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
+            >
+              Buy Now
+            </Button>
+           </div>
           </div>
 
           <div className="w-3/4">
@@ -382,53 +373,15 @@ const ProductDetailPage = () => {
         </div>
       </div>
 
-      <div className="w-full p-6 flex flex-col justify-between items-center">
-      <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">CUSTOMER REVIEWS</div>
-      
-      <div className="flex flex-col lg:flex-row w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
-        {/* Rating Summary */}
-        <div className="w-full lg:w-1/3">
-          <div className="text-6xl font-bold">{data?.ratings[0]?.averageRating || 0}</div>
-          <div className="text-xl text-gray-500 mb-2">/ 5</div>
-          <StarRating rating={parseFloat(data?.ratings[0]?.averageRating) ? parseFloat(data?.ratings[0].averageRating) : 0} disabled />
-          <div className="text-sm text-gray-500 mt-2">{data.ratings[0]?.countRating} reviews</div>
-        </div>
-        
-        {/* Rating Distribution */}
-        <div className="w-full lg:w-1/3 text-black">
-  {ratingDistribution ? (
-    Object.entries(ratingDistribution)
-      .sort(([a], [b]) => Number(b) - Number(a)) // Sort by rating descending
-      .map(([rating, count]) => {
-        const total = Object.values(ratingDistribution).reduce((sum, val) => sum + val, 0);
-        const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0";
-
-        return (
-          <div key={rating} className="flex items-center gap-2 mb-2">
-            <span className="w-8">{rating}★</span>
-            <div className="flex-1 bg-gray-200 h-2">
-              <div
-                className="h-full bg-black"
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
-            <span className="w-12 text-right">{percentage}%</span>
-          </div>
-        );
-      })
-  ) : (
-    <p>Loading ratings...</p> // Display a fallback while data is loading
-  )}
-</div>
-
-
-        {/* Write Review Button */}
-        <div className="w-full lg:w-1/3 mt-4">
-        <strong>Rating:</strong>
+      <div className="w-full flex flex-col items-center text-black justify-center">
+        <div className="w-1/2 mt-8">
+          <strong>Rating:</strong>
           <StarRating
             rating={rating}
             onRatingChange={setRating} // Update rating
           />
+        </div>
+        <div className="w-1/2 mt-4">
           <strong>Comment:</strong>
           <textarea
             className="w-full p-2 mt-2 border rounded-lg text-black"
@@ -443,27 +396,30 @@ const ProductDetailPage = () => {
             Submit Rating
           </Button>
         </div>
-      </div>
 
-      {/* Reviews List */}
-      <div className="space-y-6 w-1/2 max-h-96 overflow-y-auto">
-        {ratingData.map((review, index) => (
-          <div key={index} className="border-b pb-6">
-            <StarRating rating={parseFloat(review.rating) ? parseFloat(review.rating) : 0} disabled />
-            <div className="flex items-center gap-2 mt-2">
-              <span className="font-medium">{review.user.fullName}</span>
+        <div className=" w-1/2 mt-8">
+          <h4 className="text-xl font-semibold mb-4">What Customers are Saying:</h4>
+          {ratingData.length > 0 ? (
+            <div className="max-h-80 overflow-y-auto">
+              {ratingData.map((review, index) => (
+                <div key={index} className="border-b-2 pb-4 mb-4">
+                  <div className="flex items-center">
+                    <StarRating rating={parseInt(review.rating)} />
+                    <span className="ml-2 text-sm text-gray-500">{review.user.fullName}</span>
+                  </div>
+                  <p className="text-sm text-gray-700">{review.comment}</p>
+                </div>
+              ))}
             </div>
-            <p className="mt-2 text-gray-700">{review.comment}</p>
-          </div>
-        ))}
+          ) : (
+            <p className="pb-4 mb-4">No reviews yet.</p>
+          )}
+        </div>
       </div>
-    </div>
-
-
       <div>
-        <h1 className="text-black text-xl font-bold px-6 mb-6 lg:px-24">Related Products</h1>
+      <h1 className="text-black text-xl font-bold px-6 mb-6 lg:px-24">Related Products</h1>
         <div className="grid grid-cols-2 text-black md:grid-cols-3 px-6  lg:px-24 lg:grid-cols-4 gap-16 mb-6">
-          {relatedProduct.map((product: any) => (
+          {relatedProduct.map((product: ProductCard) => (
             <Link
               key={product.productId}
               onClick={() => trackViewProduct(product)}
@@ -507,16 +463,21 @@ const ProductDetailPage = () => {
       <div className="lg:hidden w-full p-2 flex justify-around fixed bottom-2">
         <button
           onClick={addToCart}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-between font-semibold text-xs px-6 py-2 w-3/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
           disabled={data?.product_variants[buyVariant].productStock === 0}
         >
           <span>Add to Cart</span>
-          <span>
-            Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
-          </span>
-          {data?.product_variants[buyVariant].productStock === 0 && (
-            <span className="text-red-500 ml-2">Out of Stock</span>
-          )}
+        </button>
+        <button
+          onClick={async() => {
+            setLoading(true)
+            await addToCart()
+            route.push("/cart")
+          }}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          disabled={data?.product_variants[buyVariant].productStock === 0}
+        >
+          <span>Buy Now</span>
         </button>
       </div>
     </div>
