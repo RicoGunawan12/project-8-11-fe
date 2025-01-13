@@ -21,6 +21,7 @@ export const checkTokenCookieValid = async () => {
   if (typeof document === undefined) return false;
 
   const clientToken = getTokenCookie();
+  if (clientToken === null || clientToken === undefined || clientToken === "") return false;
 
   const response = await fetch(`${process.env.USER}/logged-in`, {
     method: "GET",
@@ -29,6 +30,10 @@ export const checkTokenCookieValid = async () => {
       Authorization: `Bearer ${clientToken}`,
     },
   });
+
+  if (response.status !== 401) {
+    deleteTokenCookie();
+  }
 
   return response.status === 200;
 }

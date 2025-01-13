@@ -63,11 +63,13 @@ const AddressForm = () => {
 
     const [authenticated, setAuthenticated] = useState<boolean>(false);
 
-    const checkAuthenticated = async () => {
-        await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
-    };
-
-    checkAuthenticated();
+    useEffect(() => {
+        const checkAuthenticated = async () => {
+          await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
+        };
+      
+        checkAuthenticated();
+    }, []);
 
     useEffect(() => {
         const token = getTokenCookie();

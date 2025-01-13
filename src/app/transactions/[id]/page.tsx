@@ -31,11 +31,13 @@ const TransactionPage = () => {
   const {locale} = useLocaleStore()
 
   const [authenticated, setAuthenticated] = useState<boolean>(false);
-  const checkAuthenticated = async () => {
-    await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
-  };
-
-  checkAuthenticated();
+  useEffect(() => {
+    const checkAuthenticated = async () => {
+      await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
+    };
+  
+    checkAuthenticated();
+  }, []);
 
   const fetchData = async () => {
     const clientToken = getTokenCookie();
