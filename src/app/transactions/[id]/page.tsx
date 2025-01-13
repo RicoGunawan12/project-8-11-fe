@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Transaction } from "@/app/model/transactions";
 import { useParams, useRouter } from "next/navigation";
-import { getTokenCookie } from "@/app/utilities/token";
+import { checkTokenCookieValid, getTokenCookie } from "@/app/utilities/token";
 import NavigationBar from "@/app/component/navbar";
 import Banner from "@/app/component/banner";
 import Footer from "@/app/component/footer";
@@ -30,8 +30,14 @@ const TransactionPage = () => {
   const [adminAddress, setAdminAddress] = useState<any>()
   const {locale} = useLocaleStore()
 
-  const fetchData = async () => {
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const checkAuthenticated = async () => {
+    await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
+  };
 
+  checkAuthenticated();
+
+  const fetchData = async () => {
     const clientToken = getTokenCookie();
     if (!clientToken) {
       router.push("/auth/login");

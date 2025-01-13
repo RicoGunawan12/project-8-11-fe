@@ -2,7 +2,7 @@
 import NavigationBar from '@/app/component/navbar';
 import { ErrorMessage } from '@/app/model/error';
 import { toastError, toastSuccess } from '@/app/utilities/toast';
-import { deleteTokenCookie, getTokenCookie } from '@/app/utilities/token';
+import { checkTokenCookieValid, deleteTokenCookie, getTokenCookie } from '@/app/utilities/token';
 import { Button } from '@nextui-org/react';
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
@@ -64,14 +64,21 @@ const AddressForm = () => {
     const router = useRouter();
     const [clientToken, setClientToken] = useState<string | null>(null);
 
+    const [authenticated, setAuthenticated] = useState<boolean>(false);
+    const checkAuthenticated = async () => {
+        await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
+      };
+    
+      checkAuthenticated();
+
     useEffect(() => {
         const token = getTokenCookie();
         if (!token) {
             router.push("/");
             return;
         }
-        setClientToken(token);
-        fetchAddressDetail(token)
+
+        fetchAddressDetail(token);
     }, [router]);
 
     const debouncedDestination = useDebounce(destination, 1000);

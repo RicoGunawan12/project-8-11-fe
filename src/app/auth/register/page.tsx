@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserRegister } from "@/app/model/user";
 import { Button, Input } from "@nextui-org/react";
 import Image from "next/image";
@@ -7,6 +7,7 @@ import { toastSuccess, toastError } from '../../utilities/toast';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ErrorMessage } from '../../model/error';
+import { checkTokenCookieValid } from "@/app/utilities/token";
 const RegisterPage = () => {
 
   const [errors, setErrors] = useState<Array<ErrorMessage>>([]);
@@ -20,6 +21,14 @@ const RegisterPage = () => {
     phoneNumber: "",
     confirmPassword: ""
   });
+
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const checkAuthenticated = async () => {
+    await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
+  };
+
+  checkAuthenticated();
+
   const handlePhoneNumber = (e: any) => {
     setNewUserData((prevData) => ({
       ...prevData,
