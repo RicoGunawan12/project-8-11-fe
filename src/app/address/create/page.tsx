@@ -2,7 +2,7 @@
 import NavigationBar from '@/app/component/navbar';
 import { ErrorMessage } from '@/app/model/error';
 import { toastError, toastSuccess } from '@/app/utilities/toast';
-import { deleteTokenCookie, getTokenCookie } from '@/app/utilities/token';
+import { checkTokenCookieValid, deleteTokenCookie, getTokenCookie } from '@/app/utilities/token';
 import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
@@ -60,6 +60,14 @@ const AddressForm = () => {
 
     const router = useRouter();
     const [clientToken, setClientToken] = useState<string | null>(null);
+
+    const [authenticated, setAuthenticated] = useState<boolean>(false);
+
+    const checkAuthenticated = async () => {
+        await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
+    };
+
+    checkAuthenticated();
 
     useEffect(() => {
         const token = getTokenCookie();
@@ -174,7 +182,7 @@ const AddressForm = () => {
 
     if (!clientToken) return null;
 
-    return (
+    return authenticated ? (
         <div className="w-screen h-screen bg-white flex items-center justify-center">
             <NavigationBar />
             <div className="min-w-[400px] w-[50vw] py-8 px-4">
@@ -276,7 +284,7 @@ const AddressForm = () => {
                 </form>
             </div>
         </div>
-    );
+    ) : <></>;
 };
 
 export default AddressForm;

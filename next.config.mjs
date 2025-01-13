@@ -38,6 +38,8 @@ const nextConfig = {
     GOOGLE_ANALYTICS: process.env.GOOGLE_ANALYTICS,
     CAROUSELS : process.env.CAROUSELS,
     LOCATIONS : process.env.LOCATIONS,
+    HOMEPAGE_ENDPOINT: process.env.HOMEPAGE_ENDPOINT,
+    LOGIN_ENDPOINT: process.env.LOGIN_ENDPOINT,
   },
   eslint: {
     ignoreDuringBuilds: true,
