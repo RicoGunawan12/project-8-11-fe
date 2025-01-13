@@ -10,8 +10,9 @@ import { getTokenCookie } from "@/app/utilities/token";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Footer from "@/app/component/footer";
 import StarRating from "@/app/utilities/rating";
-import { Rating } from "@/app/model/rating";
+import { Rating, RatingCount } from "@/app/model/rating";
 import Link from "next/link";
+import { renderStars } from "@/app/utilities/icons";
 
 const TABS = ["Product Descriptions", "Product Review"];
 
@@ -28,6 +29,7 @@ const ProductDetailPage = () => {
   const [comment, setComment] = useState<string>("");
   const [buyVariant, setBuyVariant] = useState(0)
   const [relatedProduct, setRelatedProduct] = useState<ProductCard[]>([])
+  const [ratingDistribution, setRatingDistribution] = useState<RatingCount>()
 
   const fetchProductDetail = async () => {
     const response = await fetch(`${process.env.PRODUCTS}/related/${id}`, {
@@ -42,8 +44,25 @@ const ProductDetailPage = () => {
     if (!response.ok) {
       throw new Error(data.message);
     }
+
+    const defaultRatingDistribution: RatingCount = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+  };
+
+  const ratingDistribution = {
+      ...defaultRatingDistribution,
+      ...data.ratingDistributionObject,
+  };
+
+  console.log(ratingDistribution)
+
     setData(data.product);
     setRelatedProduct(data.relatedProducts)
+    setRatingDistribution(ratingDistribution)
   }
 
   const fetchRating = async () => {
@@ -58,8 +77,6 @@ const ProductDetailPage = () => {
     if (!ratingResponse.ok) {
       throw new Error(ratingData.message);
     }
-
-    console.log(data)
 
     setRatingData(ratingData.ratings);
   }
@@ -265,7 +282,7 @@ const ProductDetailPage = () => {
               }
             </div>
             <div>
-              <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
+              <StarRating rating={parseFloat(data?.ratings[0]?.averageRating) ? parseFloat(data?.ratings[0].averageRating) : 0} disabled />
             </div>
           </div>
 
@@ -365,15 +382,53 @@ const ProductDetailPage = () => {
         </div>
       </div>
 
-      <div className="w-full flex flex-col items-center text-black justify-center">
-        <div className="w-1/2 mt-8">
-          <strong>Rating:</strong>
+      <div className="w-full p-6 flex flex-col justify-between items-center">
+      <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">CUSTOMER REVIEWS</div>
+      
+      <div className="flex flex-col lg:flex-row w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
+        {/* Rating Summary */}
+        <div className="w-full lg:w-1/3">
+          <div className="text-6xl font-bold">{data?.ratings[0]?.averageRating || 0}</div>
+          <div className="text-xl text-gray-500 mb-2">/ 5</div>
+          <StarRating rating={parseFloat(data?.ratings[0]?.averageRating) ? parseFloat(data?.ratings[0].averageRating) : 0} disabled />
+          <div className="text-sm text-gray-500 mt-2">{data.ratings[0]?.countRating} reviews</div>
+        </div>
+        
+        {/* Rating Distribution */}
+        <div className="w-full lg:w-1/3 text-black">
+  {ratingDistribution ? (
+    Object.entries(ratingDistribution)
+      .sort(([a], [b]) => Number(b) - Number(a)) // Sort by rating descending
+      .map(([rating, count]) => {
+        const total = Object.values(ratingDistribution).reduce((sum, val) => sum + val, 0);
+        const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0";
+
+        return (
+          <div key={rating} className="flex items-center gap-2 mb-2">
+            <span className="w-8">{rating}★</span>
+            <div className="flex-1 bg-gray-200 h-2">
+              <div
+                className="h-full bg-black"
+                style={{ width: `${percentage}%` }}
+              />
+            </div>
+            <span className="w-12 text-right">{percentage}%</span>
+          </div>
+        );
+      })
+  ) : (
+    <p>Loading ratings...</p> // Display a fallback while data is loading
+  )}
+</div>
+
+
+        {/* Write Review Button */}
+        <div className="w-full lg:w-1/3 mt-4">
+        <strong>Rating:</strong>
           <StarRating
             rating={rating}
             onRatingChange={setRating} // Update rating
           />
-        </div>
-        <div className="w-1/2 mt-4">
           <strong>Comment:</strong>
           <textarea
             className="w-full p-2 mt-2 border rounded-lg text-black"
@@ -388,29 +443,26 @@ const ProductDetailPage = () => {
             Submit Rating
           </Button>
         </div>
-
-        <div className=" w-full mt-8 px-12 justify-items-center">
-          <h4 className="text-xl font-semibold mb-4">What customers are saying:</h4>
-          {ratingData.length > 0 ? (
-            <div className="max-h-80 overflow-y-auto">
-              {ratingData.map((review, index) => (
-                <div key={index} className="border-b-2 pb-4 mb-4">
-                  <div className="flex items-center">
-                    <StarRating rating={parseInt(review.rating)} />
-                    <span className="ml-2 text-sm text-gray-500">{review.user.fullName}</span>
-                  </div>
-                  <p className="text-sm text-gray-700">{review.comment}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="pb-4 mb-4">No reviews yet.</p>
-          )}
-        </div>
       </div>
+
+      {/* Reviews List */}
+      <div className="space-y-6 w-1/2 max-h-96 overflow-y-auto">
+        {ratingData.map((review, index) => (
+          <div key={index} className="border-b pb-6">
+            <StarRating rating={parseFloat(review.rating) ? parseFloat(review.rating) : 0} disabled />
+            <div className="flex items-center gap-2 mt-2">
+              <span className="font-medium">{review.user.fullName}</span>
+            </div>
+            <p className="mt-2 text-gray-700">{review.comment}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+
       <div>
         <div className="grid grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16 mb-6">
-          {relatedProduct.map((product: ProductCard) => (
+          {relatedProduct.map((product: any) => (
             <Link
               key={product.productId}
               onClick={() => trackViewProduct(product)}
