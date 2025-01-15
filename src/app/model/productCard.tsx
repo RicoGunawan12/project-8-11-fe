@@ -6,6 +6,9 @@ export interface ProductCard {
   product_category : {
     productCatgoryName : string
   },
+  product_covers: [{
+    productCover: string
+  }]
   product_variants:[{
     productColor : string,
     productHeight : string,

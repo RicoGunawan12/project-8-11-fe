@@ -130,7 +130,7 @@ const OurProductSection = () => {
                 >
                   <div className="text-xs">
                     <Image
-                      src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
+                      src={`${process.env.BACK_BASE_URL}${product?.product_covers[0]?.productCover}`}
                       alt={product.productName}
                       width={200}
                       height={200}
