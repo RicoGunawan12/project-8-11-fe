@@ -5,7 +5,7 @@ import Image from "next/image";
 import NavigationBar from "@/app/component/navbar";
 import { Button, Input } from "@nextui-org/react";
 import { ProductCard } from "@/app/model/productCard";
-import { Loading } from "@/app/utilities/loading";
+import { Loading, LoadingOverlay } from "@/app/utilities/loading";
 import { getTokenCookie } from "@/app/utilities/token";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Footer from "@/app/component/footer";
@@ -28,6 +28,7 @@ const ProductDetailPage = () => {
   const [comment, setComment] = useState<string>("");
   const [buyVariant, setBuyVariant] = useState(0)
   const [relatedProduct, setRelatedProduct] = useState<ProductCard[]>([])
+  const [loading, setLoading] = useState(false)
 
   const fetchProductDetail = async () => {
     const response = await fetch(`${process.env.PRODUCTS}/related/${id}`, {
@@ -198,7 +199,6 @@ const ProductDetailPage = () => {
     }
   };
 
-
   if (!data) {
     return <Loading />;
   }
@@ -207,7 +207,9 @@ const ProductDetailPage = () => {
     <div className="bg-white w-screen h-screen pt-20">
       <NavigationBar />
       <div className="px-4 flex flex-col lg:flex-row lg:h-full items-start md:items-center space-y-8 md:space-y-0">
-
+      {
+          loading ? <LoadingOverlay/> : null
+        }
         {/* Center Column: Selected Product */}
         <div className="w-full py-6 lg:w-1/2 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
           {/* Main Product Image */}
@@ -341,18 +343,24 @@ const ProductDetailPage = () => {
                 )}
               </div>
             </div>
-            <div className="hidden lg:block font-light text-sm mt-4">
-              Rp. {quantity * (data.promo_details?.[0]
-                ? Math.max(Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount, 0)
-                : Number(data?.product_variants[buyVariant].productPrice)
-              )}
-            </div>
-            <Button
+           <div className="flex justify-start gap-6">
+           <Button
               onClick={addToCart}
-              className="hidden lg:block w-full bg-secondary text-white font-semibold text-lg mt-6 py-2"
+              className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
             >
               Add to Cart
             </Button>
+            <Button
+              onClick={async() =>  {
+                setLoading(true)
+                await addToCart()
+                route.push("/cart")
+              }}
+              className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
+            >
+              Buy Now
+            </Button>
+           </div>
           </div>
 
           <div className="w-3/4">
@@ -389,8 +397,8 @@ const ProductDetailPage = () => {
           </Button>
         </div>
 
-        <div className=" w-full mt-8 px-12 justify-items-center">
-          <h4 className="text-xl font-semibold mb-4">What customers are saying:</h4>
+        <div className=" w-1/2 mt-8">
+          <h4 className="text-xl font-semibold mb-4">What Customers are Saying:</h4>
           {ratingData.length > 0 ? (
             <div className="max-h-80 overflow-y-auto">
               {ratingData.map((review, index) => (
@@ -409,7 +417,8 @@ const ProductDetailPage = () => {
         </div>
       </div>
       <div>
-        <div className="grid grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16 mb-6">
+      <h1 className="text-black text-xl font-bold px-6 mb-6 lg:px-24">Related Products</h1>
+        <div className="grid grid-cols-2 text-black md:grid-cols-3 px-6  lg:px-24 lg:grid-cols-4 gap-16 mb-6">
           {relatedProduct.map((product: ProductCard) => (
             <Link
               key={product.productId}
@@ -454,16 +463,21 @@ const ProductDetailPage = () => {
       <div className="lg:hidden w-full p-2 flex justify-around fixed bottom-2">
         <button
           onClick={addToCart}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-between font-semibold text-xs px-6 py-2 w-3/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
           disabled={data?.product_variants[buyVariant].productStock === 0}
         >
           <span>Add to Cart</span>
-          <span>
-            Rp. {quantity * (data.promo_details[0] ? (Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? Number(data?.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0) : Number(data?.product_variants[buyVariant].productPrice))}
-          </span>
-          {data?.product_variants[buyVariant].productStock === 0 && (
-            <span className="text-red-500 ml-2">Out of Stock</span>
-          )}
+        </button>
+        <button
+          onClick={async() => {
+            setLoading(true)
+            await addToCart()
+            route.push("/cart")
+          }}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          disabled={data?.product_variants[buyVariant].productStock === 0}
+        >
+          <span>Buy Now</span>
         </button>
       </div>
     </div>

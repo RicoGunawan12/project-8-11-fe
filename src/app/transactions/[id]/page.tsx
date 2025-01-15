@@ -31,14 +31,18 @@ const TransactionPage = () => {
   const {locale} = useLocaleStore()
 
   const [authenticated, setAuthenticated] = useState<boolean>(false);
-  const checkAuthenticated = async () => {
-    await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
-  };
-
-  checkAuthenticated();
+  useEffect(() => {
+    const checkAuthenticated = async () => {
+      await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
+    };
+  
+    checkAuthenticated();
+  }, []);
 
   const fetchData = async () => {
     const clientToken = getTokenCookie();
+    console.log("woop")
+    console.log(clientToken)
     if (!clientToken) {
       router.push("/auth/login");
     }
@@ -52,7 +56,7 @@ const TransactionPage = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${clientToken}`,
           },
         }
       );
@@ -314,7 +318,7 @@ const TransactionPage = () => {
                       Rp. {transaction?.totalPrice}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {transaction?.status == "Waiting for Return" ? transaction?.status + ` (send to ${adminAddress.addressDetail})` : transaction?.status == "Cancelled" ?transaction?.status + `(${transaction?.notes})` : transaction?.status == "Return" ? transaction?.status + ` (${locale == "contentJSONEng"? "Check you bank balance regularly" : "Pastikan cek uang bank secara berkala"})` : transaction?.status}
+                      {transaction?.status == "Waiting for Return" ? transaction?.status + ` (send to ${adminAddress?.addressDetail ? adminAddress.addressDetail : ""})` : transaction?.status == "Cancelled" ?transaction?.status + `(${transaction?.notes})` : transaction?.status == "Return" ? transaction?.status + ` (${locale == "contentJSONEng"? "Check you bank balance regularly" : "Pastikan cek uang bank secara berkala"})` : transaction?.status}
 
                     </td>
                     <td className="py-2 px-4 border-b">

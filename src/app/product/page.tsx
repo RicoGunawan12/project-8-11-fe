@@ -183,7 +183,7 @@ const ProductPage = () => {
                         alt="Card background"
                         className="object-fill w-full aspect-square"
                         src={`${process.env.BACK_BASE_URL}${result.defaultImage}`}
-                        width={300}
+                        width={200}
                         height={200}
                       />
                     ) : (
@@ -208,7 +208,7 @@ const ProductPage = () => {
                     </p>
                     {
                       result.promo_details[0] && result.promo_details[0].promo != null ?
-                        <div className="w-full flex justify-center">
+                        <div className="flex">
                           <span className="line-through mr-2 text-gray-600">Rp. {result.product_variants[0].productPrice}</span>
                           <span className="font-semibold">Rp. {result.product_variants[0].productPrice - result.promo_details[0].promo?.promoAmount > 0 ? result.product_variants[0].productPrice - result.promo_details[0].promo?.promoAmount : 0}</span>
                         </div>

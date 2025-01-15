@@ -23,11 +23,13 @@ const RegisterPage = () => {
   });
 
   const [authenticated, setAuthenticated] = useState<boolean>(true);
-  const checkAuthenticated = async () => {
-    await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
-  };
-
-  checkAuthenticated();
+  useEffect(() => {
+    const checkAuthenticated = async () => {
+      await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
+    };
+  
+    checkAuthenticated();
+  }, []);
 
   const handlePhoneNumber = (e: any) => {
     setNewUserData((prevData) => ({

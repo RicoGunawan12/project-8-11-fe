@@ -19,8 +19,6 @@ export interface ProductCard {
     productVariantId : string,
     sku : string
   }],
-  averageRating : string,
-  countRating : string,
   productSize : string,
   promo_details:[
     {
@@ -32,5 +30,13 @@ export interface ProductCard {
         startDate : string
       }
     }
-  ]
+  ],
+  ratings: [
+    {
+      averageRating : string,
+      countRating : string
+    }
+  ],
+  averageRating : string,
+  countRating : string
 }

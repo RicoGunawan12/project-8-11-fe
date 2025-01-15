@@ -22,11 +22,14 @@ const LoginPage = () => {
   });
 
   const [authenticated, setAuthenticated] = useState<boolean>(true);
-  const checkAuthenticated = async () => {
-    await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
-  };
 
-  checkAuthenticated();
+  useEffect(() => {
+    const checkAuthenticated = async () => {
+      await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (value) { router.push(`${process.env.HOMEPAGE_ENDPOINT}`); } });
+    };
+  
+    checkAuthenticated();
+  }, []);
 
   const handleChanges = (e: React.FocusEvent<Element>) => {
     const target = e.target as HTMLInputElement
