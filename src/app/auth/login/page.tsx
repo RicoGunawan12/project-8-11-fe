@@ -39,6 +39,15 @@ const LoginPage = () => {
     }));
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      console.log(userPayload.email);
+      console.log(userPayload.password);
+      
+      login();
+    }
+  };
+
   const login = async () => {
     setLoading(true);
     try {
@@ -92,7 +101,7 @@ const LoginPage = () => {
   };
 
   return !authenticated ? (
-    <div className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
+    <div onKeyDown={handleKeyPress} className="w-screen h-screen flex justify-center flex-wrap content-center bg-white text-black">
       <div className="absolute top-4 left-4">
         <button
           onClick={() => router.push('/')}
@@ -115,14 +124,15 @@ const LoginPage = () => {
           <div className="w-full">
             <Input
               type="email"
-              label="Email"
+              label="Email or phone number start with +62"
               size="sm"
               labelPlacement="inside"
 
               className={`mt-6 w-full border-3 rounded-xl shadow-xl ${errors?.find(e => e.path == 'email') ? "border-red-300" : "border-gray-300"
                 }`}
               name="email"
-              onBlur={handleChanges}
+              onChange={(e: any) => handleChanges(e)}
+              // onBlur={handleChanges}
             />
             <p hidden={!errors?.find(e => e.path === 'email')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'email')?.msg}</p>
             <Input
@@ -134,7 +144,8 @@ const LoginPage = () => {
               className={`mt-6 w-full border-3 rounded-xl shadow-xl ${errors?.find(e => e.path == 'password') ? "border-red-300" : "border-gray-300"
                 }`}
               name="password"
-              onBlur={handleChanges}
+              onChange={(e: any) => handleChanges(e)}
+              // onBlur={handleChanges}
             />
             <p hidden={!errors?.find(e => e.path === 'password')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'password')?.msg}</p>
           </div>
