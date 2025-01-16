@@ -41,8 +41,6 @@ const TransactionPage = () => {
 
   const fetchData = async () => {
     const clientToken = getTokenCookie();
-    console.log("woop")
-    console.log(clientToken)
     if (!clientToken) {
       router.push("/auth/login");
     }
@@ -66,7 +64,6 @@ const TransactionPage = () => {
       }
       const data = await adminAddress.json();
 
-      console.log(data)
       setAdminAddress(data.response[0]);
     } catch (error) {
       // console.error(error);
@@ -100,7 +97,6 @@ const TransactionPage = () => {
         }
 
         const data = await response.json();
-        console.log(data)
         setTransaction(data.transaction);
       } catch (err: any) {
         setError("Error fetching data: " + err.message);

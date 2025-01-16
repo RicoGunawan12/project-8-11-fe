@@ -68,9 +68,6 @@ const RegisterPage = () => {
         });
   
         const data = await response.json();
-        console.log(newUserData);
-        
-        console.log(data);
         
         if (!response.ok) {
           if (data.errors) {

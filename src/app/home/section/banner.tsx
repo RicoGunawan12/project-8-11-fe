@@ -23,7 +23,6 @@ const Banner = () => {
         }
 
         const data = await response.json();
-        console.log(data)
         setPages(data.carousels);
       } catch (error: any) {
         toastError(error.message || "An unexpected error occurred.");
@@ -61,7 +60,6 @@ const Banner = () => {
   const backgroundImageUrl = process.env.BACK_BASE_URL + pageData.carouselImage;
   const backgroundImageUrlMobile = process.env.BACK_BASE_URL + pageData.carouselImageMobile;
 
-  console.log(backgroundImageUrl, backgroundImageUrlMobile)
 
   return (
     <div className="relative w-full h-screen overflow-hidden">

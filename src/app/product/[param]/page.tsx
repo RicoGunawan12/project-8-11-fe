@@ -41,7 +41,6 @@ const ProductDetailPage = () => {
     });
 
     const data = await response.json();
-    console.log(data)
     if (!response.ok) {
       throw new Error(data.message);
     }
@@ -60,8 +59,6 @@ const ProductDetailPage = () => {
   };
 
     setData(data.product);
-    console.log(data.product)
-    console.log(data.product.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + data.product.product_covers[0].productCover : "/placeholder.webp")
     setChosenImage(data.product.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + data.product.product_covers[0].productCover : "/placeholder.webp")
     setRelatedProduct(data.relatedProducts)
     setRatingDistribution(ratingDistribution)

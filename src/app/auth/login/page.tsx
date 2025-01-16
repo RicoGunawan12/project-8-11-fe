@@ -44,9 +44,6 @@ const LoginPage = () => {
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
-      console.log(userPayload.email);
-      console.log(userPayload.password);
-      
       login();
     }
   };

@@ -66,7 +66,6 @@ const ProductPage = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
-      console.log(data)
       setFetchedPages((prev) => ({
         ...prev,
         [currentPage]: data,
