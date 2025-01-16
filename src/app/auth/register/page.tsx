@@ -54,6 +54,9 @@ const RegisterPage = () => {
     if(newUserData.confirmPassword != newUserData.password){
       setCustomErr("Confirm password and password does not match")
     }
+    if (newUserData.phoneNumber[0] === '0') {
+      setCustomErr("Phone number is already start with +62")
+    }
     else{
       try {
         const response = await fetch(`${process.env.USER_REGISTER}`, {
@@ -65,6 +68,10 @@ const RegisterPage = () => {
         });
   
         const data = await response.json();
+        console.log(newUserData);
+        
+        console.log(data);
+        
         if (!response.ok) {
           if (data.errors) {
             setCustomErr('')
@@ -125,7 +132,7 @@ const RegisterPage = () => {
               className={`mt-6 w-full border-3 rounded-xl shadow-xl ${errors?.find(e => e.path == 'fullName') ? "border-red-300" : "border-gray-300"
                 }`}
               name="fullName"
-              onBlur={handleChanges}
+              onChange={(e: any) => handleChanges(e)}
 
             />
             <p hidden={!errors?.find(e => e.path === 'fullName')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'fullName')?.msg}</p>
@@ -140,7 +147,7 @@ const RegisterPage = () => {
               className={`mt-6 w-full border-3 !border-red-300 rounded-xl shadow-xl ${errors?.find(e => e.path === 'email') ? '!border-red-300' : '!border-gray-300'
                 }`}
               name="email"
-              onBlur={handleChanges}
+              onChange={(e:any) => handleChanges(e)}
             />
 
             <p hidden={!errors?.find(e => e.path === 'email')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'email')?.msg}</p>
@@ -165,7 +172,7 @@ const RegisterPage = () => {
                   color={'default'}
                   className="h-full w-full bg-transparent p-0 m-0 text-sm font-normal text-gray-500 focus-visible:outline-none rounded-l-1"
                   name="phoneNumber"
-                  onBlur={handlePhoneNumber}
+                  onChange={(e) => handlePhoneNumber(e)}
                   classNames={{
                     input: "p-0 m-0 bg-transparent",
                     inputWrapper: "rounded-l-none"
@@ -190,7 +197,7 @@ const RegisterPage = () => {
               className={`mt-6 w-full border-3 rounded-xl shadow-xl bg-rounded ${errors?.find(e => e.path == 'password') ? "border-red-300" : "border-gray-300"
                 }`}
               name="password"
-              onBlur={handleChanges}
+              onChange={(e: any) => handleChanges(e)}
             />
             <p hidden={!errors?.find(e => e.path === 'password')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'password')?.msg}</p>
 
@@ -204,7 +211,7 @@ const RegisterPage = () => {
                 }`}
 
               name="confirmPassword"
-              onBlur={handleChanges}
+              onChange={(e: any) => handleChanges(e)}
             />
             <p hidden={!errors?.find(e => e.path === 'confirmPassword')} className="text-red-500 mt-2 ml-3 text-sm">{errors?.find((e) => e.path === 'confirmPassword')?.msg}</p>
 

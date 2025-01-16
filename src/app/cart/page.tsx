@@ -26,6 +26,7 @@ const CartPage = () => {
   const [selectedShipping, setSelectedShipping] = useState<Shipping | null>(
     null
   );
+  const [customerNotes, setCustomerNotes] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<string>("checkout-va");
   const [voucherCode, setVoucherCode] = useState<string>("");
   const [isShippingEnabled, setIsShippingEnabled] = useState(false);
@@ -203,7 +204,8 @@ const CartPage = () => {
           deliveryFee: selectedShipping?.shipping_cost,
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
-          voucherCode: voucherCode
+          voucherCode: voucherCode,
+          customerNotes: customerNotes
         }),
       });
 
@@ -550,7 +552,7 @@ const CartPage = () => {
                 <input
                   type="text"
                   id="voucher"
-                  className="w-full p-2 border rounded-md focus:outline-none"
+                  className="w-full p-2 border rounded-md mb-4 focus:outline-none"
                   value={voucherCode}
                   onChange={(e) => setVoucherCode(e.target.value)}
                   placeholder="Enter Voucher Code"
@@ -561,6 +563,16 @@ const CartPage = () => {
                 >
                   {locale == "contentJSONEng" ? "Check" : "Cek"}
                 </button>
+              </div>
+
+              <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
+                {locale == "contentJSONEng" ? "Notes" : "Catatan"}
+              </label>
+
+              <div>
+                <textarea onChange={(e) => setCustomerNotes(e.target.value)} className="w-full p-2 border rounded-md focus:outline-none" placeholder="Notes">
+
+                </textarea>
               </div>
 
               {/* Price Summary */}
