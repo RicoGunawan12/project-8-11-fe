@@ -256,7 +256,7 @@ const CartPage = () => {
     }
 
     setPrice((prev) => ({ ...prev, voucher: discount }))
-
+    setLoading(false)
     if (result.errors || result.message) {
       toastError(result.message || "Voucher not found")
     } else {
@@ -559,7 +559,10 @@ const CartPage = () => {
                 />
                 <button
                   className="p-2 bg-secondary rounded-md text-white text-sm sm:text-base"
-                  onClick={checkVoucher}
+                  onClick={() => {
+                    setLoading(true)
+                    checkVoucher()
+                  }}
                 >
                   {locale == "contentJSONEng" ? "Check" : "Cek"}
                 </button>
