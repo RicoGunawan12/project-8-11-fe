@@ -30,6 +30,7 @@ const ProductDetailPage = () => {
   const [relatedProduct, setRelatedProduct] = useState<ProductCard[]>([])
   const [loading, setLoading] = useState(false)
   const [ratingDistribution, setRatingDistribution] = useState<RatingCount>()
+  const [chosenImage, setChosenImage] = useState<string>("")
 
   const fetchProductDetail = async () => {
     const response = await fetch(`${process.env.PRODUCTS}/related/${id}`, {
@@ -60,6 +61,7 @@ const ProductDetailPage = () => {
 
 
     setData(data.product);
+    setChosenImage(process.env.BACK_BASE_URL + data.product.product_covers[0].productCover)
     setRelatedProduct(data.relatedProducts)
     setRatingDistribution(ratingDistribution)
   }
@@ -232,7 +234,7 @@ const ProductDetailPage = () => {
           {/* Main Product Image */}
           <div className="w-full flex justify-center items-center mb-6">
             <Image
-              src={`${process.env.BACK_BASE_URL}${data?.product_variants[variantChosen]?.productImage || "/placeholder.png"}`}
+              src={chosenImage}
               width={400}
               height={400}
               style={{ objectFit: "contain" }}
@@ -244,14 +246,17 @@ const ProductDetailPage = () => {
           {/* Variant Thumbnails */}
           <div className="w-full lg:w-3/4 h-auto text-black overflow-x-auto py-4 flex gap-4 border-b-2">
             <div className="flex flex-nowrap justify-start items-center gap-4">
-              {data?.product_variants.map((product, idx) => (
+              {data?.product_covers.map((product, idx) => (
                 <div
                   key={idx}
                   className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${variantChosen === idx ? "border-secondary shadow-md" : "border-gray-300"}`}
-                  onClick={() => setVariantChosen(idx)}
+                  onClick={() => {
+                    setVariantChosen(idx)
+                    setChosenImage(`${process.env.BACK_BASE_URL}${product.productCover}`)
+                  }}
                 >
                   <Image
-                    src={`${process.env.BACK_BASE_URL}${product.productImage || "/placeholder.png"}`}
+                    src={`${process.env.BACK_BASE_URL}${product.productCover || "/placeholder.png"}`}
                     width={150}
                     height={150}
                     alt="Variant Image"
@@ -304,6 +309,7 @@ const ProductDetailPage = () => {
                 onClick={() => {
                   setBuyVariant(idx);
                   setQuantity(1);
+                  setChosenImage(`${process.env.BACK_BASE_URL}${product.productImage}`)
                 }}
                 title={product.productStock <= 0 ? "Out of Stock" : "Select this variant"}
               >

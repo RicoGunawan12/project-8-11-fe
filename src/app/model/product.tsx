@@ -77,5 +77,6 @@ export interface ExploreProduct {
     }
   ],
   averageRating: string,
-  countRating: string
+  countRating: string,
+  productCover : string
 }
