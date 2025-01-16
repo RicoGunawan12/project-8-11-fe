@@ -522,10 +522,12 @@ const ProductDetailPage = () => {
           onClick={addToCart}
           className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
           disabled={data?.product_variants[buyVariant].productStock === 0}
+          id="add_to_cart_event"
         >
           <span>Add to Cart</span>
         </button>
         <button
+          id="buy_now_event"
           onClick={async() => {
             setLoading(true)
             await addToCart()
