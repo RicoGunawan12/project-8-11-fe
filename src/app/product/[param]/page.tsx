@@ -10,7 +10,7 @@ import { getTokenCookie } from "@/app/utilities/token";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Footer from "@/app/component/footer";
 import StarRating from "@/app/utilities/rating";
-import { Rating } from "@/app/model/rating";
+import { Rating, RatingCount } from "@/app/model/rating";
 import Link from "next/link";
 
 const TABS = ["Product Descriptions", "Product Review"];
@@ -29,6 +29,8 @@ const ProductDetailPage = () => {
   const [buyVariant, setBuyVariant] = useState(0)
   const [relatedProduct, setRelatedProduct] = useState<ProductCard[]>([])
   const [loading, setLoading] = useState(false)
+  const [ratingDistribution, setRatingDistribution] = useState<RatingCount>()
+  const [chosenImage, setChosenImage] = useState<string>("")
 
   const fetchProductDetail = async () => {
     const response = await fetch(`${process.env.PRODUCTS}/related/${id}`, {
@@ -43,8 +45,25 @@ const ProductDetailPage = () => {
     if (!response.ok) {
       throw new Error(data.message);
     }
+
+    const defaultRatingDistribution: RatingCount = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+  };
+
+  const ratingDistribution = {
+      ...defaultRatingDistribution,
+      ...data.ratingDistributionObject,
+  };
+
+
     setData(data.product);
+    setChosenImage(process.env.BACK_BASE_URL + data.product.product_covers[0].productCover)
     setRelatedProduct(data.relatedProducts)
+    setRatingDistribution(ratingDistribution)
   }
 
   const fetchRating = async () => {
@@ -215,7 +234,7 @@ const ProductDetailPage = () => {
           {/* Main Product Image */}
           <div className="w-full flex justify-center items-center mb-6">
             <Image
-              src={`${process.env.BACK_BASE_URL}${data?.product_variants[variantChosen]?.productImage || "/placeholder.png"}`}
+              src={chosenImage}
               width={400}
               height={400}
               style={{ objectFit: "contain" }}
@@ -227,14 +246,17 @@ const ProductDetailPage = () => {
           {/* Variant Thumbnails */}
           <div className="w-full lg:w-3/4 h-auto text-black overflow-x-auto py-4 flex gap-4 border-b-2">
             <div className="flex flex-nowrap justify-start items-center gap-4">
-              {data?.product_variants.map((product, idx) => (
+              {data?.product_covers.map((product, idx) => (
                 <div
                   key={idx}
                   className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${variantChosen === idx ? "border-secondary shadow-md" : "border-gray-300"}`}
-                  onClick={() => setVariantChosen(idx)}
+                  onClick={() => {
+                    setVariantChosen(idx)
+                    setChosenImage(`${process.env.BACK_BASE_URL}${product.productCover}`)
+                  }}
                 >
                   <Image
-                    src={`${process.env.BACK_BASE_URL}${product.productImage || "/placeholder.png"}`}
+                    src={`${process.env.BACK_BASE_URL}${product.productCover || "/placeholder.png"}`}
                     width={150}
                     height={150}
                     alt="Variant Image"
@@ -287,6 +309,7 @@ const ProductDetailPage = () => {
                 onClick={() => {
                   setBuyVariant(idx);
                   setQuantity(1);
+                  setChosenImage(`${process.env.BACK_BASE_URL}${product.productImage}`)
                 }}
                 title={product.productStock <= 0 ? "Out of Stock" : "Select this variant"}
               >
@@ -373,15 +396,53 @@ const ProductDetailPage = () => {
         </div>
       </div>
 
-      <div className="w-full flex flex-col items-center text-black justify-center">
-        <div className="w-1/2 mt-8">
-          <strong>Rating:</strong>
+      <div className="w-full p-6 flex flex-col justify-between items-center">
+      <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">CUSTOMER REVIEWS</div>
+      
+      <div className="flex flex-col lg:flex-row w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
+        {/* Rating Summary */}
+        <div className="w-full lg:w-1/3">
+          <div className="text-6xl font-bold">{data?.ratings[0]?.averageRating || 0}</div>
+          <div className="text-xl text-gray-500 mb-2">/ 5</div>
+          <StarRating rating={parseFloat(data?.ratings[0]?.averageRating) ? parseFloat(data?.ratings[0].averageRating) : 0} disabled />
+          <div className="text-sm text-gray-500 mt-2">{data.ratings[0]?.countRating} reviews</div>
+        </div>
+        
+        {/* Rating Distribution */}
+        <div className="w-full lg:w-1/3 text-black">
+  {ratingDistribution ? (
+    Object.entries(ratingDistribution)
+      .sort(([a], [b]) => Number(b) - Number(a)) // Sort by rating descending
+      .map(([rating, count]) => {
+        const total = Object.values(ratingDistribution).reduce((sum, val) => sum + val, 0);
+        const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0";
+
+        return (
+          <div key={rating} className="flex items-center gap-2 mb-2">
+            <span className="w-8">{rating}★</span>
+            <div className="flex-1 bg-gray-200 h-2">
+              <div
+                className="h-full bg-black"
+                style={{ width: `${percentage}%` }}
+              />
+            </div>
+            <span className="w-12 text-right">{percentage}%</span>
+          </div>
+        );
+      })
+  ) : (
+    <p>Loading ratings...</p> // Display a fallback while data is loading
+  )}
+</div>
+
+
+        {/* Write Review Button */}
+        <div className="w-full lg:w-1/3 mt-4">
+        <strong>Rating:</strong>
           <StarRating
             rating={rating}
             onRatingChange={setRating} // Update rating
           />
-        </div>
-        <div className="w-1/2 mt-4">
           <strong>Comment:</strong>
           <textarea
             className="w-full p-2 mt-2 border rounded-lg text-black"
@@ -396,26 +457,22 @@ const ProductDetailPage = () => {
             Submit Rating
           </Button>
         </div>
-
-        <div className=" w-1/2 mt-8">
-          <h4 className="text-xl font-semibold mb-4">What Customers are Saying:</h4>
-          {ratingData.length > 0 ? (
-            <div className="max-h-80 overflow-y-auto">
-              {ratingData.map((review, index) => (
-                <div key={index} className="border-b-2 pb-4 mb-4">
-                  <div className="flex items-center">
-                    <StarRating rating={parseInt(review.rating)} />
-                    <span className="ml-2 text-sm text-gray-500">{review.user.fullName}</span>
-                  </div>
-                  <p className="text-sm text-gray-700">{review.comment}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="pb-4 mb-4">No reviews yet.</p>
-          )}
-        </div>
       </div>
+
+      {/* Reviews List */}
+      <div className="space-y-6 w-1/2 max-h-96 overflow-y-auto">
+        {ratingData.map((review, index) => (
+          <div key={index} className="border-b pb-6">
+            <StarRating rating={parseFloat(review.rating) ? parseFloat(review.rating) : 0} disabled />
+            <div className="flex items-center gap-2 mt-2">
+              <span className="font-medium">{review.user.fullName}</span>
+            </div>
+            <p className="mt-2 text-gray-700">{review.comment}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
       <div>
       <h1 className="text-black text-xl font-bold px-6 mb-6 lg:px-24">Related Products</h1>
         <div className="grid grid-cols-2 text-black md:grid-cols-3 px-6  lg:px-24 lg:grid-cols-4 gap-16 mb-6">

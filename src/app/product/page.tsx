@@ -66,7 +66,7 @@ const ProductPage = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
-
+      console.log(data)
       setFetchedPages((prev) => ({
         ...prev,
         [currentPage]: data,
@@ -182,7 +182,7 @@ const ProductPage = () => {
                       <Image
                         alt="Card background"
                         className="object-fill w-full aspect-square"
-                        src={`${process.env.BACK_BASE_URL}${result.defaultImage}`}
+                        src={`${process.env.BACK_BASE_URL}${result.product_covers[0].productCover}`}
                         width={200}
                         height={200}
                       />
