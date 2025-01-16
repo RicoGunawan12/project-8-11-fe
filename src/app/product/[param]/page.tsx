@@ -59,9 +59,10 @@ const ProductDetailPage = () => {
       ...data.ratingDistributionObject,
   };
 
-
     setData(data.product);
-    setChosenImage(process.env.BACK_BASE_URL + data.product.product_covers[0].productCover)
+    console.log(data.product)
+    console.log(data.product.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + data.product.product_covers[0].productCover : "/placeholder.webp")
+    setChosenImage(data.product.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + data.product.product_covers[0].productCover : "/placeholder.webp")
     setRelatedProduct(data.relatedProducts)
     setRatingDistribution(ratingDistribution)
   }
@@ -78,8 +79,6 @@ const ProductDetailPage = () => {
     if (!ratingResponse.ok) {
       throw new Error(ratingData.message);
     }
-
-    console.log(data)
 
     setRatingData(ratingData.ratings);
   }
@@ -256,7 +255,7 @@ const ProductDetailPage = () => {
                   }}
                 >
                   <Image
-                    src={`${process.env.BACK_BASE_URL}${product.productCover || "/placeholder.png"}`}
+                    src={`${process.env.BACK_BASE_URL}${product.productCover || "/placeholder.webp"}`}
                     width={150}
                     height={150}
                     alt="Variant Image"
@@ -319,7 +318,7 @@ const ProductDetailPage = () => {
                   aria-hidden="true"
                 ></div>
                 <Image
-                  src={`${process.env.BACK_BASE_URL}${product.productImage}`}
+                  src={product.productImage ? process.env.BACK_BASE_URL + product.productImage : "/placeholder.webp"}
                   width={120}
                   height={120}
                   alt="Product"
@@ -520,20 +519,18 @@ const ProductDetailPage = () => {
       <div className="lg:hidden w-full p-2 flex justify-around fixed bottom-2">
         <button
           onClick={addToCart}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : null}`}
           disabled={data?.product_variants[buyVariant].productStock === 0}
-          id="add_to_cart_event"
         >
           <span>Add to Cart</span>
         </button>
         <button
-          id="buy_now_event"
           onClick={async() => {
             setLoading(true)
             await addToCart()
             route.push("/cart")
           }}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : ""}`}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : null}`}
           disabled={data?.product_variants[buyVariant].productStock === 0}
         >
           <span>Buy Now</span>

@@ -32,6 +32,7 @@ const OurProductSection = () => {
         });
 
         const data = await response.json();
+        console.log(data.products);
         setProducts(data.products);
 
         // Set the first category as active by default
@@ -130,7 +131,7 @@ const OurProductSection = () => {
                 >
                   <div className="text-xs">
                     <Image
-                      src={`${process.env.BACK_BASE_URL}${product?.product_covers[0]?.productCover}`}
+                      src={(product?.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + product?.product_covers[0]?.productCover : "/placeholder.webp")}
                       alt={product.productName}
                       width={200}
                       height={200}
