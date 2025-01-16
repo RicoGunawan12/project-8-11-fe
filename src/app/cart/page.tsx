@@ -610,6 +610,7 @@ const CartPage = () => {
               </div>
 
               <button
+                id="checkout_event"
                 className="w-full bg-secondary text-white py-2 sm:py-3 mt-4 rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all"
                 onClick={checkOut}
               >

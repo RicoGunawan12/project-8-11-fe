@@ -322,7 +322,7 @@ const TransactionPage = () => {
 
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {transaction?.shippingType}
+                      {transaction?.expedition} - {transaction?.shippingType}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {mapPaymentMethod(transaction?.paymentMethod || "")}
