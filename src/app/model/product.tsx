@@ -47,6 +47,9 @@ export interface ExploreProduct {
   productName: string;
   productDescription: string;
   defaultImage: string;
+  product_covers: {
+    productCover: string
+  }[]
   product_category: {
     productCategoryName: string;
   };

@@ -169,7 +169,7 @@ const ProductPage = () => {
         }
         {searchResults.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 w-full justify-items-center pb-12 lg:px-12 px-4">
-            {searchResults.map((result, index) => (
+            {searchResults.map((result: ExploreProduct, index) => (
               <Link
                 href={`/product/${result.productId}`}
                 key={index}
@@ -181,7 +181,7 @@ const ProductPage = () => {
                       <Image
                         alt="Card background"
                         className="object-fill w-full aspect-square"
-                        src={`${process.env.BACK_BASE_URL}${result.product_covers[0].productCover}`}
+                        src={(result?.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + result?.product_covers[0]?.productCover : "/placeholder.webp")}
                         width={200}
                         height={200}
                       />
