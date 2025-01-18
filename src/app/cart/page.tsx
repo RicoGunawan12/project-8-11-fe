@@ -558,7 +558,7 @@ const CartPage = () => {
                   placeholder="Enter Voucher Code"
                 />
                 <button
-                  className="p-2 bg-secondary rounded-md text-white text-sm sm:text-base"
+                  className="p-2 bg-secondary rounded-md text-white h-full text-sm sm:text-base"
                   onClick={() => {
                     setLoading(true)
                     checkVoucher()
