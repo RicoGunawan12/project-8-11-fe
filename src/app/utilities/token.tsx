@@ -31,7 +31,9 @@ export const checkTokenCookieValid = async () => {
     },
   });
 
-  if (response.status !== 401) {
+  console.log(response);
+
+  if (response.status === 401) {
     deleteTokenCookie();
   }
 
