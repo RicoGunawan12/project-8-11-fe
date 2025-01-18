@@ -387,7 +387,7 @@ const ProductDetailPage = () => {
               Descriptions
             </h3>
             <p><span className="font-semibold">Size: </span>{data?.productSize} mL</p>
-            <p className="pt-4">{data?.productDescription}</p>
+            <p className="pt-4" dangerouslySetInnerHTML={{__html: data.productDescription}}></p>
           </div>
         </div>
       </div>

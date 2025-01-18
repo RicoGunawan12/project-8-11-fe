@@ -27,6 +27,7 @@ const CartPage = () => {
     null
   );
   const [customerNotes, setCustomerNotes] = useState("");
+  const [productNotes, setProductNotes] = useState<string[]>([])
   const [paymentMethod, setPaymentMethod] = useState<string>("checkout-va");
   const [voucherCode, setVoucherCode] = useState<string>("");
   const [isShippingEnabled, setIsShippingEnabled] = useState(false);
@@ -205,7 +206,8 @@ const CartPage = () => {
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
           voucherCode: voucherCode,
-          customerNotes: customerNotes
+          customerNotes: customerNotes,
+          productNotes: productNotes
         }),
       });
 
@@ -372,7 +374,7 @@ const CartPage = () => {
           <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} {locale == "contentJSONEng" ? "items in your bag" : "jumlah barang di keranjang"}</p>
           {data.length > 0 ? (
             <div className="space-y-4">
-              {data.map((item) => (
+              {data.map((item, index) => (
                 <div
                   key={item.productVariantId}
                   className="flex flex-col sm:flex-row items-center p-4 bg-gray-50 rounded-2xl shadow-sm"
@@ -392,6 +394,21 @@ const CartPage = () => {
                       {locale == "contentJSONEng" ? "Color" : "Warna"}: {item.product_variant.productColor} | {locale == "contengJSONEng" ? "Size" : "Ukuran"}:{" "}
                       {item.product_variant.product.productSize}
                     </p>
+                    {
+                      clientToken &&
+                      <input
+                        type="text"
+                        id="voucher"
+                        className="w-3/4 mt-2 p-2 border rounded-md focus:outline-none"
+                        value={productNotes[index] || ""}
+                        onChange={(e) =>   setProductNotes((prevNotes) => {
+                          const updatedNotes = [...prevNotes];
+                          updatedNotes[index] = e.target.value;
+                          return updatedNotes;
+                        })}
+                        placeholder="Notes"
+                      />
+                    }
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
                     {
@@ -405,6 +422,7 @@ const CartPage = () => {
                           Rp. {item.product_variant.productPrice}
                         </div>
                     }
+                    
                   </div>
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
                     <button
