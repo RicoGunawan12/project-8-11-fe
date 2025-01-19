@@ -51,12 +51,12 @@ const ProductDetailPage = () => {
       3: 0,
       4: 0,
       5: 0,
-  };
+    };
 
-  const ratingDistribution = {
+    const ratingDistribution = {
       ...defaultRatingDistribution,
       ...data.ratingDistributionObject,
-  };
+    };
 
     setData(data.product);
     setChosenImage(data.product.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + data.product.product_covers[0].productCover : "/placeholder.webp")
@@ -79,8 +79,6 @@ const ProductDetailPage = () => {
 
     setRatingData(ratingData.ratings);
   }
-
-
   useEffect(() => {
     const fetchData = async () => {
       const clientToken = getTokenCookie();
@@ -218,12 +216,13 @@ const ProductDetailPage = () => {
     return <Loading />;
   }
 
+
   return (
     <div className="bg-white w-screen h-screen pt-20">
       <NavigationBar />
       <div className="px-4 flex flex-col lg:flex-row lg:h-full items-start md:items-center space-y-8 md:space-y-0">
-      {
-          loading ? <LoadingOverlay/> : null
+        {
+          loading ? <LoadingOverlay /> : null
         }
         {/* Center Column: Selected Product */}
         <div className="w-full py-6 lg:w-1/2 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
@@ -270,7 +269,7 @@ const ProductDetailPage = () => {
             <h2 className="text-2xl md:text-3xl font-bold border-b-2 pb-2">
               {data?.productName}
             </h2>
-            <div className="mt-2 text-lg md:text-xl font-light pb-2">
+            <div className="mt-4 text-lg md:text-xl font-light">
               {
                 data.promo_details[0] && data.promo_details[0].promo != null ? (
                   <div>
@@ -283,9 +282,6 @@ const ProductDetailPage = () => {
                   </div>
                 )
               }
-            </div>
-            <div>
-              <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
             </div>
           </div>
 
@@ -344,7 +340,7 @@ const ProductDetailPage = () => {
               </div>
               <button
                 onClick={() => {
-                  if (quantity < data?.product_variants[buyVariant].productStock){
+                  if (quantity < data?.product_variants[buyVariant].productStock) {
                     setQuantity((prev) => prev + 1)
                   }
                 }}
@@ -362,24 +358,24 @@ const ProductDetailPage = () => {
                 )}
               </div>
             </div>
-           <div className="flex justify-start gap-6">
-           <Button
-              onClick={addToCart}
-              className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
-            >
-              Add to Cart
-            </Button>
-            <Button
-              onClick={async() =>  {
-                setLoading(true)
-                await addToCart()
-                route.push("/cart")
-              }}
-              className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
-            >
-              Buy Now
-            </Button>
-           </div>
+            <div className="flex justify-start gap-6">
+              <Button
+                onClick={addToCart}
+                className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
+              >
+                Add to Cart
+              </Button>
+              <Button
+                onClick={async () => {
+                  setLoading(true)
+                  await addToCart()
+                  route.push("/cart")
+                }}
+                className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
+              >
+                Buy Now
+              </Button>
+            </div>
           </div>
 
           <div className="w-3/4">
@@ -387,90 +383,90 @@ const ProductDetailPage = () => {
               Descriptions
             </h3>
             <p><span className="font-semibold">Size: </span>{data?.productSize} mL</p>
-            <p className="pt-4" dangerouslySetInnerHTML={{__html: data.productDescription}}></p>
+            <p className="pt-4" dangerouslySetInnerHTML={{ __html: data.productDescription }}></p>
           </div>
         </div>
       </div>
 
       <div className="w-full p-6 flex flex-col justify-between items-center">
-      <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">CUSTOMER REVIEWS</div>
-      
-      <div className="flex flex-col lg:flex-row w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
-        {/* Rating Summary */}
-        <div className="w-full lg:w-1/3">
-          <div className="text-6xl font-bold">{data?.ratings[0]?.averageRating || 0}</div>
-          <div className="text-xl text-gray-500 mb-2">/ 5</div>
-          <StarRating rating={parseFloat(data?.ratings[0]?.averageRating) ? parseFloat(data?.ratings[0].averageRating) : 0} disabled />
-          <div className="text-sm text-gray-500 mt-2">{data.ratings[0]?.countRating} reviews</div>
-        </div>
-        
-        {/* Rating Distribution */}
-        <div className="w-full lg:w-1/3 text-black">
-  {ratingDistribution ? (
-    Object.entries(ratingDistribution)
-      .sort(([a], [b]) => Number(b) - Number(a)) // Sort by rating descending
-      .map(([rating, count]) => {
-        const total = Object.values(ratingDistribution).reduce((sum, val) => sum + val, 0);
-        const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0";
+        <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">CUSTOMER REVIEWS</div>
 
-        return (
-          <div key={rating} className="flex items-center gap-2 mb-2">
-            <span className="w-8">{rating}★</span>
-            <div className="flex-1 bg-gray-200 h-2">
-              <div
-                className="h-full bg-black"
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
-            <span className="w-12 text-right">{percentage}%</span>
+        <div className="flex flex-col lg:flex-row w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
+          {/* Rating Summary */}
+          <div className="w-full lg:w-1/3">
+            <div className="text-6xl font-bold">{parseFloat(data?.averageRating)?.toFixed(1) || 0.0}</div>
+            <div className="text-xl text-gray-500 mb-2">/ 5</div>
+            <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.ratings[0].averageRating) : 0} disabled />
+            <div className="text-sm text-gray-500 mt-2">{data?.countRating} reviews</div>
           </div>
-        );
-      })
-  ) : (
-    <p>Loading ratings...</p> // Display a fallback while data is loading
-  )}
-</div>
+
+          {/* Rating Distribution */}
+          <div className="w-full lg:w-1/3 text-black">
+            {ratingDistribution ? (
+              Object.entries(ratingDistribution)
+                .sort(([a], [b]) => Number(b) - Number(a)) // Sort by rating descending
+                .map(([rating, count]) => {
+                  const total = Object.values(ratingDistribution).reduce((sum, val) => sum + val, 0);
+                  const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0";
+
+                  return (
+                    <div key={rating} className="flex items-center gap-2 mb-2">
+                      <span className="w-8">{rating}★</span>
+                      <div className="flex-1 bg-gray-200 h-2">
+                        <div
+                          className="h-full bg-black"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                      <span className="w-12 text-right">{percentage}%</span>
+                    </div>
+                  );
+                })
+            ) : (
+              <p>Loading ratings...</p> // Display a fallback while data is loading
+            )}
+          </div>
 
 
-        {/* Write Review Button */}
-        <div className="w-full lg:w-1/3 mt-4">
-        <strong>Rating:</strong>
-          <StarRating
-            rating={rating}
-            onRatingChange={setRating} // Update rating
-          />
-          <strong>Comment:</strong>
-          <textarea
-            className="w-full p-2 mt-2 border rounded-lg text-black"
-            placeholder="Write your comment here..."
-            value={comment}
-            onChange={(e) => setComment(e.target.value)} // Update comment
-          />
-          <Button
-            onClick={submitRating}
-            className="mt-4 w-full bg-secondary text-white font-semibold text-lg py-2"
-          >
-            Submit Rating
-          </Button>
+          {/* Write Review Button */}
+          <div className="w-full lg:w-1/3 mt-4">
+            <strong>Rating:</strong>
+            <StarRating
+              rating={rating}
+              onRatingChange={setRating} // Update rating
+            />
+            <strong>Comment:</strong>
+            <textarea
+              className="w-full p-2 mt-2 border rounded-lg text-black"
+              placeholder="Write your comment here..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)} // Update comment
+            />
+            <Button
+              onClick={submitRating}
+              className="mt-4 w-full bg-secondary text-white font-semibold text-lg py-2"
+            >
+              Submit Rating
+            </Button>
+          </div>
+        </div>
+
+        {/* Reviews List */}
+        <div className="space-y-6 w-1/2 max-h-96 overflow-y-auto">
+          {ratingData.map((review, index) => (
+            <div key={index} className="border-b pb-6">
+              <StarRating rating={parseFloat(review.rating) ? parseFloat(review.rating) : 0} disabled />
+              <div className="flex items-center gap-2 mt-2">
+                <span className="font-medium">{review.user.fullName}</span>
+              </div>
+              <p className="mt-2 text-gray-700">{review.comment}</p>
+            </div>
+          ))}
         </div>
       </div>
-
-      {/* Reviews List */}
-      <div className="space-y-6 w-1/2 max-h-96 overflow-y-auto">
-        {ratingData.map((review, index) => (
-          <div key={index} className="border-b pb-6">
-            <StarRating rating={parseFloat(review.rating) ? parseFloat(review.rating) : 0} disabled />
-            <div className="flex items-center gap-2 mt-2">
-              <span className="font-medium">{review.user.fullName}</span>
-            </div>
-            <p className="mt-2 text-gray-700">{review.comment}</p>
-          </div>
-        ))}
-      </div>
-    </div>
 
       <div>
-      <h1 className="text-black text-xl font-bold px-6 mb-6 lg:px-24">Related Products</h1>
+        <h1 className="text-black text-xl font-bold px-6 mb-6 lg:px-24">Related Products</h1>
         <div className="grid grid-cols-2 text-black md:grid-cols-3 px-6  lg:px-24 lg:grid-cols-4 gap-16 mb-6">
           {relatedProduct.map((product: ProductCard) => (
             <Link
@@ -522,7 +518,7 @@ const ProductDetailPage = () => {
           <span>Add to Cart</span>
         </button>
         <button
-          onClick={async() => {
+          onClick={async () => {
             setLoading(true)
             await addToCart()
             route.push("/cart")

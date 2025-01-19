@@ -401,7 +401,7 @@ const CartPage = () => {
                         id="voucher"
                         className="w-3/4 mt-2 p-2 border rounded-md focus:outline-none"
                         value={productNotes[index] || ""}
-                        onChange={(e) =>   setProductNotes((prevNotes) => {
+                        onChange={(e) => setProductNotes((prevNotes) => {
                           const updatedNotes = [...prevNotes];
                           updatedNotes[index] = e.target.value;
                           return updatedNotes;
@@ -422,7 +422,7 @@ const CartPage = () => {
                           Rp. {item.product_variant.productPrice}
                         </div>
                     }
-                    
+
                   </div>
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
                     <button
@@ -566,11 +566,11 @@ const CartPage = () => {
               <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
                 {locale == "contentJSONEng" ? "Voucher Code" : "Kode Voucher"}
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 mb-4">
                 <input
                   type="text"
                   id="voucher"
-                  className="w-full p-2 border rounded-md mb-4 focus:outline-none"
+                  className="w-full p-2 border rounded-md focus:outline-none"
                   value={voucherCode}
                   onChange={(e) => setVoucherCode(e.target.value)}
                   placeholder="Enter Voucher Code"
@@ -584,6 +584,10 @@ const CartPage = () => {
                 >
                   {locale == "contentJSONEng" ? "Check" : "Cek"}
                 </button>
+                <button className="p-2 bg-red-500 rounded-md text-white h-full text-sm sm:text-base" onClick={() => {
+                  setPrice((prev) => ({ ...prev, voucher: 0 }))
+                  setVoucherCode("")
+                }}>{locale == "contentJSONEng" ? "Remove" : "Hapus"}</button>
               </div>
 
               <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
@@ -611,10 +615,6 @@ const CartPage = () => {
                 {price.voucher != 0 ? (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold gap-2 flex">
-                      <div><button className="bg-red-500 text-white px-4 rounded-xl" onClick={() => {
-                        setPrice((prev) => ({ ...prev, voucher: 0 }))
-                        setVoucherCode("")
-                      }}>X</button></div>
                       <div>Voucher:</div></span>
                     <span className="font-light text-black">- Rp. {price.voucher}</span>
                   </div>
