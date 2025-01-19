@@ -91,8 +91,8 @@ const OurProductSection = () => {
   );
 
   return (
-    <div className="w-screen flex flex-col items-center my-6">
-      <div className="text-3xl font-bold text-black">Our Product</div>
+    <div className="w-screen flex flex-col items-center my-12">
+      <div className="text-3xl sm:text-4xl font-bold text-black">Our Product</div>
 
       <div className="mt-8 w-full px-10 flex flex-col">
         <div className="md:w-full flex justify-center">

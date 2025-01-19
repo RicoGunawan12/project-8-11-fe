@@ -188,7 +188,7 @@ const ProductDetailPage = () => {
       if (!response.ok) {
         throw new Error(resp.message);
       }
-
+      setComment("")
       toastSuccess("Rating submitted successfully!");
       fetchProductDetail()
       fetchRating()
@@ -383,7 +383,7 @@ const ProductDetailPage = () => {
               Descriptions
             </h3>
             <p><span className="font-semibold">Size: </span>{data?.productSize} mL</p>
-            <p className="pt-4" dangerouslySetInnerHTML={{ __html: data.productDescription }}></p>
+            <p className="pt-4 h-48 overflow-y-auto" dangerouslySetInnerHTML={{ __html: data.productDescription }}></p>
           </div>
         </div>
       </div>

@@ -169,7 +169,7 @@ const AddressForm = () => {
                     setCustomErr(data.message)
                 }
             } else {
-                router.push("/profile");
+                router.back()
             }
             
         } catch (error: any) {

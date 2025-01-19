@@ -7,6 +7,8 @@ import { faCartShopping, faSearch, faUser, faRightToBracket, faBars, faTimes } f
 import { ExploreProduct, Product } from "../model/product";
 import { useLocaleStore } from "./locale";
 import Image from "next/image";
+import DeleteConfirmationModal from "./modal/deleteConfirmation";
+import { useRouter } from "next/navigation";
 
 const NavigationBar = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -22,6 +24,8 @@ const NavigationBar = () => {
   const { locale, change } = useLocaleStore()
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const router = useRouter();
 
   const options = [
     { value: "contentJSONEng", label: "EN", icon: "/icons/EN.png" },
@@ -145,6 +149,7 @@ const NavigationBar = () => {
           <Image src="/logo.png" width={75} height={75} alt="not found" />
         </Link>
       </div>
+
 
       {/* Desktop Menu */}
       <div className="hidden lg:flex items-center gap-6">
@@ -278,16 +283,14 @@ const NavigationBar = () => {
                       <Link href="/profile" className="block px-4 py-2 text-gray-800">
                         Profile
                       </Link>
-                      <Link
-                        href="/"
+                      <button
                         className="block px-4 py-2 text-gray-800"
                         onClick={() => {
-                          deleteTokenCookie();
-                          setToken(null);
+                          setIsModalOpen(true)
                         }}
                       >
                         Logout
-                      </Link>
+                      </button>
                     </div>
                   )}
                 </div>
@@ -370,16 +373,14 @@ const NavigationBar = () => {
                 <Link href="/profile" className="block px-4 py-2 text-gray-800">
                   Profile
                 </Link>
-                <Link
-                  href="/"
+                <button
                   className="block px-4 py-2 text-gray-800"
                   onClick={() => {
-                    deleteTokenCookie();
-                    setToken(null);
+                    setIsModalOpen(true)
                   }}
                 >
                   Logout
-                </Link>
+                </button>
               </div>
             )}
           </div>
@@ -482,6 +483,12 @@ const NavigationBar = () => {
           </div>
         </div>
       )}
+      <div className="fixed">
+        <DeleteConfirmationModal header={"Are you sure you want to log out?"} description={`Are you sure you want to log out ?`} onDelete={() => {
+          deleteTokenCookie()
+          router.push("/auth/login")
+        }} isVisible={isModalOpen} onCancel={() => { setIsModalOpen(false) }} />
+      </div>
     </div>
 
   );
