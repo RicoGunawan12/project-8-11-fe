@@ -18,7 +18,7 @@ const ContactButton = () => {
 
                 const data = await response.json();
                 console.log(data)
-                setPhoneNumber(data.phoneNumber);
+                setPhoneNumber(data.response[0].senderPhoneNumber);
             } catch (error) {
                 console.error('Error fetching contact info:', error);
                 setPhoneNumber('6200000000000');
