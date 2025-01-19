@@ -15,6 +15,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../component/footer";
 import { useLocaleStore } from "../component/locale";
+import DeleteConfirmationModal from "../component/modal/deleteConfirmation";
+import { pre } from "framer-motion/client";
 
 const CartPage = () => {
   const router = useRouter();
@@ -43,6 +45,8 @@ const CartPage = () => {
   })
   const [update, setUpdate] = useState(false);
   const { locale } = useLocaleStore()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [removedProduct, setRemoveProduct] = useState<{name : string, id : string}>()
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -280,6 +284,7 @@ const CartPage = () => {
     if (fetchData.ok) {
       setUpdate(!update);
       toastSuccess("Item removed")
+      setIsModalOpen(false)
     } else {
 
 
@@ -290,72 +295,47 @@ const CartPage = () => {
     }
   }
 
-  const handleMinusCartDb = async (item: Cart) => {
-    setLoading(true);
-    const url = new URL(`${process.env.CART}/${item.cartItemId}`);
-    const body = {
-      quantity: Math.max(quantities[item.productVariantId] - 1, 1)
-    }
-    const result = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${clientToken}`
-      },
-      body: JSON.stringify(body)
-    })
-
-    const resp = await result.json()
-
-    if (result.ok) {
-
-    } else {
-
-      if (result.status === 401) {
-        router.push("/auth/login");
+  useEffect(() => {
+    const updateCartQuantity = async () => {
+      if (!clientToken || !debouncedQuantities) return;
+      
+      setLoading(true);
+      try {
+        const updates = data.map(async (item) => {
+          const quantity = debouncedQuantities[item.productVariantId];
+          if (!quantity) return;
+  
+          const url = new URL(`${process.env.CART}/${item.cartItemId}`);
+          const result = await fetch(url, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${clientToken}`
+            },
+            body: JSON.stringify({ quantity })
+          });
+  
+          const resp = await result.json();
+          
+          if (!result.ok) {
+            if (result.status === 401) {
+              router.push("/auth/login");
+            }
+            throw new Error(resp.message || "Something went wrong");
+          }
+        });
+  
+        await Promise.all(updates);
+        recalculateTotalPrice();
+      } catch (error: any) {
+        toastError(error.message);
+      } finally {
+        setLoading(false);
       }
-      toastError(resp.message || "Something went wrong")
-    }
-
-
-    recalculateTotalPrice()
-    setLoading(false);
-  }
-
-  const handlePlusCartDb = async (item: Cart) => {
-    setLoading(true);
-    const url = new URL(`${process.env.CART}/${item.cartItemId}`);
-    const body = {
-      quantity: quantities[item.productVariantId] + 1
-    }
-    const result = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${clientToken}`
-      },
-      body: JSON.stringify(body)
-    })
-
-    const resp = await result.json()
-
-    if (result.ok) {
-      setQuantities(prevQuantities => ({
-        ...prevQuantities,
-        [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
-      }));
-    } else {
-
-
-      if (result.status === 401) {
-        router.push("/auth/login");
-      }
-      toastError(resp.message || "Something went wrong")
-    }
-
-    recalculateTotalPrice()
-    setLoading(false);
-  }
+    };
+  
+    updateCartQuantity();
+  }, [debouncedQuantities, clientToken]);
 
   if (!data) {
     return <Loading />;
@@ -399,7 +379,7 @@ const CartPage = () => {
                       <input
                         type="text"
                         id="voucher"
-                        className="w-3/4 mt-2 p-2 border rounded-md focus:outline-none"
+                        className="w-1/2 mt-2 p-2 border rounded-md focus:outline-none"
                         value={productNotes[index] || ""}
                         onChange={(e) => setProductNotes((prevNotes) => {
                           const updatedNotes = [...prevNotes];
@@ -427,26 +407,12 @@ const CartPage = () => {
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
                     <button
                       onClick={async () => {
-                        if (clientToken) {
-                          setQuantities((prev) => ({
-                            ...prev,
-                            [item.productVariantId]: Math.max(
-                              (prev[item.productVariantId] || 1) - 1,
-                              1
-                            ),
-                          }))
-                          handleMinusCartDb(item);
-                        }
-                        else {
-                          setQuantities((prev) => ({
-                            ...prev,
-                            [item.productVariantId]: Math.max(
-                              (prev[item.productVariantId] || 1) - 1,
-                              1
-                            ),
-                          }))
-
-                        }
+                        setQuantities((prev) => ({
+                          ...prev,
+                          [item.productVariantId]: Math.max(
+                            (prev[item.productVariantId] || 1) - 1,
+                            1
+                          )}))
                       }
                       }
                       className="p-2 bg-gray-300 rounded"
@@ -456,15 +422,14 @@ const CartPage = () => {
                     <span className="px-4">{quantities[item.productVariantId]}</span>
                     <button
                       onClick={async (e) => {
-                        if (clientToken) {
-                          handlePlusCartDb(item)
-                        }
-                        else {
-                          setQuantities(prevQuantities => ({
-                            ...prevQuantities,
-                            [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
-                          }));
-                        }
+
+                        if(quantities[item.productVariantId] < item.product_variant.productStock) {
+
+                        setQuantities(prevQuantities => ({
+                          ...prevQuantities,
+                          [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
+                        }));
+                      }
                       }
                       }
                       className="p-2 bg-gray-300 rounded"
@@ -473,7 +438,13 @@ const CartPage = () => {
                     </button>
 
                     <div className="ml-4">
-                      <FontAwesomeIcon color="red" className="hover:cursor-pointer" onClick={() => handleRemoveCart(item.cartItemId)} icon={faTrashCan} />
+                      <FontAwesomeIcon color="red" className="hover:cursor-pointer" onClick={() => {
+                        setRemoveProduct({
+                          name: item.product_variant.product.productName,
+                          id: item.cartItemId
+                        }
+                        )
+                        setIsModalOpen(true)}} icon={faTrashCan} />
                     </div>
                   </div>
                 </div>
@@ -647,6 +618,9 @@ const CartPage = () => {
             </div>
           )}
         </div>
+        <div className="fixed">
+        <DeleteConfirmationModal header={"Remove product from cart"} description={`Are you sure you want to remove ${removedProduct?.name}?`} onDelete={() => {handleRemoveCart(removedProduct?.id || "")}} isVisible={isModalOpen} onCancel={() => { setIsModalOpen(false) }} />
+      </div>
       </div>
       <Footer />
     </div>

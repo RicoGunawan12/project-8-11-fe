@@ -54,7 +54,7 @@ const NewCollection = () => {
         {page && page[0]?.[locale]?.[1]?.content || ""}
       </div>
 
-      <div className="grid lg:flex grid-cols-2 flex-wrap lg:flex-row w-full lg:w-2/3 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 flex-wrap lg:flex-row w-full lg:w-2/3 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
         {
           data.map((datum: Categories) => {
             return (

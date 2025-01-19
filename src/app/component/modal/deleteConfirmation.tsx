@@ -23,6 +23,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
       isOpen={isVisible}
       onClose={onCancel}
       closeButton={false}
+      className='text-black'
     >
       <ModalContent>
         {/* Modal Header */}

@@ -132,7 +132,7 @@ const BestSellerProduct = () => {
   }
 
   return (
-    <div className="relative flex w-full h-auto lg:h-auto bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-4 lg:px-20 py-6 lg:py-24">
+    <div className="relative flex w-full h-auto lg:h-auto bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-6 lg:px-20 py-6 lg:py-24">
       {/* Fade effect container */}
       <div className="relative w-full h-full flex flex-col lg:flex-row items-center">
         <div className="w-full h-full z-10 lg:w-3/5 lg:pr-6 text-center flex flex-col justify-center items-center lg:items-start lg:text-left lg:absolute bg-stone-800" id="best-seller-desc">
@@ -171,7 +171,7 @@ const BestSellerProduct = () => {
                 href={`/product/${product.productId}`}
               >
                 <Image
-                  src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
+                  src={product.product_covers[0].productCover ? process.env.BACK_BASE_URL +  product.product_covers[0].productCover : "/placeholder.webp"}
                   width={400}
                   height={550}
                   alt="logo pic"
