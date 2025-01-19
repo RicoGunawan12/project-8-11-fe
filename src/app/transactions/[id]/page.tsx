@@ -295,7 +295,8 @@ const TransactionPage = () => {
               </h2>
 
               {/* Rest of the existing table code... */}
-              <table className="min-w-full text-left border border-gray-300">
+              <div className="w-full overflow-x-scroll">
+              <table className="max-w-full text-left border border-gray-300">
                 <thead className="bg-gray-200">
                   <tr>
                     <th className="py-2 px-4 border-b">Date</th>
@@ -326,6 +327,7 @@ const TransactionPage = () => {
                   </tr>
                 </tbody>
               </table>
+              </div>
             </div>
 
             {/* Transaction Details section remains the same... */}
