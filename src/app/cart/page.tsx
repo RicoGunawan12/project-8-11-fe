@@ -79,8 +79,14 @@ const CartPage = () => {
           }, {})
         );
         setAddress(addressData);
-
-        const cartTotal = data.reduce((total, item) => total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * item.quantity, 0);
+        
+        const cartTotal = data.reduce((total, item) => total + 
+          item.quantity === 1 ?
+          (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 
+            ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount 
+            : 0
+          ) : 0
+           * item.quantity, 0);
         setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
@@ -111,10 +117,12 @@ const CartPage = () => {
   const recalculateTotalPrice = () => {
     const cartTotal = data.reduce((total, item) => {
       const quantity = quantities[item.productVariantId] || 1;
-      if (item.product_variant.product.promo_details[0]?.promo) {
+      if (item.product_variant.product.promo_details[0]?.promo && quantity === 1) {
         return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
       }
       else {
+        console.log(item.product_variant.productPrice , quantity);
+        
         return total + item.product_variant.productPrice * quantity;
       }
     }, 0);
@@ -136,7 +144,7 @@ const CartPage = () => {
 
       const quantity = quantities[item.productVariantId] || 1;
       totalWeight += item.product_variant.product.productWeight * quantity;
-      if (item.product_variant.product.promo_details[0]?.promo) {
+      if (item.product_variant.product.promo_details[0]?.promo && quantity === 1) {
         return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
       }
       else {
@@ -412,7 +420,7 @@ const CartPage = () => {
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
                     {
-                      item.product_variant.product.promo_details[0] ?
+                      item.product_variant.product.promo_details[0] && quantities[item.productVariantId] === 1 ?
                         <div>
                           <span className="line-through mr-2 text-gray-600">Rp. {item.product_variant.productPrice}</span>
                           <span className="font-semibold">Rp. {item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0}</span>
