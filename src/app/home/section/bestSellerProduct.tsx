@@ -82,11 +82,11 @@ const BestSellerProduct = () => {
 
         bestSellerDescriptionComponent.classList.add(printedClass);
 
-        if (printedToClass === 100) {
-          bestSellerDescriptionComponent.classList.add('z-10');
-        } else if (bestSellerProductsComponent.classList.contains('z-10')) {
-          bestSellerDescriptionComponent.classList.remove('z-10');
-        }
+        // if (printedToClass === 100) {
+        //   bestSellerDescriptionComponent.classList.add('z-10');
+        // } else if (bestSellerProductsComponent.classList.contains('z-10')) {
+        //   bestSellerDescriptionComponent.classList.remove('z-10');
+        // }
       }
     }
 
@@ -135,14 +135,14 @@ const BestSellerProduct = () => {
     <div className="relative flex w-full h-auto lg:h-auto bg-stone-800 justify-center items-center gap-6 overflow-x-auto px-6 lg:px-20 py-6 lg:py-24">
       {/* Fade effect container */}
       <div className="relative w-full h-full flex flex-col lg:flex-row items-center">
-        <div className="w-full h-full z-10 lg:w-3/5 lg:pr-6 text-center flex flex-col justify-center items-center lg:items-start lg:text-left lg:absolute bg-stone-800" id="best-seller-desc">
-          <div className="text-white text-3xl sm:text-4xl font-bold">
+        <div className="w-full h-full lg:w-3/5 lg:pr-6 text-center flex flex-col justify-center items-center lg:items-start lg:text-left lg:absolute bg-stone-800" id="best-seller-desc">
+          <div className="text-white z-10 text-3xl sm:text-4xl font-bold">
             {(page && page[0]?.[locale]?.[3]?.title) || "Loading"}
           </div>
-          <div className="text-sm leading-8 tracking-wide mt-4 text-white text-justify">
+          <div className="text-sm leading-8 z-10 tracking-wide mt-4 text-white text-justify">
             {(page && page[0]?.[locale]?.[3]?.content) || "Loading"}
           </div>
-          <div className="border-white text-white border w-fit py-2 px-4 lg:py-4 lg:px-8 text-lg mt-4 mx-auto sm:mx-0">
+          <div className="border-white relative z-50 text-white border w-fit py-2 px-4 lg:py-4 lg:px-8 text-lg mt-4 mx-auto sm:mx-0">
             <Link href="/product">View More</Link>
           </div>
         </div>

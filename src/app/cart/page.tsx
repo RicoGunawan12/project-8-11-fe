@@ -50,11 +50,12 @@ const CartPage = () => {
 
   useEffect(() => {
     const token = getTokenCookie();
+    console.log(token)
 
     setClientToken(token);
 
     const fetchCartAndAddressData = async () => {
-      setLoading(true)
+
       try {
         const cartResponse = await fetch(`${process.env.CART}`, {
           method: "GET",
@@ -94,6 +95,7 @@ const CartPage = () => {
     };
 
     if (token) {
+      setLoading(true)
       fetchCartAndAddressData();
     } else {
       const cartData = JSON.parse(localStorage.getItem("cartItem") || "{}");
@@ -108,8 +110,8 @@ const CartPage = () => {
           return acc;
         }, {})
       );
-      setLoading(false)
     }
+    setLoading(false)
   }, [router, clientToken, update]);
 
   const recalculateTotalPrice = () => {
