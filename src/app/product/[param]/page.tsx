@@ -394,7 +394,7 @@ const ProductDetailPage = () => {
       <div className="w-full p-6 flex flex-col justify-between items-center">
         <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">CUSTOMER REVIEWS</div>
 
-        <div className="flex flex-col lg:flex-row w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
+        <div className="flex flex-col lg:flex-row w-4/5 md:w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
           {/* Rating Summary */}
           <div className="w-full lg:w-1/3">
             <div className="text-6xl font-bold">{parseFloat(data?.averageRating? data.averageRating : "0")?.toFixed(1)}</div>

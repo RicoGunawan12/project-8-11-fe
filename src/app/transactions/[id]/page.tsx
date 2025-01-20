@@ -209,148 +209,130 @@ const TransactionPage = () => {
   return authenticated ? (
     <div className="w-screen h-auto min-h-screen bg-white">
       <NavigationBar />
-      <div className="mt-20 h-full">
-        <Banner text="Transaction Details" page="Transaction Page" />
-        <div className="text-black p-12">
-          <div className="flex justify-center items-center flex-col gap-6">
-            <div className="p-6 border-2 w-3/4 rounded-md shadow-2xl bg-gray-50">
-              <h2 className="text-2xl font-semibold text-black mb-4 flex justify-between">
-                <span>Transactions Information</span>
-                <div className="relative">
-                  <DeleteConfirmationModal header={`Cancel Order`} description={`Are you sure you want to cancel your order?`} onDelete={cancelTransaction} isVisible={isModalOpen} onCancel={() => { setIsModalOpen(false) }} />
-                </div>
-                <div className="text-black">
-                  {(() => {
-                    switch (transaction?.status) {
-                      case "Unpaid":
-                        return (
-                          <div className="flex">
-                            <span className="ml-2">
-                              <button
-                                onClick={() => router.push(`${transaction.paymentLink}`)}
-                                className="text-sm font-semibold bg-secondary p-2 flex justify-center text-white rounded-lg"
-                              >
-                                Pay Now
-                              </button>
-                            </span>
-                            <span className="ml-2">
-                              <button
-                                onClick={() => { setIsModalOpen(true) }}
-                                className="text-sm font-semibold bg-red-500 p-2 flex justify-center text-white rounded-lg"
-                              >
-                                Cancel
-                              </button>
-                            </span>
-                          </div>
-                        );
-
-                      case "Waiting for shipping":
-                        return (
-                          <div className="flex">
-                            <span className="ml-2">
-                              <button
-                                className="text-sm font-semibold bg-red-500 p-2 flex justify-center text-white rounded-lg"
-                                onClick={() => setShowCancelModal(true)}
-                              >
-                                Cancel Order
-                              </button>
-                            </span>
-                          </div>
-                        );
-
-                      case "Shipping":
-                        return (
-                          <div className="flex">
-                            <span className="ml-2">
-                              <button
-                                className="text-sm font-semibold bg-gray-500 p-2 flex justify-center text-white rounded-lg"
-                                // onClick={() => setShowCancelModal(true)}
-                                disabled={true}
-                              >
-                                Cancel Order
-                              </button>
-                            </span>
-                          </div>
-                        );
-
-                      case "Done":
-                        return (
-                          <div className="flex">
-                            <span className="ml-2">
-                              <button
-                                className="text-sm font-semibold bg-green-500 p-2 flex justify-center text-white rounded-lg"
-                                onClick={() => setShowReturnModal(true)}
-                              >
-                                Return Order
-                              </button>
-                            </span>
-                          </div>
-                        );
-
-                      default:
-                        return null;
-                    }
-                  })()}
-                </div>
+      <div className="mt-20 min-h-screen">
+      <Banner text="Transaction Details" page="Transaction Page" />
+      <div className="text-black p-4 md:p-12">
+        <div className="flex justify-center items-center flex-col gap-6">
+          {/* Transaction Information Card */}
+          <div className="p-4 md:p-6 border-2 w-full md:w-3/4 rounded-md shadow-2xl bg-gray-50">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+              <h2 className="text-xl md:text-2xl font-semibold text-black mb-4 md:mb-0">
+                Transactions Information
               </h2>
-
-              {/* Rest of the existing table code... */}
-              <div className="w-full overflow-x-scroll">
-              <table className="max-w-full text-left border border-gray-300">
-                <thead className="bg-gray-200">
-                  <tr>
-                    <th className="py-2 px-4 border-b">Date</th>
-                    <th className="py-2 px-4 border-b">Total Price</th>
-                    <th className="py-2 px-4 border-b">Status</th>
-                    <th className="py-2 px-4 border-b">Shipping Type</th>
-                    <th className="py-2 px-4 border-b">Payment Method</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="bg-white hover:bg-gray-100">
-                    <td className="py-2 px-4 border-b">
-                      {formatDate(transaction?.transactionDate || "")}
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      Rp. {transaction?.totalPrice}
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      {transaction?.status == "Waiting for Return" ? transaction?.status + ` (send to ${adminAddress?.addressDetail ? adminAddress.addressDetail : ""})` : transaction?.status == "Cancelled" ?transaction?.status + `(${transaction?.notes})` : transaction?.status == "Return" ? transaction?.status + ` (${locale == "contentJSONEng"? "Check you bank balance regularly" : "Pastikan cek uang bank secara berkala"})` : transaction?.status}
-
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      {transaction?.expedition} - {transaction?.shippingType}
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      {mapPaymentMethod(transaction?.paymentMethod || "")}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              
+              {/* Action Buttons */}
+              <div className="w-full md:w-auto">
+                {(() => {
+                  switch (transaction?.status) {
+                    case "Unpaid":
+                      return (
+                        <div className="flex flex-col md:flex-row gap-2">
+                          <button
+                            onClick={() => router.push(`${transaction.paymentLink}`)}
+                            className="w-full md:w-auto text-sm font-semibold bg-secondary p-2 flex justify-center text-white rounded-lg"
+                          >
+                            Pay Now
+                          </button>
+                          <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="w-full md:w-auto text-sm font-semibold bg-red-500 p-2 flex justify-center text-white rounded-lg"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      );
+                    case "Waiting for shipping":
+                      return (
+                        <button
+                          className="w-full md:w-auto text-sm font-semibold bg-red-500 p-2 flex justify-center text-white rounded-lg"
+                          onClick={() => setShowCancelModal(true)}
+                        >
+                          Cancel Order
+                        </button>
+                      );
+                    case "Shipping":
+                      return (
+                        <button
+                          className="w-full md:w-auto text-sm font-semibold bg-gray-500 p-2 flex justify-center text-white rounded-lg"
+                          disabled={true}
+                        >
+                          Cancel Order
+                        </button>
+                      );
+                    case "Done":
+                      return (
+                        <button
+                          className="w-full md:w-auto text-sm font-semibold bg-green-500 p-2 flex justify-center text-white rounded-lg"
+                          onClick={() => setShowReturnModal(true)}
+                        >
+                          Return Order
+                        </button>
+                      );
+                    default:
+                      return null;
+                  }
+                })()}
               </div>
             </div>
 
-            {/* Transaction Details section remains the same... */}
-            <div className="p-6 border-2 w-3/4 rounded-md shadow-2xl bg-gray-50">
-              <h2 className="text-2xl font-semibold text-black mb-4">
-                Transaction Details
-              </h2>
-              <table className="min-w-full text-left border border-gray-300">
-                <thead className="bg-gray-200">
-                  <tr>
-                    <th className="py-2 px-4 border-b">Product</th>
-                    <th className="py-2 px-4 border-b">Quantity</th>
-                    <th className="py-2 px-4 border-b">Price</th>
-                    <th className="py-2 px-4 border-b">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
+            {/* Transaction Info Table */}
+            <div className="overflow-x-auto">
+              <div className="min-w-full">
+                <div className="grid grid-cols-1 md:hidden gap-4">
+                  {/* Mobile view - card style */}
+                  <div className="bg-white p-4 rounded-lg shadow">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="font-semibold">Date:</div>
+                      <div>{formatDate(transaction?.transactionDate || "")}</div>
+                      <div className="font-semibold">Total Price:</div>
+                      <div>Rp. {transaction?.totalPrice}</div>
+                      <div className="font-semibold">Status:</div>
+                      <div>{transaction?.status}</div>
+                      <div className="font-semibold">Shipping:</div>
+                      <div>{transaction?.expedition} - {transaction?.shippingType}</div>
+                      <div className="font-semibold">Payment:</div>
+                      <div>{mapPaymentMethod(transaction?.paymentMethod || "")}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Desktop view - table style */}
+                <table className="hidden md:table w-full text-left border border-gray-300">
+                  <thead className="bg-gray-200">
+                    <tr>
+                      <th className="py-2 px-4 border-b">Date</th>
+                      <th className="py-2 px-4 border-b">Total Price</th>
+                      <th className="py-2 px-4 border-b">Status</th>
+                      <th className="py-2 px-4 border-b">Shipping Type</th>
+                      <th className="py-2 px-4 border-b">Payment Method</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="bg-white hover:bg-gray-100">
+                      <td className="py-2 px-4 border-b">{formatDate(transaction?.transactionDate || "")}</td>
+                      <td className="py-2 px-4 border-b">Rp. {transaction?.totalPrice}</td>
+                      <td className="py-2 px-4 border-b">{transaction?.status}</td>
+                      <td className="py-2 px-4 border-b">{transaction?.expedition} - {transaction?.shippingType}</td>
+                      <td className="py-2 px-4 border-b">{mapPaymentMethod(transaction?.paymentMethod || "")}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Transaction Details Card */}
+          <div className="p-4 md:p-6 border-2 w-full md:w-3/4 rounded-md shadow-2xl bg-gray-50">
+            <h2 className="text-xl md:text-2xl font-semibold text-black mb-4">
+              Transaction Details
+            </h2>
+            <div className="overflow-x-auto">
+              <div className="min-w-full">
+                {/* Mobile view - card style */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
                   {transaction?.transaction_details.map((detail) => (
-                    <tr
-                      key={detail.transactionDetailId}
-                      className="bg-white hover:bg-gray-100"
-                    >
-                      <td className="py-2 px-4 border-b">
+                    <div key={detail.transactionDetailId} className="bg-white p-4 rounded-lg shadow">
+                      <div className="flex flex-col items-center mb-4">
                         <Image
                           src={`${process.env.BACK_BASE_URL}${detail.product_variant.productImage}`}
                           alt="Product"
@@ -358,23 +340,63 @@ const TransactionPage = () => {
                           width={200}
                           height={200}
                         />
-                      </td>
-                      <td className="py-2 px-4 border-b">{detail.quantity}</td>
-                      <td className="py-2 px-4 border-b">
-                        Rp. {detail.paidProductPrice}
-                      </td>
-                      <td className="py-2 px-4 border-b">
-                        Rp. {detail.paidProductPrice * detail.quantity}
-                      </td>
-                    </tr>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="font-semibold">Quantity:</div>
+                        <div>{detail.quantity}</div>
+                        <div className="font-semibold">Price:</div>
+                        <div>Rp. {detail.paidProductPrice}</div>
+                        <div className="font-semibold">Total:</div>
+                        <div>Rp. {detail.paidProductPrice * detail.quantity}</div>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+
+                {/* Desktop view - table style */}
+                <table className="hidden md:table w-full text-left border border-gray-300">
+                  <thead className="bg-gray-200">
+                    <tr>
+                      <th className="py-2 px-4 border-b">Product</th>
+                      <th className="py-2 px-4 border-b">Quantity</th>
+                      <th className="py-2 px-4 border-b">Price</th>
+                      <th className="py-2 px-4 border-b">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transaction?.transaction_details.map((detail) => (
+                      <tr key={detail.transactionDetailId} className="bg-white hover:bg-gray-100">
+                        <td className="py-2 px-4 border-b">
+                          <Image
+                            src={`${process.env.BACK_BASE_URL}${detail.product_variant.productImage}`}
+                            alt="Product"
+                            className="w-[150px] h-full object-fill"
+                            width={200}
+                            height={200}
+                          />
+                        </td>
+                        <td className="py-2 px-4 border-b">{detail.quantity}</td>
+                        <td className="py-2 px-4 border-b">Rp. {detail.paidProductPrice}</td>
+                        <td className="py-2 px-4 border-b">Rp. {detail.paidProductPrice * detail.quantity}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-        <Footer />
       </div>
+      
+      <DeleteConfirmationModal 
+        header="Cancel Order"
+        description="Are you sure you want to cancel your order?"
+        onDelete={cancelTransaction}
+        isVisible={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+      />
+      <Footer />
+    </div>
 
       {/* Cancel Shipping Modal */}
       {showCancelModal && (
