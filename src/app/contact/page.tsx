@@ -100,7 +100,7 @@ const ContactPage: React.FC = () => {
               {/* Social Media Section */}
               <div className="w-full lg:w-1/3 bg-secondary text-white px-6 lg:px-12 py-8 flex items-start rounded-lg">
                 <div>
-                  <h1 className="text-3xl font-bold mb-6">Social Media</h1>
+                  <h1 className="text-2xl font-bold mb-6">Social Media</h1>
                   <ul className="space-y-6">
                     {!isLoad &&
                       socMed &&
