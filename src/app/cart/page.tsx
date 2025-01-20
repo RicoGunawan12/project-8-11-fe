@@ -77,6 +77,7 @@ const CartPage = () => {
           );
         }
         setData(cartData);
+        console.log(cartData)
         setQuantities(
           cartData.reduce((acc: { [key: string]: number }, item: Cart) => {
             acc[item.productVariantId] = item.quantity || 1;
@@ -296,6 +297,7 @@ const CartPage = () => {
       setUpdate(!update);
       toastSuccess("Item removed")
       setIsModalOpen(false)
+      window.location.reload()
     } else {
 
 
@@ -367,7 +369,7 @@ const CartPage = () => {
                   className="flex flex-col sm:flex-row items-center p-4 bg-gray-50 rounded-2xl shadow-sm"
                 >
                   <Image
-                    src={`${process.env.BACK_BASE_URL}${item.product_variant.productImage}`}
+                    src={item.product_variant.productImage ? process.env.BACK_BASE_URL + item.product_variant.productImage : "/placeholder.webp"}
                     alt="Product"
                     className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
                     width={200}

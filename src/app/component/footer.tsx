@@ -121,7 +121,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
               rel="noopener noreferrer"
             >
               <Image
-                src={`${process.env.BACK_BASE_URL}${contact.contactImage}`}
+                src={contact.contactImage ? process.env.BACK_BASE_URL + contact.contactImage : "/placeholder.webp"}
                 alt={`${contact.contact}`}
                 width={24}
                 height={24}

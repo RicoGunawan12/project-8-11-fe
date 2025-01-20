@@ -254,7 +254,7 @@ const ProductDetailPage = () => {
                   }}
                 >
                   <Image
-                    src={`${process.env.BACK_BASE_URL}${product.productCover || "/placeholder.webp"}`}
+                    src={product.productCover ? process.env.BACK_BASE_URL + product.productCover : "/placeholder.webp"}
                     width={150}
                     height={150}
                     alt="Variant Image"
@@ -479,7 +479,7 @@ const ProductDetailPage = () => {
             >
               <div className="text-xs">
                 <Image
-                  src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
+                  src={product.product_covers[0].productCover ? process.env.BACK_BASE_URL + product.product_covers[0].productCover : "/placeholder.webp"}
                   alt={product.productName}
                   width={200}
                   height={200}

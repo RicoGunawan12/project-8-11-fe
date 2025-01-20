@@ -62,7 +62,7 @@ const Banner = () => {
 
 
   return (
-    <div className="mt-20 relative w-full h-screen overflow-hidden">
+    <div className="mt-20 relative w-full h-[92vh] overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 transition-transform duration-500 ease-out">
         {/* Default Background for Mobile */}
