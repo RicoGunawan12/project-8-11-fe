@@ -8,7 +8,7 @@ const ContactButton = () => {
     useEffect(() => {
         const fetchContactInfo = async () => {
             try {
-                const response = await fetch(`${process.env.ADDRESS}/admin`, {
+                const response = await fetch(`${process.env.CONTACTS}/admin`, {
                     method: "GET",
                 });
 
@@ -18,7 +18,7 @@ const ContactButton = () => {
 
                 const data = await response.json();
                 console.log(data)
-                setPhoneNumber(data.response[0].senderPhoneNumber);
+                setPhoneNumber(data.contact.phone);
             } catch (error) {
                 console.error('Error fetching contact info:', error);
                 setPhoneNumber('6200000000000');

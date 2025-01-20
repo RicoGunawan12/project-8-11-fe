@@ -57,7 +57,7 @@ const ProductDetailPage = () => {
       ...defaultRatingDistribution,
       ...data.ratingDistributionObject,
     };
-
+    console.log(data.product)
     setData(data.product);
     setChosenImage(data.product.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + data.product.product_covers[0].productCover : "/placeholder.webp")
     setRelatedProduct(data.relatedProducts)
@@ -168,6 +168,7 @@ const ProductDetailPage = () => {
   };
 
   const submitRating = async () => {
+    setLoading(true)
     try {
       const payload = {
         productId: id,
@@ -189,9 +190,11 @@ const ProductDetailPage = () => {
         throw new Error(resp.message);
       }
       setComment("")
+      setRating(0)
       toastSuccess("Rating submitted successfully!");
       fetchProductDetail()
       fetchRating()
+      setLoading(false)
 
     } catch (error: any) {
       toastError(error.message);
@@ -391,12 +394,12 @@ const ProductDetailPage = () => {
       <div className="w-full p-6 flex flex-col justify-between items-center">
         <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">CUSTOMER REVIEWS</div>
 
-        <div className="flex flex-col lg:flex-row w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
+        <div className="flex flex-col lg:flex-row w-4/5 md:w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
           {/* Rating Summary */}
           <div className="w-full lg:w-1/3">
-            <div className="text-6xl font-bold">{parseFloat(data?.averageRating)?.toFixed(1) || 0.0}</div>
+            <div className="text-6xl font-bold">{parseFloat(data?.averageRating? data.averageRating : "0")?.toFixed(1)}</div>
             <div className="text-xl text-gray-500 mb-2">/ 5</div>
-            <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.ratings[0].averageRating) : 0} disabled />
+            <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
             <div className="text-sm text-gray-500 mt-2">{data?.countRating} reviews</div>
           </div>
 

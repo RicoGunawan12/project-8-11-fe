@@ -34,7 +34,7 @@ const CartPage = () => {
   const [voucherCode, setVoucherCode] = useState<string>("");
   const [isShippingEnabled, setIsShippingEnabled] = useState(false);
   const [clientToken, setClientToken] = useState<string | null>();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [debouncedChosenAddress] = useDebounce(chosenAddress, 3000);
   const [debouncedQuantities] = useDebounce(quantities, 3000);
   const [price, setPrice] = useState<Payment>({
@@ -84,9 +84,16 @@ const CartPage = () => {
           }, {})
         );
         setAddress(addressData);
-
-        const cartTotal = data.reduce((total, item) => total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * item.quantity, 0);
+        
+        const cartTotal = data.reduce((total, item) => total + 
+          item.quantity === 1 ?
+          (item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount > 0 
+            ? item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount 
+            : 0
+          ) : 0
+           * item.quantity, 0);
         setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
+        setLoading(false)
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
       } finally {
@@ -117,10 +124,12 @@ const CartPage = () => {
   const recalculateTotalPrice = () => {
     const cartTotal = data.reduce((total, item) => {
       const quantity = quantities[item.productVariantId] || 1;
-      if (item.product_variant.product.promo_details[0]?.promo) {
-        return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
+      if (item.product_variant.product?.promo_details[0]?.promo && quantity === 1) {
+        return total + (item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount : 0) * quantity;
       }
       else {
+        console.log(item.product_variant.productPrice , quantity);
+        
         return total + item.product_variant.productPrice * quantity;
       }
     }, 0);
@@ -142,8 +151,8 @@ const CartPage = () => {
 
       const quantity = quantities[item.productVariantId] || 1;
       totalWeight += item.product_variant.product.productWeight * quantity;
-      if (item.product_variant.product.promo_details[0]?.promo) {
-        return total + (item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0) * quantity;
+      if (item.product_variant.product?.promo_details[0]?.promo && quantity === 1) {
+        return total + (item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount : 0) * quantity;
       }
       else {
         return total + item.product_variant.productPrice * quantity;
@@ -339,10 +348,6 @@ const CartPage = () => {
     updateCartQuantity();
   }, [debouncedQuantities, clientToken]);
 
-  if (!data) {
-    return <Loading />;
-  }
-
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col text-black">
       <NavigationBar />
@@ -394,10 +399,10 @@ const CartPage = () => {
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
                     {
-                      item.product_variant.product.promo_details[0] ?
+                      item.product_variant.product?.promo_details[0] && quantities[item.productVariantId] === 1 ?
                         <div>
                           <span className="line-through mr-2 text-gray-600">Rp. {item.product_variant.productPrice}</span>
-                          <span className="font-semibold">Rp. {item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product.promo_details[0].promo.promoAmount : 0}</span>
+                          <span className="font-semibold">Rp. {item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount : 0}</span>
                         </div>
                         :
                         <div >
