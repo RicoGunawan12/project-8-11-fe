@@ -34,7 +34,7 @@ const CartPage = () => {
   const [voucherCode, setVoucherCode] = useState<string>("");
   const [isShippingEnabled, setIsShippingEnabled] = useState(false);
   const [clientToken, setClientToken] = useState<string | null>();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [debouncedChosenAddress] = useDebounce(chosenAddress, 3000);
   const [debouncedQuantities] = useDebounce(quantities, 3000);
   const [price, setPrice] = useState<Payment>({
@@ -92,6 +92,7 @@ const CartPage = () => {
           ) : 0
            * item.quantity, 0);
         setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
+        setLoading(false)
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
       } finally {
@@ -344,10 +345,6 @@ const CartPage = () => {
   
     updateCartQuantity();
   }, [debouncedQuantities, clientToken]);
-
-  if (!data) {
-    return <Loading />;
-  }
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col text-black">
