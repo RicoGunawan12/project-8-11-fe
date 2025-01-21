@@ -47,7 +47,7 @@ const AboutUsPage = () => {
       <div className="mt-20 flex-grow">
         <Banner page="About Page" text="About Us" />
         <div className="text-black flex flex-col p-6 items-center tracking-widest leading-[2]">
-          <h1 className="font-bold text-5xl mt-12">Hello! We make water bottles</h1>
+          <h1 className="font-bold text-2xl mt-12">Hello! We make water bottles</h1>
           <h2 className="mt-12 font-semibold text-lg w-3/5">
             {locale === "contentJSONEng"
               ? page[0]?.titleEng || "Loading"
@@ -66,7 +66,7 @@ const AboutUsPage = () => {
                   ? about.whyContentJSONEng.map((content, idx) => (
                       <div className="flex flex-col items-center max-w-xs" key={idx}>
                         <Image
-                          src={content.photo}
+                          src={content.photo ? process.env.BACK_BASE_URL + content.photo : "/placeholder.webp"}
                           alt={"Image"}
                           width={128}
                           height={128}
@@ -80,7 +80,7 @@ const AboutUsPage = () => {
                   : about.whyContentJSONIndo.map((content, idx) => (
                       <div className="flex flex-col items-center max-w-xs" key={idx}>
                         <Image
-                          src={content.photo}
+                          src={content.photo ? process.env.BACK_BASE_URL + content.photo : "/placeholder.webp"}
                           alt={"Image"}
                           width={128}
                           height={128}

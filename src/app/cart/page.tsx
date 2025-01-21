@@ -50,8 +50,6 @@ const CartPage = () => {
 
   useEffect(() => {
     const token = getTokenCookie();
-    console.log(token)
-
     setClientToken(token);
 
     const fetchCartAndAddressData = async () => {
@@ -77,7 +75,6 @@ const CartPage = () => {
           );
         }
         setData(cartData);
-        console.log(cartData)
         setQuantities(
           cartData.reduce((acc: { [key: string]: number }, item: Cart) => {
             acc[item.productVariantId] = item.quantity || 1;
@@ -129,7 +126,6 @@ const CartPage = () => {
         return total + (item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount : 0) * quantity;
       }
       else {
-        console.log(item.product_variant.productPrice , quantity);
         
         return total + item.product_variant.productPrice * quantity;
       }
@@ -339,6 +335,9 @@ const CartPage = () => {
         });
   
         await Promise.all(updates);
+       if(voucherCode){
+        checkVoucher();
+       } 
         recalculateTotalPrice();
       } catch (error: any) {
         toastError(error.message);

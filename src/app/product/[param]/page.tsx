@@ -23,14 +23,14 @@ const ProductDetailPage = () => {
   const [data, setData] = useState<ProductCard>();
   const [variantChosen, setVariantChosen] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [ratingData, setRatingData] = useState<Rating[]>([])
+  const [ratingData, setRatingData] = useState<Rating[]>([]);
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
-  const [buyVariant, setBuyVariant] = useState(0)
-  const [relatedProduct, setRelatedProduct] = useState<ProductCard[]>([])
-  const [loading, setLoading] = useState(false)
-  const [ratingDistribution, setRatingDistribution] = useState<RatingCount>()
-  const [chosenImage, setChosenImage] = useState<string>("")
+  const [buyVariant, setBuyVariant] = useState(0);
+  const [relatedProduct, setRelatedProduct] = useState<ProductCard[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [ratingDistribution, setRatingDistribution] = useState<RatingCount>();
+  const [chosenImage, setChosenImage] = useState<string>("");
 
   const fetchProductDetail = async () => {
     const response = await fetch(`${process.env.PRODUCTS}/related/${id}`, {
@@ -57,12 +57,16 @@ const ProductDetailPage = () => {
       ...defaultRatingDistribution,
       ...data.ratingDistributionObject,
     };
-    console.log(data.product)
     setData(data.product);
-    setChosenImage(data.product.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + data.product.product_covers[0].productCover : "/placeholder.webp")
-    setRelatedProduct(data.relatedProducts)
-    setRatingDistribution(ratingDistribution)
-  }
+    setChosenImage(
+      data.product.product_covers[0]?.productCover
+        ? process.env.BACK_BASE_URL +
+            data.product.product_covers[0].productCover
+        : "/placeholder.webp"
+    );
+    setRelatedProduct(data.relatedProducts);
+    setRatingDistribution(ratingDistribution);
+  };
 
   const fetchRating = async () => {
     const ratingResponse = await fetch(`${process.env.RATINGS}/${id}`, {
@@ -78,13 +82,14 @@ const ProductDetailPage = () => {
     }
 
     setRatingData(ratingData.ratings);
-  }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const clientToken = getTokenCookie();
       setToken(clientToken);
-      fetchProductDetail()
-      fetchRating()
+      fetchProductDetail();
+      fetchRating();
     };
 
     fetchData();
@@ -94,8 +99,7 @@ const ProductDetailPage = () => {
   const addToCart = async () => {
     try {
       const payload = {
-        productVariantId:
-          data?.product_variants[buyVariant].productVariantId,
+        productVariantId: data?.product_variants[buyVariant].productVariantId,
         quantity: quantity,
       };
 
@@ -109,27 +113,25 @@ const ProductDetailPage = () => {
 
         const promo_details = data?.promo_details[0]?.promo
           ? [
-            {
-              promo: {
-                promoAmount: data.promo_details[0].promo?.promoAmount,
+              {
+                promo: {
+                  promoAmount: data.promo_details[0].promo?.promoAmount,
+                },
               },
-            },
-          ]
+            ]
           : [];
 
         const fullVariantData = {
           cartItemId: "",
-          productVariantId:
-            data?.product_variants[buyVariant].productVariantId,
+          productVariantId: data?.product_variants[buyVariant].productVariantId,
           quantity: payload.quantity,
           product_variant: {
             ...data?.product_variants[buyVariant],
             product: {
               productName: data?.productName,
-              promo_details: promo_details
+              promo_details: promo_details,
             },
           },
-
         };
 
         if (existingItemIndex !== -1) {
@@ -140,35 +142,36 @@ const ProductDetailPage = () => {
 
         localStorage.setItem("cartItem", JSON.stringify(cartItems));
         toastSuccess("Product added to cart!");
-        return;
-      }
+      } else {
+        const response = await fetch(`${process.env.CART}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
 
-      const response = await fetch(`${process.env.CART}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const resp = await response.json();
-      if (!response.ok) {
-        if (response.status === 401) {
-          route.push("/auth/login");
+        const resp = await response.json();
+        if (!response.ok) {
+          if (response.status === 401) {
+            route.push("/auth/login");
+          }
+          throw new Error(resp.message);
         }
-        throw new Error(resp.message);
+
+        toastSuccess("Product added to cart!");
       }
 
-      toastSuccess("Product added to cart!");
-    } catch (error: any) {
+      setQuantity(1)
 
+    } catch (error: any) {
       toastError(error.message);
     }
   };
 
   const submitRating = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const payload = {
         productId: id,
@@ -189,28 +192,28 @@ const ProductDetailPage = () => {
       if (!response.ok) {
         throw new Error(resp.message);
       }
-      setComment("")
-      setRating(0)
+      setComment("");
+      setRating(0);
       toastSuccess("Rating submitted successfully!");
-      fetchProductDetail()
-      fetchRating()
-      setLoading(false)
-
+      fetchProductDetail();
+      fetchRating();
+      setLoading(false);
     } catch (error: any) {
       toastError(error.message);
     }
   };
 
   const trackViewProduct = (product: ProductCard) => {
-    if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'ViewContent', {
-        content_type: 'product',
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "ViewContent", {
+        content_type: "product",
         content_ids: [product.productId],
         content_name: product.productName,
-        currency: 'IDR',
+        currency: "IDR",
         value: product.promo_details[0]
-          ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount
-          : parseInt(product.product_variants[0].productPrice)
+          ? parseInt(product.product_variants[0].productPrice) -
+            product.promo_details[0].promo?.promoAmount
+          : parseInt(product.product_variants[0].productPrice),
       });
     }
   };
@@ -219,14 +222,11 @@ const ProductDetailPage = () => {
     return <Loading />;
   }
 
-
   return (
     <div className="bg-white w-screen h-screen pt-20">
       <NavigationBar />
       <div className="px-4 flex flex-col lg:flex-row lg:h-full items-start md:items-center space-y-8 md:space-y-0">
-        {
-          loading ? <LoadingOverlay /> : null
-        }
+        {loading ? <LoadingOverlay /> : null}
         {/* Center Column: Selected Product */}
         <div className="w-full py-6 lg:w-1/2 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
           {/* Main Product Image */}
@@ -247,14 +247,24 @@ const ProductDetailPage = () => {
               {data?.product_covers.map((product, idx) => (
                 <div
                   key={idx}
-                  className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${variantChosen === idx ? "border-secondary shadow-md" : "border-gray-300"}`}
+                  className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${
+                    variantChosen === idx
+                      ? "border-secondary shadow-md"
+                      : "border-gray-300"
+                  }`}
                   onClick={() => {
-                    setVariantChosen(idx)
-                    setChosenImage(`${process.env.BACK_BASE_URL}${product.productCover}`)
+                    setVariantChosen(idx);
+                    setChosenImage(
+                      `${process.env.BACK_BASE_URL}${product.productCover}`
+                    );
                   }}
                 >
                   <Image
-                    src={product.productCover ? process.env.BACK_BASE_URL + product.productCover : "/placeholder.webp"}
+                    src={
+                      product.productCover
+                        ? process.env.BACK_BASE_URL + product.productCover
+                        : "/placeholder.webp"
+                    }
                     width={150}
                     height={150}
                     alt="Variant Image"
@@ -273,18 +283,25 @@ const ProductDetailPage = () => {
               {data?.productName}
             </h2>
             <div className="mt-4 text-lg md:text-xl font-light">
-              {
-                data.promo_details[0] && data.promo_details[0].promo != null ? (
-                  <div>
-                    <span className="line-through mr-2 text-gray-600">Rp. {data.product_variants[buyVariant].productPrice}</span>
-                    <span className="font-semibold">Rp. {parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount > 0 ? parseInt(data.product_variants[buyVariant].productPrice) - data.promo_details[0].promo?.promoAmount : 0}</span>
-                  </div>
-                ) : (
-                  <div>
+              {data.promo_details[0] && data.promo_details[0].promo != null ? (
+                <div>
+                  <span className="line-through mr-2 text-gray-600">
                     Rp. {data.product_variants[buyVariant].productPrice}
-                  </div>
-                )
-              }
+                  </span>
+                  <span className="font-semibold">
+                    Rp.{" "}
+                    {parseInt(data.product_variants[buyVariant].productPrice) -
+                      data.promo_details[0].promo?.promoAmount >
+                    0
+                      ? parseInt(
+                          data.product_variants[buyVariant].productPrice
+                        ) - data.promo_details[0].promo?.promoAmount
+                      : 0}
+                  </span>
+                </div>
+              ) : (
+                <div>Rp. {data.product_variants[buyVariant].productPrice}</div>
+              )}
             </div>
           </div>
 
@@ -293,39 +310,44 @@ const ProductDetailPage = () => {
               <button
                 key={idx}
                 className={`relative flex justify-center items-center border-2 gap-2 px-4 py-2 rounded-md transition-all 
-    ${buyVariant === idx
-                    ? "border-secondary shadow-lg"
-                    : "border-gray-300"
-                  } 
-    ${product.productStock <= 0
-                    ? "bg-gray-100 text-gray-500 opacity-50"
-                    : "bg-white hover:bg-gray-50"
-                  }`}
+    ${buyVariant === idx ? "border-secondary shadow-lg" : "border-gray-300"} 
+    ${
+      product.productStock <= 0
+        ? "bg-gray-100 text-gray-500 opacity-50"
+        : "bg-white hover:bg-gray-50"
+    }`}
                 onClick={() => {
                   setBuyVariant(idx);
                   setQuantity(1);
-                  setChosenImage(`${process.env.BACK_BASE_URL}${product.productImage}`)
+                  setChosenImage(
+                    `${process.env.BACK_BASE_URL}${product.productImage}`
+                  );
                 }}
-                title={product.productStock <= 0 ? "Out of Stock" : "Select this variant"}
+                title={
+                  product.productStock <= 0
+                    ? "Out of Stock"
+                    : "Select this variant"
+                }
               >
                 <div
-                  className={`absolute inset-0 bg-gray-300 ${product.productStock <= 0 ? "opacity-30" : "opacity-0"
-                    } rounded-md`}
+                  className={`absolute inset-0 bg-gray-300 ${
+                    product.productStock <= 0 ? "opacity-30" : "opacity-0"
+                  } rounded-md`}
                   aria-hidden="true"
                 ></div>
                 <Image
-                  src={product.productImage ? process.env.BACK_BASE_URL + product.productImage : "/placeholder.webp"}
+                  src={
+                    product.productImage
+                      ? process.env.BACK_BASE_URL + product.productImage
+                      : "/placeholder.webp"
+                  }
                   width={120}
                   height={120}
                   alt="Product"
                   className="w-8 h-6 object-contain"
                 />
-                <span
-                >
-                  {product.productColor}
-                </span>
+                <span>{product.productColor}</span>
               </button>
-
             ))}
           </div>
 
@@ -343,8 +365,10 @@ const ProductDetailPage = () => {
               </div>
               <button
                 onClick={() => {
-                  if (quantity < data?.product_variants[buyVariant].productStock) {
-                    setQuantity((prev) => prev + 1)
+                  if (
+                    quantity < data?.product_variants[buyVariant].productStock
+                  ) {
+                    setQuantity((prev) => prev + 1);
                   }
                 }}
                 className="px-4 py-2 border border-gray-300 rounded-r bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -370,9 +394,9 @@ const ProductDetailPage = () => {
               </Button>
               <Button
                 onClick={async () => {
-                  setLoading(true)
-                  await addToCart()
-                  route.push("/cart")
+                  setLoading(true);
+                  await addToCart();
+                  route.push("/cart");
                 }}
                 className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
               >
@@ -382,25 +406,44 @@ const ProductDetailPage = () => {
           </div>
 
           <div className="w-3/4">
-            <h3 className="text-2xl font-bold mb-4">
-              Descriptions
-            </h3>
-            <p><span className="font-semibold">Size: </span>{data?.productSize} mL</p>
-            <p className="pt-4 h-48 overflow-y-auto" dangerouslySetInnerHTML={{ __html: data.productDescription }}></p>
+            <h3 className="text-2xl font-bold mb-4">Descriptions</h3>
+            <p>
+              <span className="font-semibold">Size: </span>
+              {data?.productSize} mL
+            </p>
+            <p
+              className="pt-4 h-48 overflow-y-auto"
+              dangerouslySetInnerHTML={{ __html: data.productDescription }}
+            ></p>
           </div>
         </div>
       </div>
 
       <div className="w-full p-6 flex flex-col justify-between items-center">
-        <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">CUSTOMER REVIEWS</div>
+        <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">
+          CUSTOMER REVIEWS
+        </div>
 
         <div className="flex flex-col lg:flex-row w-4/5 md:w-1/2 justify-center lg:items-center gap-8 mb-8 text-black">
           {/* Rating Summary */}
           <div className="w-full lg:w-1/3">
-            <div className="text-6xl font-bold">{parseFloat(data?.averageRating? data.averageRating : "0")?.toFixed(1)}</div>
+            <div className="text-6xl font-bold">
+              {parseFloat(
+                data?.averageRating ? data.averageRating : "0"
+              )?.toFixed(1)}
+            </div>
             <div className="text-xl text-gray-500 mb-2">/ 5</div>
-            <StarRating rating={parseFloat(data?.averageRating) ? parseFloat(data?.averageRating) : 0} disabled />
-            <div className="text-sm text-gray-500 mt-2">{data?.countRating} reviews</div>
+            <StarRating
+              rating={
+                parseFloat(data?.averageRating)
+                  ? parseFloat(data?.averageRating)
+                  : 0
+              }
+              disabled
+            />
+            <div className="text-sm text-gray-500 mt-2">
+              {data?.countRating} reviews
+            </div>
           </div>
 
           {/* Rating Distribution */}
@@ -409,8 +452,12 @@ const ProductDetailPage = () => {
               Object.entries(ratingDistribution)
                 .sort(([a], [b]) => Number(b) - Number(a)) // Sort by rating descending
                 .map(([rating, count]) => {
-                  const total = Object.values(ratingDistribution).reduce((sum, val) => sum + val, 0);
-                  const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0";
+                  const total = Object.values(ratingDistribution).reduce(
+                    (sum, val) => sum + val,
+                    0
+                  );
+                  const percentage =
+                    total > 0 ? ((count / total) * 100).toFixed(1) : "0";
 
                   return (
                     <div key={rating} className="flex items-center gap-2 mb-2">
@@ -429,7 +476,6 @@ const ProductDetailPage = () => {
               <p>Loading ratings...</p> // Display a fallback while data is loading
             )}
           </div>
-
 
           {/* Write Review Button */}
           <div className="w-full lg:w-1/3 mt-4">
@@ -458,7 +504,12 @@ const ProductDetailPage = () => {
         <div className="space-y-6 w-1/2 max-h-96 overflow-y-auto">
           {ratingData.map((review, index) => (
             <div key={index} className="border-b pb-6">
-              <StarRating rating={parseFloat(review.rating) ? parseFloat(review.rating) : 0} disabled />
+              <StarRating
+                rating={
+                  parseFloat(review.rating) ? parseFloat(review.rating) : 0
+                }
+                disabled
+              />
               <div className="flex items-center gap-2 mt-2">
                 <span className="font-medium">{review.user.fullName}</span>
               </div>
@@ -469,7 +520,9 @@ const ProductDetailPage = () => {
       </div>
 
       <div>
-        <h1 className="text-black text-xl font-bold px-6 mb-6 lg:px-24">Related Products</h1>
+        <h1 className="text-black text-xl font-bold px-6 mb-6 lg:px-24">
+          Related Products
+        </h1>
         <div className="grid grid-cols-2 text-black md:grid-cols-3 px-6  lg:px-24 lg:grid-cols-4 gap-16 mb-6">
           {relatedProduct.map((product: ProductCard) => (
             <Link
@@ -479,7 +532,12 @@ const ProductDetailPage = () => {
             >
               <div className="text-xs">
                 <Image
-                  src={product.product_covers[0].productCover ? process.env.BACK_BASE_URL + product.product_covers[0].productCover : "/placeholder.webp"}
+                  src={
+                    product.product_covers[0].productCover
+                      ? process.env.BACK_BASE_URL +
+                        product.product_covers[0].productCover
+                      : "/placeholder.webp"
+                  }
                   alt={product.productName}
                   width={200}
                   height={200}
@@ -487,16 +545,30 @@ const ProductDetailPage = () => {
                 />
 
                 <div className="text-lg font-semibold text-black w-full text-left p-2">
-                  <p><StarRating rating={parseFloat(product?.averageRating) ? parseFloat(product?.averageRating) : 0} disabled /></p>
+                  <p>
+                    <StarRating
+                      rating={
+                        parseFloat(product?.averageRating)
+                          ? parseFloat(product?.averageRating)
+                          : 0
+                      }
+                      disabled
+                    />
+                  </p>
                   <p>{product.productName}</p>
-                  {product.promo_details[0] && product.promo_details[0].promo != null ? (
+                  {product.promo_details[0] &&
+                  product.promo_details[0].promo != null ? (
                     <div className="flex text-xs font-normal justify-start">
                       <span className="line-through mr-2 text-gray-600">
                         Rp. {product.product_variants[0].productPrice}
                       </span>
                       <span className="font-semibold">
-                        Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount > 0
-                          ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount
+                        Rp.{" "}
+                        {parseInt(product.product_variants[0].productPrice) -
+                          product.promo_details[0].promo?.promoAmount >
+                        0
+                          ? parseInt(product.product_variants[0].productPrice) -
+                            product.promo_details[0].promo?.promoAmount
                           : 0}
                       </span>
                     </div>
@@ -515,18 +587,26 @@ const ProductDetailPage = () => {
       <div className="lg:hidden w-full p-2 flex justify-around fixed bottom-2">
         <button
           onClick={addToCart}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : null}`}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${
+            data?.product_variants[buyVariant].productStock === 0
+              ? "bg-gray-300 cursor-not-allowed"
+              : null
+          }`}
           disabled={data?.product_variants[buyVariant].productStock === 0}
         >
           <span>Add to Cart</span>
         </button>
         <button
           onClick={async () => {
-            setLoading(true)
-            await addToCart()
-            route.push("/cart")
+            setLoading(true);
+            await addToCart();
+            route.push("/cart");
           }}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0 ? "bg-gray-300 cursor-not-allowed" : null}`}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${
+            data?.product_variants[buyVariant].productStock === 0
+              ? "bg-gray-300 cursor-not-allowed"
+              : null
+          }`}
           disabled={data?.product_variants[buyVariant].productStock === 0}
         >
           <span>Buy Now</span>

@@ -100,7 +100,7 @@ const NavigationBar = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
-
+      console.log(data)
       setFetchedPages((prev) => ({
         ...prev,
         [currentPage]: data,
@@ -428,7 +428,7 @@ const NavigationBar = () => {
                     <li key={product.productId} className="border-b py-2">
                       <Link href={`/product/${product.productId}`} className="hover:underline flex items-center space-x-4">
                         <img
-                          src={`${process.env.BACK_BASE_URL}${product.defaultImage}`}
+                          src={product.product_covers[0].productCover ? process.env.BACK_BASE_URL + product.product_covers[0].productCover : "/placeholder.webp"}
                           alt={product.productName}
                           className="w-20 h-20 object-cover"
                         />
