@@ -57,6 +57,7 @@ const ProductDetailPage = () => {
       ...defaultRatingDistribution,
       ...data.ratingDistributionObject,
     };
+
     setData(data.product);
     setChosenImage(
       data.product.product_covers[0]?.productCover
@@ -533,8 +534,7 @@ const ProductDetailPage = () => {
               <div className="text-xs">
                 <Image
                   src={
-                    product.product_covers[0].productCover
-                      ? process.env.BACK_BASE_URL +
+                    product.product_covers[0] ? process.env.BACK_BASE_URL +
                         product.product_covers[0].productCover
                       : "/placeholder.webp"
                   }
