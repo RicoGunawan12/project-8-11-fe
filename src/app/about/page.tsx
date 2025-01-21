@@ -47,30 +47,45 @@ const AboutUsPage = () => {
       <div className="mt-20 flex-grow">
         <Banner page="About Page" text="About Us" />
         <div className="text-black flex flex-col p-6 items-center tracking-widest leading-[2]">
-          <h1 className="font-bold text-2xl mt-12">Hello! We make water bottles</h1>
+          <h1 className="font-bold text-2xl mt-12">
+            Hello! We make water bottles
+          </h1>
           <h2 className="mt-12 font-semibold text-lg w-3/5">
             {locale === "contentJSONEng"
               ? page[0]?.titleEng || "Loading"
               : page[0]?.titleIndo || "Loading"}
           </h2>
-          <div className="mt-6 w-3/5">
-            {locale === "contentJSONEng"
-              ? page[0]?.contentEng || "Loading"
-              : page[0]?.contentIndo || "Loading"}
-          </div>
+          <div
+            className="mt-6 w-3/5"
+            dangerouslySetInnerHTML={{
+              __html:
+                locale === "contentJSONEng"
+                  ? page[0]?.contentEng || "Loading"
+                  : page[0]?.contentIndo || "Loading",
+            }}
+          ></div>
           <div className="w-full flex items-center flex-col text-black bg-white mt-6 py-8">
-            <h1 className="text-2xl font-semibold text-black">Why you should choose TYESO?</h1>
+            <h1 className="text-2xl font-semibold text-black">
+              Why you should choose TYESO?
+            </h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-12 my-6 px-6 text-black">
               {about &&
                 (locale === "contentJSONEng"
                   ? about.whyContentJSONEng.map((content, idx) => (
-                      <div className="flex flex-col items-center max-w-xs" key={idx}>
+                      <div
+                        className="flex flex-col items-center max-w-xs"
+                        key={idx}
+                      >
                         <Image
-                          src={content.photo ? process.env.BACK_BASE_URL + content.photo : "/placeholder.webp"}
+                          src={
+                            content.photo
+                              ? process.env.BACK_BASE_URL + content.photo
+                              : "/placeholder.webp"
+                          }
                           alt={"Image"}
                           width={128}
                           height={128}
-                          className="object-cover rounded-lg shadow-md"
+                          className="object-cover aspect-square rounded-lg shadow-md"
                         />
                         <p className="mt-4 text-center text-xs font-light">
                           {content.content || "No description available."}
@@ -78,13 +93,20 @@ const AboutUsPage = () => {
                       </div>
                     ))
                   : about.whyContentJSONIndo.map((content, idx) => (
-                      <div className="flex flex-col items-center max-w-xs" key={idx}>
+                      <div
+                        className="flex flex-col items-center max-w-xs"
+                        key={idx}
+                      >
                         <Image
-                          src={content.photo ? process.env.BACK_BASE_URL + content.photo : "/placeholder.webp"}
+                          src={
+                            content.photo
+                              ? process.env.BACK_BASE_URL + content.photo
+                              : "/placeholder.webp"
+                          }
                           alt={"Image"}
                           width={128}
                           height={128}
-                          className="object-cover rounded-lg shadow-md"
+                          className="object-cover aspect-square rounded-lg shadow-md"
                         />
                         <p className="mt-4 text-center text-xs font-light">
                           {content.content || "Tidak ada deskripsi tersedia."}
