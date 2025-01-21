@@ -116,6 +116,7 @@ const AddressForm = () => {
                 router.push("/");
                 return;
             }
+            setClientToken(token);
             fetchDestinations(token);
         }
     }, [debouncedDestination]);
