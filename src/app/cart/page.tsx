@@ -34,7 +34,7 @@ const CartPage = () => {
   const [voucherCode, setVoucherCode] = useState<string>("");
   const [isShippingEnabled, setIsShippingEnabled] = useState(false);
   const [clientToken, setClientToken] = useState<string | null>();
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [debouncedChosenAddress] = useDebounce(chosenAddress, 3000);
   const [debouncedQuantities] = useDebounce(quantities, 3000);
   const [price, setPrice] = useState<Payment>({
