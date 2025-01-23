@@ -96,14 +96,19 @@ const ProductDetailPage = () => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
+  
   useEffect(() => {
-    window.gtag('event', 'view_product_detail', {
-      product_name: data?.productName,
-      page_location: window.location.href,
-      page_path: `/product/${id}`
-    });
-  }, [])
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "view_product_detail", {
+        product_name: data?.productName,
+        page_location: window.location.href,
+        page_path: `/product/${id}`,
+      });
+    } else {
+      console.error("Google Analytics not initialized");
+    }
+  }, [data?.productName, id]);
+  
 
   const addToCart = async () => {
     try {
