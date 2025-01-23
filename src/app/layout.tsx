@@ -85,12 +85,12 @@ src="https://www.facebook.com/tr?id=485548430893380&ev=PageView&noscript=1"
         )}
       </head>
 
-      <GoogleTagManager gtmId={process.env.GOOGLE_ANALYTICS || ""} />
 
       <body className={poppinsFont.className}>
         {children}
         <ToastContainer />
         <ContactButton />
+        <GoogleTagManager gtmId={process.env.GOOGLE_ANALYTICS || ""} />
       </body>
     </html>
   );
