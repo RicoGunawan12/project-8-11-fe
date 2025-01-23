@@ -97,6 +97,14 @@ const ProductDetailPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  useEffect(() => {
+    window.gtag('event', 'view_product_detail', {
+      product_name: data?.productName,
+      page_location: window.location.href,
+      page_path: `/product/${id}`
+    });
+  }, [])
+
   const addToCart = async () => {
     try {
       const payload = {
