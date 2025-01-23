@@ -40,6 +40,8 @@ const nextConfig = {
     LOCATIONS : process.env.LOCATIONS,
     HOMEPAGE_ENDPOINT: process.env.HOMEPAGE_ENDPOINT,
     LOGIN_ENDPOINT: process.env.LOGIN_ENDPOINT,
+    COD: process.env.COD,
+    FREE_ONGKIR: process.env.FREE_ONGKIR,
   },
   eslint: {
     ignoreDuringBuilds: true,

@@ -29,31 +29,34 @@ const CartPage = () => {
     null
   );
   const [customerNotes, setCustomerNotes] = useState("");
-  const [productNotes, setProductNotes] = useState<string[]>([])
-  const [paymentMethod, setPaymentMethod] = useState<string>("checkout-va");
+  const [productNotes, setProductNotes] = useState<string[]>([]);
   const [voucherCode, setVoucherCode] = useState<string>("");
   const [isShippingEnabled, setIsShippingEnabled] = useState(false);
   const [clientToken, setClientToken] = useState<string | null>();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [debouncedChosenAddress] = useDebounce(chosenAddress, 3000);
   const [debouncedQuantities] = useDebounce(quantities, 3000);
   const [price, setPrice] = useState<Payment>({
     totalPrice: 0,
     shippingFee: 0,
     voucher: 0,
-    grandTotal: 0
-  })
+    grandTotal: 0,
+  });
   const [update, setUpdate] = useState(false);
-  const { locale } = useLocaleStore()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [removedProduct, setRemoveProduct] = useState<{name : string, id : string}>()
+  const { locale } = useLocaleStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [removedProduct, setRemoveProduct] = useState<{
+    name: string;
+    id: string;
+  }>();
+  const [maxCOD, setMaxCOD] = useState<number>(0);
+  const [isCOD, setIsCOD] = useState<boolean>(false);
 
   useEffect(() => {
     const token = getTokenCookie();
     setClientToken(token);
 
     const fetchCartAndAddressData = async () => {
-
       try {
         const cartResponse = await fetch(`${process.env.CART}`, {
           method: "GET",
@@ -82,25 +85,47 @@ const CartPage = () => {
           }, {})
         );
         setAddress(addressData);
-        
-        const cartTotal = data.reduce((total, item) => total + 
-          item.quantity === 1 ?
-          (item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount > 0 
-            ? item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount 
-            : 0
-          ) : 0
-           * item.quantity, 0);
-        setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
-        setLoading(false)
+
+        const cartTotal = data.reduce(
+          (total, item) =>
+            total + item.quantity === 1
+              ? item.product_variant.productPrice -
+                  item.product_variant.product?.promo_details[0].promo
+                    .promoAmount >
+                0
+                ? item.product_variant.productPrice -
+                  item.product_variant.product?.promo_details[0].promo
+                    .promoAmount
+                : 0
+              : 0 * item.quantity,
+          0
+        );
+        setPrice((prev) => ({ ...prev, totalPrice: cartTotal }));
+
+        const codResponse = await fetch(`${process.env.COD}`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const codData = await codResponse.json();
+        if (!codResponse.ok) {
+          throw new Error(
+            addressData.message || "Failed to fetch address data"
+          );
+        }
+
+        console.log(codData.codData.maximumPaymentAmount);
+        setMaxCOD(codData.codData.maximumPaymentAmount || 0);
+
+        setLoading(false);
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     };
 
     if (token) {
-      setLoading(true)
+      setLoading(true);
       fetchCartAndAddressData();
     } else {
       const cartData = JSON.parse(localStorage.getItem("cartItem") || "{}");
@@ -116,23 +141,33 @@ const CartPage = () => {
         }, {})
       );
     }
-    setLoading(false)
+    setLoading(false);
   }, [router, clientToken, update]);
 
   const recalculateTotalPrice = () => {
     const cartTotal = data.reduce((total, item) => {
       const quantity = quantities[item.productVariantId] || 1;
-      if (item.product_variant.product?.promo_details[0]?.promo && quantity === 1) {
-        return total + (item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount : 0) * quantity;
-      }
-      else {
-        
+      if (
+        item.product_variant.product?.promo_details[0]?.promo &&
+        quantity === 1
+      ) {
+        return (
+          total +
+          (item.product_variant.productPrice -
+            item.product_variant.product?.promo_details[0].promo.promoAmount >
+          0
+            ? item.product_variant.productPrice -
+              item.product_variant.product?.promo_details[0].promo.promoAmount
+            : 0) *
+            quantity
+        );
+      } else {
         return total + item.product_variant.productPrice * quantity;
       }
     }, 0);
-    setSelectedShipping(null)
-    setPrice((prev) => ({ ...prev, totalPrice: cartTotal, shippingFee: 0 }))
-  }
+    setSelectedShipping(null);
+    setPrice((prev) => ({ ...prev, totalPrice: cartTotal, shippingFee: 0 }));
+  };
 
   useEffect(() => {
     recalculateTotalPrice();
@@ -145,21 +180,31 @@ const CartPage = () => {
 
     let totalWeight = 0;
     const cartTotal = data.reduce((total, item) => {
-
       const quantity = quantities[item.productVariantId] || 1;
       totalWeight += item.product_variant.product.productWeight * quantity;
-      if (item.product_variant.product?.promo_details[0]?.promo && quantity === 1) {
-        return total + (item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount : 0) * quantity;
-      }
-      else {
+      if (
+        item.product_variant.product?.promo_details[0]?.promo &&
+        quantity === 1
+      ) {
+        return (
+          total +
+          (item.product_variant.productPrice -
+            item.product_variant.product?.promo_details[0].promo.promoAmount >
+          0
+            ? item.product_variant.productPrice -
+              item.product_variant.product?.promo_details[0].promo.promoAmount
+            : 0) *
+            quantity
+        );
+      } else {
         return total + item.product_variant.productPrice * quantity;
       }
     }, 0);
 
     var literalTotal = 0;
     data.forEach((item) => {
-      literalTotal += item.product_variant.productPrice
-    })
+      literalTotal += item.product_variant.productPrice;
+    });
 
     const response = await fetch(`${process.env.ADDRESS}`, {
       method: "GET",
@@ -169,9 +214,9 @@ const CartPage = () => {
     const resp = await response.json();
     if (!response.ok) throw new Error(resp.message);
 
-    setPrice((prev) => ({ ...prev, totalPrice: cartTotal }))
+    setPrice((prev) => ({ ...prev, totalPrice: cartTotal }));
 
-    const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${literalTotal}`;
+    const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${literalTotal}&cod=${isCOD}`;
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -188,7 +233,7 @@ const CartPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [clientToken, data, quantities, chosenAddress]);
+  }, [clientToken, data, quantities, chosenAddress, isCOD]);
 
   useEffect(() => {
     if (clientToken && debouncedChosenAddress && debouncedQuantities) {
@@ -197,7 +242,7 @@ const CartPage = () => {
   }, [debouncedChosenAddress, debouncedQuantities, clientToken]);
 
   const checkOut = async () => {
-    if (!selectedShipping || !paymentMethod) {
+    if (!selectedShipping) {
       toastError("Please select a shipping option and payment method.");
       return;
     }
@@ -211,7 +256,7 @@ const CartPage = () => {
         },
         body: JSON.stringify({
           addressId: chosenAddress?.addressId,
-          paymentMethod: paymentMethod,
+          paymentMethod: isCOD ? "COD" : "Non COD",
           expedition: selectedShipping?.shipping_name,
           shippingType: selectedShipping?.service_name,
           deliveryFee: selectedShipping?.shipping_cost,
@@ -219,7 +264,7 @@ const CartPage = () => {
           notes: "",
           voucherCode: voucherCode,
           customerNotes: customerNotes,
-          productNotes: productNotes
+          productNotes: productNotes,
         }),
       });
 
@@ -232,10 +277,7 @@ const CartPage = () => {
         throw new Error(resp.message);
       }
 
-      router.push(
-        resp.payTransactionResponse.actions[0].url
-      );
-
+      router.push(resp.payTransactionResponse.actions[0].url);
     } catch (error: any) {
       toastError(error.message || "Failed to complete the checkout process");
     }
@@ -250,33 +292,32 @@ const CartPage = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${clientToken}`
+        Authorization: `Bearer ${clientToken}`,
       },
-    })
+    });
 
-    const result = await fetchData.json()
+    const result = await fetchData.json();
 
-    let discount = 0
+    let discount = 0;
 
     if (result.voucherType == "percentage") {
-      discount = price.totalPrice * result.discount / 100
+      discount = (price.totalPrice * result.discount) / 100;
 
       if (discount > result.maxDiscount) {
-        discount = result.maxDiscount
+        discount = result.maxDiscount;
       }
-    }
-    else {
-      discount = (result.discount ? result.discount : 0)
+    } else {
+      discount = result.discount ? result.discount : 0;
     }
 
-    setPrice((prev) => ({ ...prev, voucher: discount }))
-    setLoading(false)
+    setPrice((prev) => ({ ...prev, voucher: discount }));
+    setLoading(false);
     if (result.errors || result.message) {
-      toastError(result.message || "Voucher not found")
+      toastError(result.message || "Voucher not found");
     } else {
-      toastSuccess("Voucher found")
+      toastSuccess("Voucher found");
     }
-  }
+  };
 
   const handleRemoveCart = async (cartItemId: string) => {
     const url = new URL(`${process.env.CART}/${cartItemId}`);
@@ -284,48 +325,46 @@ const CartPage = () => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${clientToken}`
+        Authorization: `Bearer ${clientToken}`,
       },
-    })
-    const result = await fetchData.json()
+    });
+    const result = await fetchData.json();
 
     if (fetchData.ok) {
       setUpdate(!update);
-      toastSuccess("Item removed")
-      setIsModalOpen(false)
-      window.location.reload()
+      toastSuccess("Item removed");
+      setIsModalOpen(false);
+      window.location.reload();
     } else {
-
-
       if (fetchData.status === 401) {
         router.push("/auth/login");
       }
-      toastError(result.message || "Something went wrong")
+      toastError(result.message || "Something went wrong");
     }
-  }
+  };
 
   useEffect(() => {
     const updateCartQuantity = async () => {
       if (!clientToken || !debouncedQuantities) return;
-      
+
       setLoading(true);
       try {
         const updates = data.map(async (item) => {
           const quantity = debouncedQuantities[item.productVariantId];
           if (!quantity) return;
-  
+
           const url = new URL(`${process.env.CART}/${item.cartItemId}`);
           const result = await fetch(url, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${clientToken}`
+              Authorization: `Bearer ${clientToken}`,
             },
-            body: JSON.stringify({ quantity })
+            body: JSON.stringify({ quantity }),
           });
-  
+
           const resp = await result.json();
-          
+
           if (!result.ok) {
             if (result.status === 401) {
               router.push("/auth/login");
@@ -333,11 +372,11 @@ const CartPage = () => {
             throw new Error(resp.message || "Something went wrong");
           }
         });
-  
+
         await Promise.all(updates);
-       if(voucherCode){
-        checkVoucher();
-       } 
+        if (voucherCode) {
+          checkVoucher();
+        }
         recalculateTotalPrice();
       } catch (error: any) {
         toastError(error.message);
@@ -345,7 +384,7 @@ const CartPage = () => {
         setLoading(false);
       }
     };
-  
+
     updateCartQuantity();
   }, [debouncedQuantities, clientToken]);
 
@@ -354,12 +393,17 @@ const CartPage = () => {
       <NavigationBar />
       <div className="flex flex-col flex-grow lg:flex-row gap-8 px-4 mt-24 sm:px-6 lg:px-8 min-h-[80vh] mb-[50px]">
         {/* Shopping Bag Section */}
-        {
-          loading ? <LoadingOverlay /> : null
-        }
+        {loading ? <LoadingOverlay /> : null}
         <div className="flex-1 h-full bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-2">{locale == "contentJSONEng" ? "Shopping Bag" : "Keranjang"}</h2>
-          <p className="text-sm sm:text-base text-gray-500 mb-6">{data.length} {locale == "contentJSONEng" ? "items in your bag" : "jumlah barang di keranjang"}</p>
+          <h2 className="text-xl sm:text-2xl font-semibold mb-2">
+            {locale == "contentJSONEng" ? "Shopping Bag" : "Keranjang"}
+          </h2>
+          <p className="text-sm sm:text-base text-gray-500 mb-6">
+            {data.length}{" "}
+            {locale == "contentJSONEng"
+              ? "items in your bag"
+              : "jumlah barang di keranjang"}
+          </p>
           {data.length > 0 ? (
             <div className="space-y-4">
               {data.map((item, index) => (
@@ -368,7 +412,12 @@ const CartPage = () => {
                   className="flex flex-col sm:flex-row items-center p-4 bg-gray-50 rounded-2xl shadow-sm"
                 >
                   <Image
-                    src={item.product_variant.productImage ? process.env.BACK_BASE_URL + item.product_variant.productImage : "/placeholder.webp"}
+                    src={
+                      item.product_variant.productImage
+                        ? process.env.BACK_BASE_URL +
+                          item.product_variant.productImage
+                        : "/placeholder.webp"
+                    }
                     alt="Product"
                     className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
                     width={200}
@@ -379,38 +428,50 @@ const CartPage = () => {
                       {item.product_variant.product.productName}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-500">
-                      {locale == "contentJSONEng" ? "Color" : "Warna"}: {item.product_variant.productColor} | {locale == "contengJSONEng" ? "Size" : "Ukuran"}:{" "}
+                      {locale == "contentJSONEng" ? "Color" : "Warna"}:{" "}
+                      {item.product_variant.productColor} |{" "}
+                      {locale == "contengJSONEng" ? "Size" : "Ukuran"}:{" "}
                       {item.product_variant.product.productSize}
                     </p>
-                    {
-                      clientToken &&
+                    {clientToken && (
                       <input
                         type="text"
                         id="voucher"
                         className="w-1/2 mt-2 p-2 border rounded-md focus:outline-none"
                         value={productNotes[index] || ""}
-                        onChange={(e) => setProductNotes((prevNotes) => {
-                          const updatedNotes = [...prevNotes];
-                          updatedNotes[index] = e.target.value;
-                          return updatedNotes;
-                        })}
+                        onChange={(e) =>
+                          setProductNotes((prevNotes) => {
+                            const updatedNotes = [...prevNotes];
+                            updatedNotes[index] = e.target.value;
+                            return updatedNotes;
+                          })
+                        }
                         placeholder="Notes"
                       />
-                    }
+                    )}
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
-                    {
-                      item.product_variant.product?.promo_details[0] && quantities[item.productVariantId] === 1 ?
-                        <div>
-                          <span className="line-through mr-2 text-gray-600">Rp. {item.product_variant.productPrice}</span>
-                          <span className="font-semibold">Rp. {item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount > 0 ? item.product_variant.productPrice - item.product_variant.product?.promo_details[0].promo.promoAmount : 0}</span>
-                        </div>
-                        :
-                        <div >
+                    {item.product_variant.product?.promo_details[0] &&
+                    quantities[item.productVariantId] === 1 ? (
+                      <div>
+                        <span className="line-through mr-2 text-gray-600">
                           Rp. {item.product_variant.productPrice}
-                        </div>
-                    }
-
+                        </span>
+                        <span className="font-semibold">
+                          Rp.{" "}
+                          {item.product_variant.productPrice -
+                            item.product_variant.product?.promo_details[0].promo
+                              .promoAmount >
+                          0
+                            ? item.product_variant.productPrice -
+                              item.product_variant.product?.promo_details[0]
+                                .promo.promoAmount
+                            : 0}
+                        </span>
+                      </div>
+                    ) : (
+                      <div>Rp. {item.product_variant.productPrice}</div>
+                    )}
                   </div>
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
                     <button
@@ -420,39 +481,47 @@ const CartPage = () => {
                           [item.productVariantId]: Math.max(
                             (prev[item.productVariantId] || 1) - 1,
                             1
-                          )}))
-                      }
-                      }
+                          ),
+                        }));
+                      }}
                       className="p-2 bg-gray-300 rounded"
                     >
                       -
                     </button>
-                    <span className="px-4">{quantities[item.productVariantId]}</span>
+                    <span className="px-4">
+                      {quantities[item.productVariantId]}
+                    </span>
                     <button
                       onClick={async (e) => {
-
-                        if(quantities[item.productVariantId] < item.product_variant.productStock) {
-
-                        setQuantities(prevQuantities => ({
-                          ...prevQuantities,
-                          [item.productVariantId]: (prevQuantities[item.productVariantId] || 0) + 1,
-                        }));
-                      }
-                      }
-                      }
+                        if (
+                          quantities[item.productVariantId] <
+                          item.product_variant.productStock
+                        ) {
+                          setQuantities((prevQuantities) => ({
+                            ...prevQuantities,
+                            [item.productVariantId]:
+                              (prevQuantities[item.productVariantId] || 0) + 1,
+                          }));
+                        }
+                      }}
                       className="p-2 bg-gray-300 rounded"
                     >
                       +
                     </button>
 
                     <div className="ml-4">
-                      <FontAwesomeIcon color="red" className="hover:cursor-pointer" onClick={() => {
-                        setRemoveProduct({
-                          name: item.product_variant.product.productName,
-                          id: item.cartItemId
-                        }
-                        )
-                        setIsModalOpen(true)}} icon={faTrashCan} />
+                      <FontAwesomeIcon
+                        color="red"
+                        className="hover:cursor-pointer"
+                        onClick={() => {
+                          setRemoveProduct({
+                            name: item.product_variant.product.productName,
+                            id: item.cartItemId,
+                          });
+                          setIsModalOpen(true);
+                        }}
+                        icon={faTrashCan}
+                      />
                     </div>
                   </div>
                 </div>
@@ -464,7 +533,9 @@ const CartPage = () => {
                 onClick={() => router.push("/product")}
                 className="bg-secondary py-2 px-4 rounded-xl text-white text-sm sm:text-base"
               >
-                {locale == "contentJSONEng" ? "Explore Our Products" : "Jelajahi Produk Kami"}
+                {locale == "contentJSONEng"
+                  ? "Explore Our Products"
+                  : "Jelajahi Produk Kami"}
               </button>
             </div>
           )}
@@ -474,18 +545,27 @@ const CartPage = () => {
         <div className="w-full lg:w-1/3 space-y-6">
           {clientToken ? (
             <div className="bg-white p-6 rounded-md shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Shipping and Payment</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Shipping and Payment
+              </h3>
               {address.length === 0 ? (
                 <button
                   onClick={() => router.push("/address/create")}
                   className="w-full bg-secondary text-white py-2 rounded-md mb-2 text-sm sm:text-base"
                 >
-                  {locale == "contentJSONEng" ? "Create Address" : "Daftarkan Alamat"}
+                  {locale == "contentJSONEng"
+                    ? "Create Address"
+                    : "Daftarkan Alamat"}
                 </button>
               ) : (
                 <div>
-                  <label htmlFor="shippingAddress" className="block text-sm font-medium text-gray-700">
-                    {locale == "contentJSONEng" ? "Shipping Address" : "Alamat Pengiriman"}
+                  <label
+                    htmlFor="shippingAddress"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {locale == "contentJSONEng"
+                      ? "Shipping Address"
+                      : "Alamat Pengiriman"}
                   </label>
                   <select
                     id="shippingAddress"
@@ -501,7 +581,11 @@ const CartPage = () => {
                     disabled={data.length === 0}
                     value={chosenAddress?.addressDetail || ""}
                   >
-                    <option value="">{locale == "contentJSONEng" ? "Select an Address" : "Pilih alamat"}</option>
+                    <option value="">
+                      {locale == "contentJSONEng"
+                        ? "Select an Address"
+                        : "Pilih alamat"}
+                    </option>
                     {address.map((addr) => (
                       <option key={addr.addressId} value={addr.addressDetail}>
                         {addr.addressDetail}
@@ -511,8 +595,13 @@ const CartPage = () => {
                 </div>
               )}
 
-              <label htmlFor="shippingOption" className="block text-sm font-medium text-gray-700">
-                {locale == "contentJSONEng" ? "Shipping Option" : "Opsi Pengiriman"}
+              <label
+                htmlFor="shippingOption"
+                className="block text-sm font-medium text-gray-700"
+              >
+                {locale == "contentJSONEng"
+                  ? "Shipping Option"
+                  : "Opsi Pengiriman"}
               </label>
               <select
                 id="shippingOption"
@@ -533,7 +622,11 @@ const CartPage = () => {
                   }
                 }}
               >
-                <option value="">{locale == "contentJSONEng" ? "Select a Shipping Option" : "Pilih Opsi Pengiriman"}</option>
+                <option value="">
+                  {locale == "contentJSONEng"
+                    ? "Select a Shipping Option"
+                    : "Pilih Opsi Pengiriman"}
+                </option>
                 {shippingOptions.map((option, index) => (
                   <option key={index} value={option.shipping_name}>
                     {option.shipping_name} - Rp. {option.shipping_cost}
@@ -542,7 +635,10 @@ const CartPage = () => {
               </select>
 
               {/* Voucher Section */}
-              <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="voucher"
+                className="block text-sm font-medium text-gray-700"
+              >
                 {locale == "contentJSONEng" ? "Voucher Code" : "Kode Voucher"}
               </label>
               <div className="flex gap-2 mb-4">
@@ -557,51 +653,100 @@ const CartPage = () => {
                 <button
                   className="p-2 bg-secondary rounded-md text-white h-full text-sm sm:text-base"
                   onClick={() => {
-                    setLoading(true)
-                    checkVoucher()
+                    setLoading(true);
+                    checkVoucher();
                   }}
                 >
                   {locale == "contentJSONEng" ? "Check" : "Cek"}
                 </button>
-                <button className="p-2 bg-red-500 rounded-md text-white h-full text-sm sm:text-base" onClick={() => {
-                  setPrice((prev) => ({ ...prev, voucher: 0 }))
-                  setVoucherCode("")
-                }}>{locale == "contentJSONEng" ? "Remove" : "Hapus"}</button>
+                <button
+                  className="p-2 bg-red-500 rounded-md text-white h-full text-sm sm:text-base"
+                  onClick={() => {
+                    setPrice((prev) => ({ ...prev, voucher: 0 }));
+                    setVoucherCode("");
+                  }}
+                >
+                  {locale == "contentJSONEng" ? "Remove" : "Hapus"}
+                </button>
               </div>
 
-              <label htmlFor="voucher" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="voucher"
+                className="block text-sm font-medium text-gray-700"
+              >
                 {locale == "contentJSONEng" ? "Notes" : "Catatan"}
               </label>
 
               <div>
-                <textarea onChange={(e) => setCustomerNotes(e.target.value)} className="w-full p-2 border rounded-md focus:outline-none" placeholder="Notes">
-
-                </textarea>
+                <textarea
+                  onChange={(e) => setCustomerNotes(e.target.value)}
+                  className="w-full p-2 border rounded-md focus:outline-none"
+                  placeholder="Notes"
+                ></textarea>
+              </div>
+              <div> 
+              <label
+                htmlFor="voucher"
+                className="block text-sm font-medium text-gray-700"
+              >
+                {locale == "contentJSONEng" ? "Cash On Delivery" : "Bayar di tempat"}
+              </label>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={isCOD}
+                    onChange={() => {
+                      setIsCOD(!isCOD);
+                    }}
+                  />
+                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                </label>
               </div>
 
               {/* Price Summary */}
               <div className="flex flex-col space-y-2 mt-6">
                 <div className="flex justify-between">
-                  <span className="text-sm sm:text-lg font-semibold">{locale == "contentJSONEng" ? "Total Price" : "Total Harga"}:</span>
-                  <span className="font-light text-black">Rp. {price.totalPrice}</span>
+                  <span className="text-sm sm:text-lg font-semibold">
+                    {locale == "contentJSONEng" ? "Total Price" : "Total Harga"}
+                    :
+                  </span>
+                  <span className="font-light text-black">
+                    Rp. {price.totalPrice}
+                  </span>
                 </div>
                 {selectedShipping && (
                   <div className="flex justify-between">
-                    <span className="text-sm sm:text-lg font-semibold">{locale == "contentJSONEng" ? "Shipping Fee" : "Biaya Pengiriman"}:</span>
-                    <span className="font-light text-black">Rp. {price.shippingFee}</span>
+                    <span className="text-sm sm:text-lg font-semibold">
+                      {locale == "contentJSONEng"
+                        ? "Shipping Fee"
+                        : "Biaya Pengiriman"}
+                      :
+                    </span>
+                    <span className="font-light text-black">
+                      Rp. {price.shippingFee}
+                    </span>
                   </div>
                 )}
                 {price.voucher != 0 ? (
                   <div className="flex justify-between">
                     <span className="text-sm sm:text-lg font-semibold gap-2 flex">
-                      <div>Voucher:</div></span>
-                    <span className="font-light text-black">- Rp. {price.voucher}</span>
+                      <div>Voucher:</div>
+                    </span>
+                    <span className="font-light text-black">
+                      - Rp. {price.voucher}
+                    </span>
                   </div>
                 ) : null}
                 <div className="flex justify-between">
-                  <span className="text-lg sm:text-xl font-semibold">Grand Total:</span>
+                  <span className="text-lg sm:text-xl font-semibold">
+                    Grand Total:
+                  </span>
                   <span className="font-light text-black">
-                    Rp. {price.totalPrice + price.shippingFee - (price.voucher ? price.voucher : 0)}
+                    Rp.{" "}
+                    {price.totalPrice +
+                      price.shippingFee -
+                      (price.voucher ? price.voucher : 0)}
                   </span>
                 </div>
               </div>
@@ -616,7 +761,11 @@ const CartPage = () => {
             </div>
           ) : (
             <div className="bg-white p-6 rounded-md shadow-md h-full flex flex-col items-center justify-center">
-              <p className="text-gray-600 mb-6">{locale == "contentJSONEng" ? "You need to login first to access this feature." : "Kamu butuh login terlebih dahulu untuk menggunakan fitur ini"}</p>
+              <p className="text-gray-600 mb-6">
+                {locale == "contentJSONEng"
+                  ? "You need to login first to access this feature."
+                  : "Kamu butuh login terlebih dahulu untuk menggunakan fitur ini"}
+              </p>
               <button
                 onClick={() => (window.location.href = "/auth/login")}
                 className="bg-secondary text-white py-2 px-4 rounded-md"
@@ -627,8 +776,18 @@ const CartPage = () => {
           )}
         </div>
         <div className="fixed">
-        <DeleteConfirmationModal header={"Remove product from cart"} description={`Are you sure you want to remove ${removedProduct?.name}?`} onDelete={() => {handleRemoveCart(removedProduct?.id || "")}} isVisible={isModalOpen} onCancel={() => { setIsModalOpen(false) }} />
-      </div>
+          <DeleteConfirmationModal
+            header={"Remove product from cart"}
+            description={`Are you sure you want to remove ${removedProduct?.name}?`}
+            onDelete={() => {
+              handleRemoveCart(removedProduct?.id || "");
+            }}
+            isVisible={isModalOpen}
+            onCancel={() => {
+              setIsModalOpen(false);
+            }}
+          />
+        </div>
       </div>
       <Footer />
     </div>

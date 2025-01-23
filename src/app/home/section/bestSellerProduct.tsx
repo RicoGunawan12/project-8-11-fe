@@ -110,6 +110,7 @@ const BestSellerProduct = () => {
         });
 
         const result = await req.json();
+        console.log(result)
         setProducts(result.bestSellerProduct);
 
         const reqs = await fetch(`${process.env.PAGES}`, {
@@ -171,7 +172,7 @@ const BestSellerProduct = () => {
                 href={`/product/${product.productId}`}
               >
                 <Image
-                  src={product.product_covers[0].productCover ? process.env.BACK_BASE_URL +  product.product_covers[0].productCover : "/placeholder.webp"}
+                  src={product.product_covers[0] ? process.env.BACK_BASE_URL +  product.product_covers[0].productCover : "/placeholder.webp"}
                   width={400}
                   height={550}
                   alt="logo pic"

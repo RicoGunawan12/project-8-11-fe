@@ -226,78 +226,75 @@ const ProductDetailPage = () => {
   return (
     <div className="bg-white w-screen h-screen pt-20">
       <NavigationBar />
-      <div className="px-4 flex flex-col lg:flex-row lg:h-full items-start md:items-center space-y-8 md:space-y-0">
-        {loading ? <LoadingOverlay /> : null}
-        {/* Center Column: Selected Product */}
-        <div className="w-full py-6 lg:w-1/2 h-auto flex flex-col justify-center items-center mt-4 md:mt-0">
+      <div className="container mx-auto px-4 py-8">
+      <div className="grid lg:grid-cols-2 gap-8 min-h-[600px]">
+        {/* Left Column: Product Images */}
+        <div className="flex flex-col">
           {/* Main Product Image */}
-          <div className="w-full flex justify-center items-center mb-6">
+          <div className="flex-grow flex items-center justify-center mb-6">
             <Image
               src={chosenImage}
               width={400}
               height={400}
-              style={{ objectFit: "contain" }}
+              style={{ objectFit: "contain", maxHeight: "400px" }}
               alt="Product Image"
-              className="border-2 rounded-lg w-3/4 lg:w-3/5 aspect-square"
+              className="border rounded-lg w-full max-w-[400px] aspect-square"
             />
           </div>
 
           {/* Variant Thumbnails */}
-          <div className="w-full lg:w-3/4 h-auto text-black overflow-x-auto py-4 flex gap-4 border-b-2">
-            <div className="flex flex-nowrap justify-start items-center gap-4">
-              {data?.product_covers.map((product, idx) => (
-                <div
-                  key={idx}
-                  className={`flex flex-col justify-center items-center cursor-pointer w-[80px] h-[80px] lg:w-[100px] lg:h-[100px] p-2 rounded-lg border-2 transition-all ${
-                    variantChosen === idx
-                      ? "border-secondary shadow-md"
-                      : "border-gray-300"
-                  }`}
-                  onClick={() => {
-                    setVariantChosen(idx);
-                    setChosenImage(
-                      `${process.env.BACK_BASE_URL}${product.productCover}`
-                    );
-                  }}
-                >
-                  <Image
-                    src={
-                      product.productCover
-                        ? process.env.BACK_BASE_URL + product.productCover
-                        : "/placeholder.webp"
-                    }
-                    width={150}
-                    height={150}
-                    alt="Variant Image"
-                    className="object-contain w-full h-full"
-                  />
-                </div>
-              ))}
-            </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 border-t pt-4">
+            {data?.product_covers.map((product, idx) => (
+              <div
+                key={idx}
+                className={`flex-shrink-0 cursor-pointer w-20 h-20 p-2 rounded-lg border-2 transition-all ${
+                  variantChosen === idx
+                    ? "border-secondary shadow-md"
+                    : "border-gray-300"
+                }`}
+                onClick={() => {
+                  setVariantChosen(idx);
+                  setChosenImage(
+                    `${process.env.BACK_BASE_URL}${product.productCover}`
+                  );
+                }}
+              >
+                <Image
+                  src={
+                    product.productCover
+                      ? process.env.BACK_BASE_URL + product.productCover
+                      : "/placeholder.webp"
+                  }
+                  width={150}
+                  height={150}
+                  alt="Variant Image"
+                  className="object-contain w-full h-full"
+                />
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Right Column: Product Details */}
-        <div className="w-full justify-center items-start lg:w-1/2 text-black pr-4 md:pr-16 flex flex-col gap-8 lg:h-full overflow-y-auto">
-          <div className="w-3/4">
-            <h2 className="text-2xl md:text-3xl font-bold border-b-2 pb-2">
+        <div className="flex flex-col text-black space-y-6">
+          {/* Product Name and Price */}
+          <div>
+            <h2 className="text-3xl font-bold border-b pb-2">
               {data?.productName}
             </h2>
-            <div className="mt-4 text-lg md:text-xl font-light">
+            <div className="mt-4 text-xl">
               {data.promo_details[0] && data.promo_details[0].promo != null ? (
                 <div>
                   <span className="line-through mr-2 text-gray-600">
                     Rp. {data.product_variants[buyVariant].productPrice}
                   </span>
-                  <span className="font-semibold">
+                  <span className="font-semibold text-primary">
                     Rp.{" "}
-                    {parseInt(data.product_variants[buyVariant].productPrice) -
-                      data.promo_details[0].promo?.promoAmount >
-                    0
-                      ? parseInt(
-                          data.product_variants[buyVariant].productPrice
-                        ) - data.promo_details[0].promo?.promoAmount
-                      : 0}
+                    {Math.max(
+                      parseInt(data.product_variants[buyVariant].productPrice) -
+                      data.promo_details[0].promo?.promoAmount,
+                      0
+                    )}
                   </span>
                 </div>
               ) : (
@@ -306,17 +303,18 @@ const ProductDetailPage = () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap w-3/4 gap-4">
+          {/* Product Variants */}
+          <div className="flex flex-wrap gap-4">
             {data?.product_variants.map((product, idx) => (
               <button
                 key={idx}
-                className={`relative flex justify-center items-center border-2 gap-2 px-4 py-2 rounded-md transition-all 
-    ${buyVariant === idx ? "border-secondary shadow-lg" : "border-gray-300"} 
-    ${
-      product.productStock <= 0
-        ? "bg-gray-100 text-gray-500 opacity-50"
-        : "bg-white hover:bg-gray-50"
-    }`}
+                className={`relative flex items-center border-2 gap-2 px-4 py-2 rounded-md transition-all 
+                  ${buyVariant === idx ? "border-secondary shadow-lg" : "border-gray-300"} 
+                  ${
+                    product.productStock <= 0
+                      ? "bg-gray-100 text-gray-500 opacity-50"
+                      : "bg-white hover:bg-gray-50"
+                  }`}
                 onClick={() => {
                   setBuyVariant(idx);
                   setQuantity(1);
@@ -324,27 +322,17 @@ const ProductDetailPage = () => {
                     `${process.env.BACK_BASE_URL}${product.productImage}`
                   );
                 }}
-                title={
-                  product.productStock <= 0
-                    ? "Out of Stock"
-                    : "Select this variant"
-                }
+                disabled={product.productStock <= 0}
               >
-                <div
-                  className={`absolute inset-0 bg-gray-300 ${
-                    product.productStock <= 0 ? "opacity-30" : "opacity-0"
-                  } rounded-md`}
-                  aria-hidden="true"
-                ></div>
                 <Image
                   src={
                     product.productImage
                       ? process.env.BACK_BASE_URL + product.productImage
                       : "/placeholder.webp"
                   }
-                  width={120}
-                  height={120}
-                  alt="Product"
+                  width={40}
+                  height={40}
+                  alt="Product Variant"
                   className="w-8 h-6 object-contain"
                 />
                 <span>{product.productColor}</span>
@@ -352,31 +340,33 @@ const ProductDetailPage = () => {
             ))}
           </div>
 
-          <div className="w-3/4">
-            <span className="text-sm font-semibold">Quantity: </span>
-            <div className="flex items-center mt-2">
-              <button
-                onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
-                className="px-4 py-2 border border-gray-300 rounded-l bg-gray-100 hover:bg-gray-200 text-gray-700"
-              >
-                -
-              </button>
-              <div className="px-4 py-2 border-t border-b w-16 border-gray-300 text-center">
-                {quantity}
+          {/* Quantity Selector */}
+          <div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center">
+                <button
+                  onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
+                  className="px-4 py-2 border rounded-l bg-gray-100 hover:bg-gray-200"
+                >
+                  -
+                </button>
+                <div className="px-4 py-2 border-t border-b w-16 text-center">
+                  {quantity}
+                </div>
+                <button
+                  onClick={() => {
+                    if (
+                      quantity < data?.product_variants[buyVariant].productStock
+                    ) {
+                      setQuantity((prev) => prev + 1);
+                    }
+                  }}
+                  className="px-4 py-2 border rounded-r bg-gray-100 hover:bg-gray-200"
+                >
+                  +
+                </button>
               </div>
-              <button
-                onClick={() => {
-                  if (
-                    quantity < data?.product_variants[buyVariant].productStock
-                  ) {
-                    setQuantity((prev) => prev + 1);
-                  }
-                }}
-                className="px-4 py-2 border border-gray-300 rounded-r bg-gray-100 hover:bg-gray-200 text-gray-700"
-              >
-                +
-              </button>
-              <div className="ml-4 font-semibold">
+              <div className="font-semibold">
                 {data?.product_variants[buyVariant].productStock === 0 ? (
                   <span className="text-red-500">Out of Stock</span>
                 ) : (
@@ -386,10 +376,12 @@ const ProductDetailPage = () => {
                 )}
               </div>
             </div>
-            <div className="flex justify-start gap-6">
+
+            {/* Action Buttons */}
+            <div className="flex space-x-4 mt-6">
               <Button
                 onClick={addToCart}
-                className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
+                className="w-1/2 bg-secondary text-white"
               >
                 Add to Cart
               </Button>
@@ -399,26 +391,28 @@ const ProductDetailPage = () => {
                   await addToCart();
                   route.push("/cart");
                 }}
-                className="hidden lg:block w-2/5 bg-secondary text-white font-semibold text-lg mt-6 py-2"
+                className="w-1/2 bg-primary text-white"
               >
                 Buy Now
               </Button>
             </div>
           </div>
 
-          <div className="w-3/4">
-            <h3 className="text-2xl font-bold mb-4">Descriptions</h3>
-            <p>
+          {/* Product Description */}
+          <div>
+            <h3 className="text-2xl font-bold mb-4">Description</h3>
+            <p className="mb-2">
               <span className="font-semibold">Size: </span>
               {data?.productSize} mL
             </p>
-            <p
-              className="pt-4 h-48 overflow-y-auto"
+            <div
+              className="max-h-48 overflow-y-auto"
               dangerouslySetInnerHTML={{ __html: data.productDescription }}
-            ></p>
+            ></div>
           </div>
         </div>
       </div>
+    </div>
 
       <div className="w-full p-6 flex flex-col justify-between items-center">
         <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">
