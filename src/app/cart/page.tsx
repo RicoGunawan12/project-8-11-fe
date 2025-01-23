@@ -216,7 +216,7 @@ const CartPage = () => {
 
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal }));
 
-    const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${literalTotal}&cod=${isCOD}`;
+    const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${literalTotal}&cod=${isCOD ? "yes" : "no"}`;
     try {
       const response = await fetch(url, {
         method: "GET",
