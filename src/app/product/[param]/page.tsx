@@ -98,20 +98,24 @@ const ProductDetailPage = () => {
   }, [id]);
   
   useEffect(() => {
-    console.log("Google Analytics ID: ", process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID);
-    console.log("window.gtag: ", window.gtag);
+    // Wait a bit to ensure gtag is fully loaded
+    const checkGtagInterval = setInterval(() => {
+      console.log("Google Analytics ID: ", process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID);
+      console.log("window.gtag: ", window.gtag);
   
-    if (typeof window !== "undefined" && typeof window.gtag === "function") {
-      window.gtag("event", "view_product_detail", {
-        product_name: data?.productName,
-        page_location: window.location.href,
-        page_path: `/product/${id}`,
-      });
-    } else {
-      console.error("Google Analytics not initialized");
-    }
+      if (typeof window !== "undefined" && window.gtag && typeof window.gtag === "function") {
+        window.gtag("event", "view_product_detail", {
+          product_name: data?.productName,
+          page_location: window.location.href,
+          page_path: `/product/${id}`,
+        });
+        clearInterval(checkGtagInterval);
+      }
+    }, 1000); // Check every second
+  
+    // Clean up the interval
+    return () => clearInterval(checkGtagInterval);
   }, [data?.productName, id]);
-  
   
 
   const addToCart = async () => {
