@@ -3,7 +3,11 @@ export interface AboutPage{
     titleEng : string,
     titleIndo : string,
     contentEng : string,
-    contentIndo : string
+    contentIndo : string,
+    whyIndo : string,
+    whyEng : string,
+    introduceIndo : string,
+    introduceEng : string
 }
 
 interface WhyPageContent{

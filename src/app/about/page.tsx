@@ -27,7 +27,7 @@ const AboutUsPage = () => {
           method: "GET",
         });
         const aboutResult = await aboutResponse.json();
-
+        console.log(result);
         setAbout(aboutResult.response[0] || null);
       } catch (error: any) {
         toastError(error.message || "An error occurred while fetching data.");
@@ -48,7 +48,7 @@ const AboutUsPage = () => {
         <Banner page="About Page" text="About Us" />
         <div className="text-black flex flex-col p-6 items-center tracking-widest leading-[2]">
           <h1 className="font-bold text-2xl mt-12">
-            Hello! We make water bottles
+          {locale === "contentJSONEng" ? page[0].introduceEng : page[0].introduceIndo}
           </h1>
           <h2 className="mt-12 font-semibold text-lg w-3/5">
             {locale === "contentJSONEng"
@@ -66,7 +66,7 @@ const AboutUsPage = () => {
           ></div>
           <div className="w-full flex items-center flex-col text-black bg-white mt-6 py-8">
             <h1 className="text-2xl font-semibold text-black">
-              Why you should choose TYESO?
+              {locale === "contentJSONEng" ? page[0].whyEng : page[0].whyIndo}
             </h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center gap-12 my-6 px-6 text-black">
               {about &&
