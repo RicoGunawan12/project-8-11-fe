@@ -24,7 +24,7 @@ type RootLayoutProps = {
 };
 
 // Access environment variables
-const GOOGLE_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+const GOOGLE_ANALYTICS_ID = process.env.GOOGLE_ANALYTICS;
 const FACEBOOK_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
 
 export default function RootLayout({ children }: RootLayoutProps) {
