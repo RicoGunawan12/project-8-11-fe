@@ -17,6 +17,7 @@ import Footer from "../component/footer";
 import { useLocaleStore } from "../component/locale";
 import DeleteConfirmationModal from "../component/modal/deleteConfirmation";
 import { pre } from "framer-motion/client";
+import { Ongkir } from "../model/ongkir";
 
 const CartPage = () => {
   const router = useRouter();
@@ -51,6 +52,7 @@ const CartPage = () => {
   }>();
   const [maxCOD, setMaxCOD] = useState<number>(0);
   const [isCOD, setIsCOD] = useState<boolean>(false);
+  const [ongkir, setOngkir] = useState<Ongkir>();
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -108,13 +110,20 @@ const CartPage = () => {
         });
         const codData = await codResponse.json();
         if (!codResponse.ok) {
+          throw new Error(addressData.message || "Failed to fetch cod data");
+        }
+        setMaxCOD(codData.codData ? codData.codData.maximumPaymentAmount : 0);
+        const ongkirResponse = await fetch(`${process.env.FREE_ONGKIR}`, {
+          method: "GET",
+        });
+        const ongkirData = await ongkirResponse.json();
+
+        if (!ongkirResponse.ok) {
           throw new Error(
-            addressData.message || "Failed to fetch address data"
+            addressData.message || "Failed to fetch address free ongkir"
           );
         }
-
-        console.log(codData.codData.maximumPaymentAmount);
-        setMaxCOD(codData.codData.maximumPaymentAmount || 0);
+        setOngkir(ongkirData.freeOngkir);
 
         setLoading(false);
       } catch (error: any) {
@@ -216,7 +225,13 @@ const CartPage = () => {
 
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal }));
 
-    const url = `${process.env.ADDRESS}/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId}&weight=${totalWeight}&itemValue=${literalTotal}&cod=${isCOD ? "yes" : "no"}`;
+    const url = `${
+      process.env.ADDRESS
+    }/calculate?shipperDestinationId=1&receiverDestinationId=${
+      chosenAddress.komshipAddressId
+    }&weight=${totalWeight}&itemValue=${literalTotal}&cod=${
+      isCOD ? "yes" : "no"
+    }`;
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -259,7 +274,13 @@ const CartPage = () => {
           paymentMethod: isCOD ? "COD" : "Non COD",
           expedition: selectedShipping?.shipping_name,
           shippingType: selectedShipping?.service_name,
-          deliveryFee: selectedShipping?.shipping_cost,
+          deliveryFee:
+            ongkir?.status === "Active"
+              ? ongkir?.minimumPaymentAmount < price.shippingFee &&
+                ongkir?.maximumFreeOngkir >= price.shippingFee
+                ? price.shippingFee
+                : 0
+              : price.shippingFee,
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
           voucherCode: voucherCode,
@@ -684,25 +705,30 @@ const CartPage = () => {
                   placeholder="Notes"
                 ></textarea>
               </div>
-              <div> 
-              <label
-                htmlFor="voucher"
-                className="block text-sm font-medium text-gray-700"
-              >
-                {locale == "contentJSONEng" ? "Cash On Delivery" : "Bayar di tempat"}
-              </label>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={isCOD}
-                    onChange={() => {
-                      setIsCOD(!isCOD);
-                    }}
-                  />
-                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-                </label>
-              </div>
+
+              {maxCOD < price.totalPrice ? (
+                <div>
+                  <label
+                    htmlFor="voucher"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {locale == "contentJSONEng"
+                      ? "Cash On Delivery"
+                      : "Bayar di tempat"}
+                  </label>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={isCOD}
+                      onChange={() => {
+                        setIsCOD(!isCOD);
+                      }}
+                    />
+                    <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                  </label>
+                </div>
+              ) : null}
 
               {/* Price Summary */}
               <div className="flex flex-col space-y-2 mt-6">
@@ -724,7 +750,23 @@ const CartPage = () => {
                       :
                     </span>
                     <span className="font-light text-black">
-                      Rp. {price.shippingFee}
+                      {ongkir?.status == "Active" ? (
+                        ongkir?.minimumPaymentAmount < price.shippingFee &&
+                        ongkir?.maximumFreeOngkir >= price.shippingFee ? (
+                          <div>
+                            Rp.{" "}
+                            <span className="line-through text-gray-400">
+                              {price.shippingFee}
+                            </span>{" "}
+                            0
+                          </div>
+                        ) : (
+                          "Rp. " + price.shippingFee
+                        )
+                      ) : (
+                        "Rp. " + price.shippingFee
+                      )}
+                      {/* Rp. {price.shippingFee} */}
                     </span>
                   </div>
                 )}
@@ -745,8 +787,13 @@ const CartPage = () => {
                   <span className="font-light text-black">
                     Rp.{" "}
                     {price.totalPrice +
-                      price.shippingFee -
-                      (price.voucher ? price.voucher : 0)}
+                      (ongkir?.status === "Active"
+                        ? ongkir?.minimumPaymentAmount < price.shippingFee &&
+                          ongkir?.maximumFreeOngkir >= price.shippingFee
+                          ? price.shippingFee
+                          : 0
+                        : price.shippingFee) -
+                      (price.voucher || 0)}
                   </span>
                 </div>
               </div>
