@@ -96,7 +96,7 @@ const ProductDetailPage = () => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (typeof window.gtag === "function") {
@@ -106,6 +106,9 @@ const ProductDetailPage = () => {
           page_location: window.location.href,
           page_path: `/product/${id}`,
         });
+      }
+      else {
+        console.error("Google analytics not initialized");
       }
     }, 100);
   
