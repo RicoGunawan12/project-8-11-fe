@@ -98,15 +98,18 @@ const ProductDetailPage = () => {
   }, [id]);
   
   useEffect(() => {
-    if (typeof window.gtag === "function") {
-      window.gtag("event", "view_product_detail", {
-        product_name: data?.productName,
-        page_location: window.location.href,
-        page_path: `/product/${id}`,
-      });
-    } else {
-      console.error("Google Analytics not initialized");
-    }
+    const interval = setInterval(() => {
+      if (typeof window.gtag === "function") {
+        clearInterval(interval);
+        window.gtag("event", "view_product_detail", {
+          product_name: data?.productName,
+          page_location: window.location.href,
+          page_path: `/product/${id}`,
+        });
+      }
+    }, 100);
+  
+    return () => clearInterval(interval);
   }, [data?.productName, id]);
   
 
