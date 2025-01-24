@@ -275,11 +275,13 @@ const CartPage = () => {
           expedition: selectedShipping?.shipping_name,
           shippingType: selectedShipping?.service_name,
           deliveryFee:
-          ongkir?.status === "Active"
-          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-            ? (price.shippingFee > ongkir?.maximumFreeOngkir ? price.shippingFee - ongkir?.maximumFreeOngkir: 0)
-            : price.shippingFee
-          : price.shippingFee,
+            ongkir?.status === "Active"
+              ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                ? price.shippingFee > ongkir?.maximumFreeOngkir
+                  ? price.shippingFee - ongkir?.maximumFreeOngkir
+                  : 0
+                : price.shippingFee
+              : price.shippingFee,
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
           voucherCode: voucherCode,
@@ -299,8 +301,7 @@ const CartPage = () => {
 
       if (!isCOD) {
         router.push(resp.payTransactionResponse.actions[0].url);
-      }
-      else {
+      } else {
         router.push(`/transactions/${resp.transaction.transactionId}`);
       }
     } catch (error: any) {
@@ -658,13 +659,6 @@ const CartPage = () => {
                   </option>
                 ))}
               </select>
-              {
-                ongkir?.status === "Active"
-                ? ongkir?.minimumPaymentAmount > price.totalPrice - price.voucher
-                  ? (locale === "contentJSONEng" ? <span>Add Rp.{ongkir?.minimumPaymentAmount - price.totalPrice - price.voucher} more to get free delivery</span> : <span>Tambah Rp. {ongkir?.minimumPaymentAmount - price.totalPrice - price.voucher} untuk mendapatkan gratis biaya pengiriman</span>)
-                  : null
-                : null
-              }
 
               {/* Voucher Section */}
               <label
@@ -717,14 +711,15 @@ const CartPage = () => {
                 ></textarea>
               </div>
 
-              {
-                price.totalPrice <= maxCOD &&
-                <div> 
+              {price.totalPrice <= maxCOD && (
+                <div>
                   <label
                     htmlFor="voucher"
                     className="block text-sm font-medium text-gray-700 mb-2 mt-2"
                   >
-                    {locale == "contentJSONEng" ? "Cash On Delivery" : "Bayar di tempat"}
+                    {locale == "contentJSONEng"
+                      ? "Cash On Delivery"
+                      : "Bayar di tempat"}
                   </label>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -738,7 +733,7 @@ const CartPage = () => {
                     <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                   </label>
                 </div>
-              }
+              )}
 
               {/* Price Summary */}
               <div className="flex flex-col space-y-2 mt-6">
@@ -752,22 +747,50 @@ const CartPage = () => {
                   </span>
                 </div>
                 {selectedShipping && (
-                  <div className="flex justify-between">
-                    <span className="text-sm sm:text-lg font-semibold">
-                      {locale == "contentJSONEng"
-                        ? "Shipping Fee"
-                        : "Biaya Pengiriman"}
-                      :
-                    </span>
-                    <span className="font-light text-black">
-                      Rp.{
-                        ongkir?.status === "Active"
-                        ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-                          ? (price.shippingFee > ongkir?.maximumFreeOngkir ? price.shippingFee - ongkir?.maximumFreeOngkir: (locale == "contentJSONEng" ? "0 (Free Delivery)" : "0 (Gratis biaya pengirman)"))
-                          : price.shippingFee
-                        : price.shippingFee
-                      }
-                    </span>
+                  <div>
+                    <div className="flex justify-between">
+                      <span className="text-sm sm:text-lg font-semibold">
+                        {locale == "contentJSONEng"
+                          ? "Shipping Fee"
+                          : "Biaya Pengiriman"}
+                        :
+                      </span>
+                      <span className="font-light text-black">
+                        Rp.
+                        {ongkir?.status === "Active"
+                          ? ongkir?.minimumPaymentAmount <
+                            price.totalPrice - price.voucher
+                            ? price.shippingFee > ongkir?.maximumFreeOngkir
+                              ? <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span>{price.shippingFee - ongkir?.maximumFreeOngkir}</span>
+                              : locale == "contentJSONEng"
+                              ? <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span> 0 (Free Delivery)</span>
+                              : <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span> 0 (Gratis Biaya Pengiriman)</span>
+                            : price.shippingFee
+                          : price.shippingFee}
+                      </span>
+                    </div>
+                    {ongkir?.status === "Active" ? (
+                      ongkir?.minimumPaymentAmount >
+                      price.totalPrice - price.voucher ? (
+                        locale === "contentJSONEng" ? (
+                          <span>
+                            Add Rp.
+                            {ongkir?.minimumPaymentAmount -
+                              price.totalPrice -
+                              price.voucher}{" "}
+                            more to get free delivery
+                          </span>
+                        ) : (
+                          <span>
+                            Tambah Rp.{" "}
+                            {ongkir?.minimumPaymentAmount -
+                              price.totalPrice -
+                              price.voucher}{" "}
+                            untuk mendapatkan gratis biaya pengiriman
+                          </span>
+                        )
+                      ) : null
+                    ) : null}
                   </div>
                 )}
                 {price.voucher != 0 ? (
@@ -788,8 +811,11 @@ const CartPage = () => {
                     Rp.{" "}
                     {price.totalPrice +
                       (ongkir?.status === "Active"
-                        ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-                          ? (price.shippingFee > ongkir?.maximumFreeOngkir ? price.shippingFee - ongkir?.maximumFreeOngkir: 0)
+                        ? ongkir?.minimumPaymentAmount <
+                          price.totalPrice - price.voucher
+                          ? price.shippingFee > ongkir?.maximumFreeOngkir
+                            ? price.shippingFee - ongkir?.maximumFreeOngkir
+                            : 0
                           : price.shippingFee
                         : price.shippingFee) -
                       (price.voucher || 0)}

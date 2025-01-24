@@ -171,7 +171,7 @@ const ContactPage: React.FC = () => {
                         className="hover:underline flex gap-2"
                       >
                         <Image
-                        src={`/icons/wwa.png`}
+                        src={`/icons/wab.png`}
                         alt="Acc Icon"
                         width={24}
                         height={24}
