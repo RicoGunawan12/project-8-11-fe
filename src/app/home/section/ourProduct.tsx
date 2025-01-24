@@ -69,8 +69,8 @@ const OurProductSection = () => {
         content_name: product.productName,
         content_category: activeCategory?.productCategoryName,
         currency: 'IDR',
-        value: product.promo_details[0] 
-          ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount 
+        value: product.promo_details[0]
+          ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount
           : parseInt(product.product_variants[0].productPrice)
       });
     }
@@ -96,7 +96,7 @@ const OurProductSection = () => {
 
       <div className="mt-8 w-full px-10 flex flex-col">
         <div className="md:w-full flex justify-center">
-          <div 
+          <div
             className="flex flex-row gap-8 mb-10 pb-4 overflow-x-auto mx-2 md:mx-8"
             style={{
               scrollbarWidth: "thin",
@@ -107,11 +107,10 @@ const OurProductSection = () => {
               <button
                 key={category.productCategoryId}
                 onClick={() => handleCategoryChange(category.productCategoryId, category.productCategoryName)}
-                className={`text-xs md:text-md text-secondary font-semibold p-2 rounded ${
-                  activeCategoryId === category.productCategoryId
+                className={`text-xs md:text-md text-secondary font-semibold p-2 rounded ${activeCategoryId === category.productCategoryId
                     ? "border-secondary border-b-2"
                     : null
-                }`}
+                  }`}
               >
                 {category.productCategoryName}
               </button>
@@ -123,8 +122,8 @@ const OurProductSection = () => {
           <>
             <div className="grid grid-cols-2 text-black md:grid-cols-3 lg:px-24 lg:grid-cols-4 gap-16">
               {activeCategory.products.map((product: ProductCard) => (
-                <Link 
-                  key={product.productId} 
+                <Link
+                  key={product.productId}
                   onClick={() => trackViewProduct(product)}
                   href={`/product/${product.productId}`}
                 >
@@ -136,21 +135,23 @@ const OurProductSection = () => {
                       height={200}
                       className="w-full object-fill aspect-square"
                     />
-                    
+
                     <div className="text-lg font-semibold text-black w-full text-left p-2">
-                    <div className="flex flex-col sm:flex-row gap-2 text-xs items-start">
-                      <StarRating rating={parseFloat(product?.averageRating) ? parseFloat(product?.averageRating) : 0} disabled />
-                      <p>{product.countRating} reviews</p>
-                    </div>
-                      <p>{product.productName}</p>
+                      <div className="flex flex-col sm:flex-row gap-2 text-xs items-start">
+                        <StarRating rating={parseFloat(product?.averageRating) ? parseFloat(product?.averageRating) : 0} disabled />
+                        <p>{product.countRating} reviews</p>
+                      </div>
+                      <div className="w-full overflow-hidden whitespace-nowrap">
+                        <p className="truncate">{product.productName}</p>
+                      </div>
                       {product.promo_details[0] && product.promo_details[0].promo != null ? (
                         <div className="flex text-xs font-normal justify-start">
                           <span className="line-through mr-2 text-gray-600">
                             Rp. {product.product_variants[0].productPrice}
                           </span>
                           <span className="font-semibold">
-                            Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount > 0 
-                              ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount 
+                            Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount > 0
+                              ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount
                               : 0}
                           </span>
                         </div>
