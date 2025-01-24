@@ -276,11 +276,15 @@ const TransactionPage = () => {
             </div>
 
             
-            <div className="grid grid-cols-2 gap-2">
-                <div className="font-semibold">Transaction ID:</div>
-                <div>{transaction?.readableId}</div>
-                <div className="font-semibold">Shipping ID:</div>
-                <div>{transaction?.awb && "-"}</div>
+            <div className="mb-2">
+                <div className="flex gap-2">
+                  <div className="font-semibold">Transaction ID:</div>
+                  <div>{transaction?.readableId}</div>
+                </div>
+                <div className="flex gap-2">
+                  <div className="font-semibold">Shipping ID:</div>
+                  <div>{transaction?.awb ? transaction?.awb : "-"}</div>
+                </div>
             </div>
 
             {/* Transaction Info Table */}
