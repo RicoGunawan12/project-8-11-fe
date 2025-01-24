@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import NavigationBar from "../component/navbar";
 import Banner from "../component/banner";
@@ -18,17 +18,20 @@ const ContactPage: React.FC = () => {
     message: "",
     topic: "",
     orderNumber: "",
-    customTopic: ""
+    customTopic: "",
   });
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const router = useRouter();
   const [socMed, setSocMed] = useState<Contact[]>([]);
   const [isLoad, setIsLoad] = useState(true);
+  const [adminContact, setAdminContact] = useState<any>();
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -45,8 +48,23 @@ const ContactPage: React.FC = () => {
         if (!response.ok) {
           throw new Error(data.message);
         }
-
+        console.log(data.contacts);
         setSocMed(data.contacts);
+
+        const adminResponse = await fetch(`${process.env.CONTACTS}/admin`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const adminData = await adminResponse.json();
+
+        if (!adminResponse.ok) {
+          throw new Error(data.message);
+        }
+        console.log(adminData);
+        setAdminContact(adminData.contact);
         if (!Array.isArray(data)) throw new Error("Data is not an array");
       } catch (error: any) {
         toastError(error);
@@ -99,25 +117,69 @@ const ContactPage: React.FC = () => {
             <div className="flex flex-col lg:flex-row flex-1 p-6 lg:p-24 gap-8 lg:gap-0">
               {/* Social Media Section */}
               <div className="w-full lg:w-1/3 bg-secondary text-white px-6 lg:px-12 py-8 flex items-start rounded-lg">
-                <div>
+                <div className="w-full">
                   <h1 className="text-2xl font-bold mb-6">Social Media</h1>
                   <ul className="space-y-6">
                     {!isLoad &&
                       socMed &&
                       socMed.map((src, index) => (
-                        <li key={index} className="flex flex-row items-center space-x-3">
-                          <Image
+                        <li
+                          key={index}
+                          className="flex flex-row items-center space-x-3"
+                        >
+                          <Link
+                            href={src.contactAccount}
+                            target="_blank"
+                            className="hover:underline flex gap-2"
+                          >
+                            <Image
                             src={`${process.env.BACK_BASE_URL}/assets/contact/${src.contact}.png`}
                             alt="Acc Icon"
                             width={24}
                             height={24}
                             className="filter invert hover:invert-0"
                           />
-                          <Link href={src.contactAccount} target="_blank" className="hover:underline">
                             {src.contact}
                           </Link>
                         </li>
                       ))}
+                  </ul>
+                  <h1 className="text-2xl font-bold my-6">Contact</h1>
+                  <ul className="space-y-6">
+                    <li className="flex items-center space-x-3">
+                      
+                      <Link
+                        href={`https://wa.me/${adminContact.phone?.replace(/\D/g, '')}`}
+                        target="_blank"
+                        className="hover:underline flex gap-2"
+                      >
+                        <Image
+                        src={`/icons/wwa.png`}
+                        alt="Acc Icon"
+                        width={24}
+                        height={24}
+                        className="filter invert hover:invert-0"
+                      />
+                        Customer Service
+                      </Link>
+                    </li>
+                    <li className="flex items-center space-x-3">
+                      
+                      <Link
+                        href={`https://wa.me/${adminContact.business?.replace(/\D/g, '')}`}
+                        target="_blank"
+                        className="hover:underline flex gap-2"
+                      >
+                        <Image
+                        src={`/icons/wwa.png`}
+                        alt="Acc Icon"
+                        width={24}
+                        height={24}
+                        className="filter invert hover:invert-0"
+                      />
+                        Business to Business
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -126,7 +188,9 @@ const ContactPage: React.FC = () => {
               <div className="w-full lg:w-2/3 bg-white text-black px-6 lg:px-12 py-8 flex flex-col items-start rounded-lg">
                 <h2 className="text-3xl font-bold mb-4">Need Help?</h2>
                 <p className="text-gray-500 mb-8">
-                  {"We're here for you. Search our FAQs or get in touch with our customer team."}
+                  {
+                    "We're here for you. Search our FAQs or get in touch with our customer team."
+                  }
                 </p>
                 <form className="space-y-4 w-full">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -137,10 +201,15 @@ const ContactPage: React.FC = () => {
                         value={formData.name}
                         placeholder="Name"
                         onChange={handleChange}
-                        className={`border p-3 rounded-md w-full ${errors?.find(e => e.path === "name") ? "border-red-300" : "border-gray-300"
-                          }`}
+                        className={`border p-3 rounded-md w-full ${
+                          errors?.find((e) => e.path === "name")
+                            ? "border-red-300"
+                            : "border-gray-300"
+                        }`}
                       />
-                      <p className="text-red-500 mt-2 text-sm">{errors?.find(e => e.path === "name")?.msg}</p>
+                      <p className="text-red-500 mt-2 text-sm">
+                        {errors?.find((e) => e.path === "name")?.msg}
+                      </p>
                     </div>
                     <div className="flex flex-col">
                       <input
@@ -149,10 +218,15 @@ const ContactPage: React.FC = () => {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="Email"
-                        className={`border p-3 rounded-md w-full ${errors?.find(e => e.path === "email") ? "border-red-300" : "border-gray-300"
-                          }`}
+                        className={`border p-3 rounded-md w-full ${
+                          errors?.find((e) => e.path === "email")
+                            ? "border-red-300"
+                            : "border-gray-300"
+                        }`}
                       />
-                      <p className="text-red-500 mt-2 text-sm">{errors?.find(e => e.path === "email")?.msg}</p>
+                      <p className="text-red-500 mt-2 text-sm">
+                        {errors?.find((e) => e.path === "email")?.msg}
+                      </p>
                     </div>
                   </div>
                   <select
@@ -161,11 +235,15 @@ const ContactPage: React.FC = () => {
                     onChange={handleChange}
                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2"
                   >
-                    <option value="" disabled>Select A Topic</option>
+                    <option value="" disabled>
+                      Select A Topic
+                    </option>
                     <option value="Cancel Order">Cancel Order</option>
                     <option value="Modify Order">Modify Order</option>
                     <option value="Tracking Order">Tracking Order</option>
-                    <option value="Return Or Exchange Items">Return Or Exchange Items</option>
+                    <option value="Return Or Exchange Items">
+                      Return Or Exchange Items
+                    </option>
                     <option value="Become a Reseller">Become a Reseller</option>
                     <option value="Partnership">Partnership</option>
                     <option value="Other">Other</option>
