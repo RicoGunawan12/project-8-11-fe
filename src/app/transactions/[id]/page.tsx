@@ -275,6 +275,14 @@ const TransactionPage = () => {
               </div>
             </div>
 
+            
+            <div className="grid grid-cols-2 gap-2">
+                <div className="font-semibold">Transaction ID:</div>
+                <div>{transaction?.readableId}</div>
+                <div className="font-semibold">Shipping ID:</div>
+                <div>{transaction?.awb && "-"}</div>
+            </div>
+
             {/* Transaction Info Table */}
             <div className="overflow-x-auto">
               <div className="min-w-full">

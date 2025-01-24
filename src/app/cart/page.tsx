@@ -299,7 +299,20 @@ const CartPage = () => {
         throw new Error(resp.message);
       }
 
-      if (!isCOD) {
+      if (
+        !isCOD &&
+        price.totalPrice +
+        (ongkir?.status === "Active"
+          ? ongkir?.minimumPaymentAmount <
+            price.totalPrice - price.voucher
+            ? price.shippingFee > ongkir?.maximumFreeOngkir
+              ? price.shippingFee - ongkir?.maximumFreeOngkir
+              : 0
+            : price.shippingFee
+          : price.shippingFee) -
+        (price.voucher || 0) >= 1000
+
+      ) {
         router.push(resp.payTransactionResponse.actions[0].url);
       } else {
         router.push(`/transactions/${resp.transaction.transactionId}`);
