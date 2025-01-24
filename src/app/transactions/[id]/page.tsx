@@ -276,12 +276,12 @@ const TransactionPage = () => {
             </div>
 
             
-            <div className="mb-2">
-                <div className="flex gap-2">
+            <div className="hidden md:block mb-2">
+                <div className="flex gap-2 mb-2">
                   <div className="font-semibold">Transaction ID:</div>
                   <div>{transaction?.readableId}</div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 mb-2">
                   <div className="font-semibold">Shipping ID:</div>
                   <div>{transaction?.awb ? transaction?.awb : "-"}</div>
                 </div>
@@ -296,6 +296,10 @@ const TransactionPage = () => {
                     <div className="grid grid-cols-2 gap-2">
                       <div className="font-semibold">Date:</div>
                       <div>{formatDate(transaction?.transactionDate || "")}</div>
+                      <div className="font-semibold">Transaction ID:</div>
+                      <div>{transaction?.readableId}</div>
+                      <div className="font-semibold">Shipping ID:</div>
+                      <div>{transaction?.awb ? transaction?.awb : "-"}</div>
                       <div className="font-semibold">Total Price:</div>
                       <div>Rp. {transaction?.totalPrice}</div>
                       <div className="font-semibold">Status:</div>
