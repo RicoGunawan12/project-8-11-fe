@@ -64,15 +64,15 @@ const CartPage = () => {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
+        if (cartResponse.status === 401) {
+            deleteTokenCookie();
+            router.push("/auth/login");
+        }
         const cartData = await cartResponse.json();
         if (!cartResponse.ok) {
           throw new Error(cartData.message || "Failed to fetch cart data");
         }
 
-        if (cartResponse.status === 401) {
-            deleteTokenCookie();
-            router.push("/auth/login");
-        }
 
         const addressResponse = await fetch(`${process.env.ADDRESS}`, {
           method: "GET",
