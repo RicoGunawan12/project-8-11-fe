@@ -402,7 +402,7 @@ const ProductDetailPage = () => {
             <div className="flex space-x-4 mt-6">
               <Button
                 onClick={addToCart}
-                className="w-1/2 bg-secondary text-white"
+                className="w-1/2 bg-white border-secondary border-1 text-secondary"
               >
                 Add to Cart
               </Button>
@@ -412,7 +412,7 @@ const ProductDetailPage = () => {
                   await addToCart();
                   route.push("/cart");
                 }}
-                className="w-1/2 bg-primary text-white"
+                className="w-1/2 bg-secondary border-1 border-secondary text-white"
               >
                 Buy Now
               </Button>

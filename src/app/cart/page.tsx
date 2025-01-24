@@ -275,12 +275,11 @@ const CartPage = () => {
           expedition: selectedShipping?.shipping_name,
           shippingType: selectedShipping?.service_name,
           deliveryFee:
-            ongkir?.status === "Active"
-              ? ongkir?.minimumPaymentAmount < price.shippingFee &&
-                ongkir?.maximumFreeOngkir >= price.shippingFee
-                ? price.shippingFee
-                : 0
-              : price.shippingFee,
+          ongkir?.status === "Active"
+          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+            ? (price.shippingFee > ongkir?.maximumFreeOngkir ? price.shippingFee - ongkir?.maximumFreeOngkir: 0)
+            : price.shippingFee
+          : price.shippingFee,
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
           voucherCode: voucherCode,
@@ -659,6 +658,13 @@ const CartPage = () => {
                   </option>
                 ))}
               </select>
+              {
+                ongkir?.status === "Active"
+                ? ongkir?.minimumPaymentAmount > price.totalPrice - price.voucher
+                  ? (locale === "contentJSONEng" ? <span>Add Rp.{ongkir?.minimumPaymentAmount - price.totalPrice - price.voucher} more to get free delivery</span> : <span>Tambah Rp. {ongkir?.minimumPaymentAmount - price.totalPrice - price.voucher} untuk mendapatkan gratis biaya pengiriman</span>)
+                  : null
+                : null
+              }
 
               {/* Voucher Section */}
               <label
@@ -754,23 +760,13 @@ const CartPage = () => {
                       :
                     </span>
                     <span className="font-light text-black">
-                      {ongkir?.status == "Active" ? (
-                        ongkir?.minimumPaymentAmount < price.shippingFee &&
-                        ongkir?.maximumFreeOngkir >= price.shippingFee ? (
-                          <div>
-                            Rp.{" "}
-                            <span className="line-through text-gray-400">
-                              {price.shippingFee}
-                            </span>{" "}
-                            0
-                          </div>
-                        ) : (
-                          "Rp. " + price.shippingFee
-                        )
-                      ) : (
-                        "Rp. " + price.shippingFee
-                      )}
-                      {/* Rp. {price.shippingFee} */}
+                      Rp.{
+                        ongkir?.status === "Active"
+                        ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                          ? (price.shippingFee > ongkir?.maximumFreeOngkir ? price.shippingFee - ongkir?.maximumFreeOngkir: (locale == "contentJSONEng" ? "0 (Free Delivery)" : "0 (Gratis biaya pengirman)"))
+                          : price.shippingFee
+                        : price.shippingFee
+                      }
                     </span>
                   </div>
                 )}
@@ -792,9 +788,8 @@ const CartPage = () => {
                     Rp.{" "}
                     {price.totalPrice +
                       (ongkir?.status === "Active"
-                        ? ongkir?.minimumPaymentAmount < price.shippingFee &&
-                          ongkir?.maximumFreeOngkir >= price.shippingFee
-                          ? 0
+                        ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                          ? (price.shippingFee > ongkir?.maximumFreeOngkir ? price.shippingFee - ongkir?.maximumFreeOngkir: 0)
                           : price.shippingFee
                         : price.shippingFee) -
                       (price.voucher || 0)}
