@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NavigationBar from "../component/navbar";
-import { getTokenCookie } from "../utilities/token";
+import { deleteTokenCookie, getTokenCookie } from "../utilities/token";
 import { UserData } from "../model/user";
 import { Transaction } from "../model/transactions";
 import { useRouter } from "next/navigation";
@@ -45,6 +45,11 @@ const ProfilePage = () => {
           Authorization: `Bearer ${clientToken}`,
         },
       });
+
+      if (userResponse.status === 401) {
+          deleteTokenCookie();
+          router.push("/auth/login");
+      }
 
       if (!userResponse.ok) {
         throw new Error("Failed to fetch user data");
@@ -131,6 +136,10 @@ const ProfilePage = () => {
           Authorization: `Bearer ${clientToken}`,
         },
       }).then(async (response) => {
+        if (response.status === 401) {
+          deleteTokenCookie();
+          router.push("/auth/login");
+        }
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.message || "Failed to delete the address.");

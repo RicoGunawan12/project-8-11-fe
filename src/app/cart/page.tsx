@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import NavigationBar from "../component/navbar";
 import Image from "next/image";
-import { getTokenCookie } from "../utilities/token";
+import { deleteTokenCookie, getTokenCookie } from "../utilities/token";
 import { useRouter } from "next/navigation";
 import { toastError, toastSuccess } from "../utilities/toast";
 import { Cart } from "../model/cart";
@@ -67,6 +67,11 @@ const CartPage = () => {
         const cartData = await cartResponse.json();
         if (!cartResponse.ok) {
           throw new Error(cartData.message || "Failed to fetch cart data");
+        }
+
+        if (cartResponse.status === 401) {
+            deleteTokenCookie();
+            router.push("/auth/login");
         }
 
         const addressResponse = await fetch(`${process.env.ADDRESS}`, {
