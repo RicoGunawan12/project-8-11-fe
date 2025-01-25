@@ -279,14 +279,14 @@ const CartPage = () => {
           paymentMethod: isCOD ? "COD" : "Non COD",
           expedition: selectedShipping?.shipping_name,
           shippingType: selectedShipping?.service_name,
-          deliveryFee:
-            ongkir?.status === "Active"
-              ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-                ? price.shippingFee > ongkir?.maximumFreeOngkir
-                  ? price.shippingFee - ongkir?.maximumFreeOngkir
-                  : 0
-                : price.shippingFee
-              : price.shippingFee,
+          deliveryFee: price.shippingFee,
+            // ongkir?.status === "Active"
+            //   ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+            //     ? price.shippingFee > ongkir?.maximumFreeOngkir
+            //       ? price.shippingFee - ongkir?.maximumFreeOngkir
+            //       : 0
+            //     : price.shippingFee
+            //   : price.shippingFee,
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
           voucherCode: voucherCode,
