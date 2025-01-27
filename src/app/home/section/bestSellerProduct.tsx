@@ -178,8 +178,8 @@ const BestSellerProduct = () => {
                   alt="logo pic"
                   className="w-full h-[300px] object-cover"
                 />
-                <div className="bg-white py-6 px-10">
-                  <div className="text-black font-semibold">{product.productName}</div>
+                <div className="bg-white py-6 px-10 h-[100px]">
+                  <div className="text-black font-semibold truncate">{product.productName}</div>
                   <div className="text-black">
                     Rp. {product.product_variants[0]?.productPrice}
                   </div>

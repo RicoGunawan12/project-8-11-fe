@@ -331,6 +331,7 @@ const CartPage = () => {
     const url = new URL(`${process.env.VOUCHER}/getByCode`);
 
     url.searchParams.append("code", String(voucherCode));
+    url.searchParams.append("totalPrice", String(price.totalPrice));
 
     const fetchData = await fetch(url, {
       method: "GET",
