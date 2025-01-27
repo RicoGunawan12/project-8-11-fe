@@ -233,9 +233,9 @@ const ProductDetailPage = () => {
         content_name: product.productName,
         currency: "IDR",
         value: product.promo_details[0]
-          ? parseInt(product.product_variants[0].productPrice) -
+          ? parseInt(product.product_variants[0]?.productPrice) -
             product.promo_details[0].promo?.promoAmount
-          : parseInt(product.product_variants[0].productPrice),
+          : parseInt(product.product_variants[0]?.productPrice),
       });
     }
   };
@@ -307,19 +307,19 @@ const ProductDetailPage = () => {
               {data.promo_details[0] && data.promo_details[0].promo != null ? (
                 <div>
                   <span className="line-through mr-2 text-gray-600">
-                    Rp. {data.product_variants[buyVariant].productPrice}
+                    Rp. {data.product_variants[buyVariant]?.productPrice}
                   </span>
                   <span className="font-semibold text-primary">
                     Rp.{" "}
                     {Math.max(
-                      parseInt(data.product_variants[buyVariant].productPrice) -
+                      parseInt(data.product_variants[buyVariant]?.productPrice) -
                       data.promo_details[0].promo?.promoAmount,
                       0
                     )}
                   </span>
                 </div>
               ) : (
-                <div>Rp. {data.product_variants[buyVariant].productPrice}</div>
+                <div>Rp. {data.product_variants[buyVariant]?.productPrice}</div>
               )}
             </div>
           </div>
@@ -575,21 +575,21 @@ const ProductDetailPage = () => {
                   product.promo_details[0].promo != null ? (
                     <div className="flex text-xs font-normal justify-start">
                       <span className="line-through mr-2 text-gray-600">
-                        Rp. {product.product_variants[0].productPrice}
+                        Rp. {product.product_variants[0]?.productPrice}
                       </span>
                       <span className="font-semibold">
                         Rp.{" "}
-                        {parseInt(product.product_variants[0].productPrice) -
+                        {parseInt(product.product_variants[0]?.productPrice) -
                           product.promo_details[0].promo?.promoAmount >
                         0
-                          ? parseInt(product.product_variants[0].productPrice) -
+                          ? parseInt(product.product_variants[0]?.productPrice) -
                             product.promo_details[0].promo?.promoAmount
                           : 0}
                       </span>
                     </div>
                   ) : (
                     <div className="flex text-xs font-normal justify-start">
-                      <p>Rp. {product.product_variants[0].productPrice}</p>
+                      <p>Rp. {product.product_variants[0]?.productPrice}</p>
                     </div>
                   )}
                 </div>

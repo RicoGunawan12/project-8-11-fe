@@ -70,8 +70,8 @@ const OurProductSection = () => {
         content_category: activeCategory?.productCategoryName,
         currency: 'IDR',
         value: product.promo_details[0]
-          ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount
-          : parseInt(product.product_variants[0].productPrice)
+          ? parseInt(product.product_variants[0]?.productPrice) - product.promo_details[0].promo?.promoAmount
+          : parseInt(product.product_variants[0]?.productPrice)
       });
     }
   };
@@ -147,17 +147,17 @@ const OurProductSection = () => {
                       {product.promo_details[0] && product.promo_details[0].promo != null ? (
                         <div className="flex text-xs font-normal justify-start">
                           <span className="line-through mr-2 text-gray-600">
-                            Rp. {product.product_variants[0].productPrice}
+                            Rp. {product.product_variants[0]?.productPrice}
                           </span>
                           <span className="font-semibold">
-                            Rp. {parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount > 0
-                              ? parseInt(product.product_variants[0].productPrice) - product.promo_details[0].promo?.promoAmount
+                            Rp. {parseInt(product.product_variants[0]?.productPrice) - product.promo_details[0].promo?.promoAmount > 0
+                              ? parseInt(product.product_variants[0]?.productPrice) - product.promo_details[0].promo?.promoAmount
                               : 0}
                           </span>
                         </div>
                       ) : (
                         <div className="flex text-xs font-normal justify-start">
-                          <p>Rp. {product.product_variants[0].productPrice}</p>
+                          <p>Rp. {product.product_variants[0]?.productPrice}</p>
                         </div>
                       )}
                     </div>

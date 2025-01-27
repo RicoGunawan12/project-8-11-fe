@@ -181,7 +181,7 @@ const BestSellerProduct = () => {
                 <div className="bg-white py-6 px-10">
                   <div className="text-black font-semibold">{product.productName}</div>
                   <div className="text-black">
-                    Rp. {product.product_variants[0].productPrice}
+                    Rp. {product.product_variants[0]?.productPrice}
                   </div>
                 </div>
               </Link>

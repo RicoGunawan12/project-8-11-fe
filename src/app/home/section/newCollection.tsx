@@ -70,7 +70,7 @@ const NewCollection = () => {
                   {datum.productCategoryName}
                 </div>
                 {/* <div className="w-full text-center text-black text-md">
-                  Rp. {datum.product_variants[0].productPrice}
+                  Rp. {datum.product_variants[0]?.productPrice}
                 </div> */}
               </Link>
             )

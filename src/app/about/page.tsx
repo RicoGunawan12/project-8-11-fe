@@ -48,15 +48,15 @@ const AboutUsPage = () => {
         <Banner page="About Page" text="About Us" />
         <div className="text-black flex flex-col p-6 items-center tracking-widest leading-[2]">
           <h1 className="font-bold text-2xl mt-12">
-          {locale === "contentJSONEng" ? page[0].introduceEng : page[0].introduceIndo}
+          {locale === "contentJSONEng" ? page[0].titleEng : page[0].titleIndo}
           </h1>
-          <h2 className="mt-12 font-semibold text-lg w-3/5">
+          <h2 className="mt-12 font-semibold text-lg w-3/5 max-sm:w-full max-md:w-4/5">
             {locale === "contentJSONEng"
-              ? page[0]?.titleEng || "Loading"
-              : page[0]?.titleIndo || "Loading"}
+              ? page[0]?.whyEng || "Loading"
+              : page[0]?.whyIndo || "Loading"}
           </h2>
           <div
-            className="mt-6 w-3/5"
+            className="mt-6 w-3/5 max-sm:w-full max-sm:text-justify max-md:w-4/5"
             dangerouslySetInnerHTML={{
               __html:
                 locale === "contentJSONEng"

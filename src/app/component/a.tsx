@@ -416,7 +416,7 @@ const NavigationBar = () => {
                                                 />
                                                 <div className="flex flex-col">
                                                     <span>{product.productName}</span>
-                                                    <span>Rp. {product.product_variants[0].productPrice}</span>
+                                                    <span>Rp. {product.product_variants[0]?.productPrice}</span>
                                                 </div>
                                             </Link>
                                         </li>

@@ -437,12 +437,12 @@ const NavigationBar = () => {
                           {
                             product.promo_details[0] && product.promo_details[0].promo != null ?
                               <div className="flex justify-start">
-                                <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0].productPrice}</span>
-                                <span className="font-semibold">Rp. {product.product_variants[0].productPrice - product.promo_details[0].promo?.promoAmount > 0 ? product.product_variants[0].productPrice - product.promo_details[0].promo?.promoAmount : 0}</span>
+                                <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0]?.productPrice}</span>
+                                <span className="font-semibold">Rp. {product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount > 0 ? product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount : 0}</span>
                               </div>
                               :
                               <div >
-                                Rp. {product.product_variants[0].productPrice}
+                                Rp. {product.product_variants[0]?.productPrice}
                               </div>
                           }
                         </div>

@@ -96,11 +96,11 @@ const CartPage = () => {
         const cartTotal = data.reduce(
           (total, item) =>
             total + item.quantity === 1
-              ? item.product_variant.productPrice -
+              ? item.product_variant?.productPrice -
                   item.product_variant.product?.promo_details[0].promo
                     .promoAmount >
                 0
-                ? item.product_variant.productPrice -
+                ? item.product_variant?.productPrice -
                   item.product_variant.product?.promo_details[0].promo
                     .promoAmount
                 : 0
@@ -167,16 +167,16 @@ const CartPage = () => {
       ) {
         return (
           total +
-          (item.product_variant.productPrice -
+          (item.product_variant?.productPrice -
             item.product_variant.product?.promo_details[0].promo.promoAmount >
           0
-            ? item.product_variant.productPrice -
+            ? item.product_variant?.productPrice -
               item.product_variant.product?.promo_details[0].promo.promoAmount
             : 0) *
             quantity
         );
       } else {
-        return total + item.product_variant.productPrice * quantity;
+        return total + item.product_variant?.productPrice * quantity;
       }
     }, 0);
     setSelectedShipping(null);
@@ -202,22 +202,22 @@ const CartPage = () => {
       ) {
         return (
           total +
-          (item.product_variant.productPrice -
+          (item.product_variant?.productPrice -
             item.product_variant.product?.promo_details[0].promo.promoAmount >
           0
-            ? item.product_variant.productPrice -
+            ? item.product_variant?.productPrice -
               item.product_variant.product?.promo_details[0].promo.promoAmount
             : 0) *
             quantity
         );
       } else {
-        return total + item.product_variant.productPrice * quantity;
+        return total + item.product_variant?.productPrice * quantity;
       }
     }, 0);
 
     var literalTotal = 0;
     data.forEach((item) => {
-      literalTotal += item.product_variant.productPrice;
+      literalTotal += item.product_variant?.productPrice;
     });
 
     const response = await fetch(`${process.env.ADDRESS}`, {
@@ -364,6 +364,23 @@ const CartPage = () => {
   };
 
   const handleRemoveCart = async (cartItemId: string) => {
+
+    if (!clientToken) {
+      const cartData = JSON.parse(localStorage.getItem("cartItem") || "[]");
+  
+      // Filter out the item with the given `cartItemId`
+      const updatedCartData = cartData.filter((item: any) => item.cartItemId !== cartItemId);
+  
+      // Save the updated cart back to local storage
+      localStorage.setItem("cartItem", JSON.stringify(updatedCartData));
+  
+      toastSuccess("Item removed");
+      setUpdate(!update);
+      setIsModalOpen(false);
+      window.location.reload();
+      return;
+    }
+
     const url = new URL(`${process.env.CART}/${cartItemId}`);
     const fetchData = await fetch(url, {
       method: "DELETE",
@@ -499,22 +516,22 @@ const CartPage = () => {
                     quantities[item.productVariantId] === 1 ? (
                       <div>
                         <span className="line-through mr-2 text-gray-600">
-                          Rp. {item.product_variant.productPrice}
+                          Rp. {item.product_variant?.productPrice}
                         </span>
                         <span className="font-semibold">
                           Rp.{" "}
-                          {item.product_variant.productPrice -
+                          {item.product_variant?.productPrice -
                             item.product_variant.product?.promo_details[0].promo
                               .promoAmount >
                           0
-                            ? item.product_variant.productPrice -
+                            ? item.product_variant?.productPrice -
                               item.product_variant.product?.promo_details[0]
                                 .promo.promoAmount
                             : 0}
                         </span>
                       </div>
                     ) : (
-                      <div>Rp. {item.product_variant.productPrice}</div>
+                      <div>Rp. {item.product_variant?.productPrice}</div>
                     )}
                   </div>
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">

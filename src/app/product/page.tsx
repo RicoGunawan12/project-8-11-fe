@@ -208,12 +208,12 @@ const ProductPage = () => {
                     {
                       result.promo_details[0] && result.promo_details[0].promo != null ?
                         <div className="flex">
-                          <span className="line-through mr-2 text-gray-600">Rp. {result.product_variants[0].productPrice}</span>
-                          <span className="font-semibold">Rp. {result.product_variants[0].productPrice - result.promo_details[0].promo?.promoAmount > 0 ? result.product_variants[0].productPrice - result.promo_details[0].promo?.promoAmount : 0}</span>
+                          <span className="line-through mr-2 text-gray-600">Rp. {result.product_variants[0]?.productPrice}</span>
+                          <span className="font-semibold">Rp. {result.product_variants[0]?.productPrice - result.promo_details[0].promo?.promoAmount > 0 ? result.product_variants[0]?.productPrice - result.promo_details[0].promo?.promoAmount : 0}</span>
                         </div>
                         :
                         <div >
-                          Rp. {result.product_variants[0].productPrice}
+                          Rp. {result.product_variants[0]?.productPrice}
                         </div>
                     }
                   </div>
@@ -225,11 +225,11 @@ const ProductPage = () => {
 
         {/* Pagination controls */}
         {totalPages <= 1 ? null : (
-          <div className="flex justify-center text-black gap-6 mt-4">
+          <div className="flex justify-center items-center text-black gap-6 mt-4 mb-20">
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 1}
-              className={`px-4 py-2 rounded-lg ${currentPage === 1
+              className={`px-4 py-2 rounded-lg w-[100px] ${currentPage === 1
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-primary text-white"
                 }`}
@@ -242,7 +242,7 @@ const ProductPage = () => {
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={`px-4 py-2 rounded-lg ${currentPage === totalPages
+              className={`px-4 py-2 rounded-lg w-[100px] ${currentPage === totalPages
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-primary text-white"
                 }`}
