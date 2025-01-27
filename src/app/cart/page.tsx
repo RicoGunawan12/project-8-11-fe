@@ -53,6 +53,7 @@ const CartPage = () => {
   const [maxCOD, setMaxCOD] = useState<number>(0);
   const [isCOD, setIsCOD] = useState<boolean>(false);
   const [ongkir, setOngkir] = useState<Ongkir>();
+  const [bogoSelections, setBogoSelections] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -69,6 +70,8 @@ const CartPage = () => {
           throw new Error(cartData.message || "Failed to fetch cart data");
         }
 
+        console.log("Cart: ", cartData)
+
         const addressResponse = await fetch(`${process.env.ADDRESS}`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -79,6 +82,9 @@ const CartPage = () => {
             addressData.message || "Failed to fetch address data"
           );
         }
+
+        console.log("addressData: ", addressData)
+
         setData(cartData);
         setQuantities(
           cartData.reduce((acc: { [key: string]: number }, item: Cart) => {
@@ -92,12 +98,12 @@ const CartPage = () => {
           (total, item) =>
             total + item.quantity === 1
               ? item.product_variant.productPrice -
-                  item.product_variant.product?.promo_details[0].promo
-                    .promoAmount >
+                item.product_variant.product?.promo_details[0].promo
+                  .promoAmount >
                 0
                 ? item.product_variant.productPrice -
-                  item.product_variant.product?.promo_details[0].promo
-                    .promoAmount
+                item.product_variant.product?.promo_details[0].promo
+                  .promoAmount
                 : 0
               : 0 * item.quantity,
           0
@@ -112,6 +118,9 @@ const CartPage = () => {
         if (!codResponse.ok) {
           throw new Error(addressData.message || "Failed to fetch cod data");
         }
+
+        console.log("COD Data: ", codData)
+
         setMaxCOD(codData.codData ? codData.codData.maximumPaymentAmount : 0);
         const ongkirResponse = await fetch(`${process.env.FREE_ONGKIR}`, {
           method: "GET",
@@ -123,6 +132,7 @@ const CartPage = () => {
             addressData.message || "Failed to fetch address free ongkir"
           );
         }
+        console.log("Ongkir: ", ongkirResponse)
         setOngkir(ongkirData.freeOngkir);
 
         setLoading(false);
@@ -164,11 +174,11 @@ const CartPage = () => {
           total +
           (item.product_variant.productPrice -
             item.product_variant.product?.promo_details[0].promo.promoAmount >
-          0
+            0
             ? item.product_variant.productPrice -
-              item.product_variant.product?.promo_details[0].promo.promoAmount
+            item.product_variant.product?.promo_details[0].promo.promoAmount
             : 0) *
-            quantity
+          quantity
         );
       } else {
         return total + item.product_variant.productPrice * quantity;
@@ -199,11 +209,11 @@ const CartPage = () => {
           total +
           (item.product_variant.productPrice -
             item.product_variant.product?.promo_details[0].promo.promoAmount >
-          0
+            0
             ? item.product_variant.productPrice -
-              item.product_variant.product?.promo_details[0].promo.promoAmount
+            item.product_variant.product?.promo_details[0].promo.promoAmount
             : 0) *
-            quantity
+          quantity
         );
       } else {
         return total + item.product_variant.productPrice * quantity;
@@ -225,13 +235,10 @@ const CartPage = () => {
 
     setPrice((prev) => ({ ...prev, totalPrice: cartTotal }));
 
-    const url = `${
-      process.env.ADDRESS
-    }/calculate?shipperDestinationId=1&receiverDestinationId=${
-      chosenAddress.komshipAddressId
-    }&weight=${totalWeight}&itemValue=${literalTotal}&cod=${
-      isCOD ? "yes" : "no"
-    }`;
+    const url = `${process.env.ADDRESS
+      }/calculate?shipperDestinationId=1&receiverDestinationId=${chosenAddress.komshipAddressId
+      }&weight=${totalWeight}&itemValue=${literalTotal}&cod=${isCOD ? "yes" : "no"
+      }`;
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -262,6 +269,8 @@ const CartPage = () => {
       return;
     }
 
+    console.log(bogoSelections)
+
     try {
       const response = await fetch(`${process.env.TRANSACTIONS}`, {
         method: "POST",
@@ -286,6 +295,7 @@ const CartPage = () => {
           voucherCode: voucherCode,
           customerNotes: customerNotes,
           productNotes: productNotes,
+          bogo : bogoSelections
         }),
       });
 
@@ -435,50 +445,52 @@ const CartPage = () => {
               {data.map((item, index) => (
                 <div
                   key={item.productVariantId}
-                  className="flex flex-col sm:flex-row items-center p-4 bg-gray-50 rounded-2xl shadow-sm"
+                  className="flex flex-col w-full p-4 bg-gray-50 rounded-2xl shadow-sm"
                 >
-                  <Image
-                    src={
-                      item.product_variant.productImage
-                        ? process.env.BACK_BASE_URL +
-                          item.product_variant.productImage
-                        : "/placeholder.webp"
-                    }
-                    alt="Product"
-                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
-                    width={200}
-                    height={200}
-                  />
-                  <div className="mt-4 sm:mt-0 sm:ml-4 flex-1 text-center sm:text-left">
-                    <h3 className="text-sm sm:text-lg font-semibold">
-                      {item.product_variant.product.productName}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-500">
-                      {locale == "contentJSONEng" ? "Color" : "Warna"}:{" "}
-                      {item.product_variant.productColor} |{" "}
-                      {locale == "contengJSONEng" ? "Size" : "Ukuran"}:{" "}
-                      {item.product_variant.product.productSize}
-                    </p>
-                    {clientToken && (
-                      <input
-                        type="text"
-                        id="voucher"
-                        className="w-1/2 mt-2 p-2 border rounded-md focus:outline-none"
-                        value={productNotes[index] || ""}
-                        onChange={(e) =>
-                          setProductNotes((prevNotes) => {
-                            const updatedNotes = [...prevNotes];
-                            updatedNotes[index] = e.target.value;
-                            return updatedNotes;
-                          })
-                        }
-                        placeholder="Notes"
-                      />
-                    )}
+                  <div className="flex w-full">
+                    <Image
+                      src={
+                        item.product_variant.productImage
+                          ? process.env.BACK_BASE_URL + item.product_variant.productImage
+                          : "/placeholder.webp"
+                      }
+                      alt="Product"
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
+                      width={200}
+                      height={200}
+                    />
+                    <div className="mt-4 sm:mt-0 sm:ml-4 flex-1 text-center sm:text-left">
+                      <h3 className="text-sm sm:text-lg font-semibold">
+                        {item.product_variant.product.productName}
+                        {item.product_variant.productImage}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        {locale === "contentJSONEng" ? "Color" : "Warna"}:{" "}
+                        {item.product_variant.productColor} |{" "}
+                        {locale === "contentJSONEng" ? "Size" : "Ukuran"}:{" "}
+                        {item.product_variant.product.productSize}
+                      </p>
+                      {clientToken && (
+                        <input
+                          type="text"
+                          id="voucher"
+                          className="w-1/2 mt-2 p-2 border rounded-md focus:outline-none"
+                          value={productNotes[index] || ""}
+                          onChange={(e) =>
+                            setProductNotes((prevNotes) => {
+                              const updatedNotes = [...prevNotes];
+                              updatedNotes[index] = e.target.value;
+                              return updatedNotes;
+                            })
+                          }
+                          placeholder="Notes"
+                        />
+                      )}
+                    </div>
                   </div>
                   <div className="text-gray-800 font-bold mt-2 sm:mt-0">
                     {item.product_variant.product?.promo_details[0] &&
-                    quantities[item.productVariantId] === 1 ? (
+                      quantities[item.productVariantId] === 1 ? (
                       <div>
                         <span className="line-through mr-2 text-gray-600">
                           Rp. {item.product_variant.productPrice}
@@ -488,10 +500,10 @@ const CartPage = () => {
                           {item.product_variant.productPrice -
                             item.product_variant.product?.promo_details[0].promo
                               .promoAmount >
-                          0
+                            0
                             ? item.product_variant.productPrice -
-                              item.product_variant.product?.promo_details[0]
-                                .promo.promoAmount
+                            item.product_variant.product?.promo_details[0].promo
+                              .promoAmount
                             : 0}
                         </span>
                       </div>
@@ -518,7 +530,7 @@ const CartPage = () => {
                       {quantities[item.productVariantId]}
                     </span>
                     <button
-                      onClick={async (e) => {
+                      onClick={async () => {
                         if (
                           quantities[item.productVariantId] <
                           item.product_variant.productStock
@@ -550,9 +562,65 @@ const CartPage = () => {
                       />
                     </div>
                   </div>
+
+                  {/* BOGO selection */}
+                  {item.product_variant.product.bogo &&
+                    item.product_variant.product.bogo.length > 0 && (
+                      <div className="mt-6 border-t pt-4">
+                        <h4 className="text-sm sm:text-base font-semibold mb-3">
+                          {locale === "contentJSONEng"
+                            ? "Select Your Free Items"
+                            : "Pilih Item Gratis Anda"}
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {Array.from(
+                            { length: quantities[item.productVariantId] || 0 },
+                            (_, i) => (
+                              <div key={i} className="flex flex-col space-y-2">
+                                <label className="text-sm text-gray-600">
+                                  {locale === "contentJSONEng"
+                                    ? `Free Item ${i + 1}`
+                                    : `Item Gratis ${i + 1}`}
+                                </label>
+                                <select
+                                  className="p-2 border rounded-md bg-white focus:ring-2 focus:ring-secondary focus:border-transparent"
+                                  value={bogoSelections[item.productVariantId]?.[i] || ""}
+                                  onChange={(e) => {
+                                    setBogoSelections((prev) => {
+                                      const currentSelections = prev[item.productVariantId] || [];
+                                      const newSelections = [...currentSelections];
+                                      newSelections[i] = e.target.value;
+                                      return {
+                                        ...prev,
+                                        [item.productVariantId]: newSelections
+                                      };
+                                    });
+                                  }}
+                                >
+                                  <option value="">
+                                    {locale === "contentJSONEng"
+                                      ? "Select variant"
+                                      : "Pilih varian"}
+                                  </option>
+                                  {item.product_variant.product.bogo.map((bogoItem) => (
+                                    <option
+                                      key={bogoItem.productVariantId}
+                                      value={bogoItem.productVariantId}
+                                    >
+                                      {bogoItem.productColor}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
                 </div>
               ))}
             </div>
+
           ) : (
             <div className="w-full h-64 flex justify-center items-center">
               <button
@@ -713,7 +781,7 @@ const CartPage = () => {
 
               {
                 price.totalPrice <= maxCOD &&
-                <div> 
+                <div>
                   <label
                     htmlFor="voucher"
                     className="block text-sm font-medium text-gray-700 mb-2 mt-2"
@@ -756,7 +824,7 @@ const CartPage = () => {
                     <span className="font-light text-black">
                       {ongkir?.status == "Active" ? (
                         ongkir?.minimumPaymentAmount < price.shippingFee &&
-                        ongkir?.maximumFreeOngkir >= price.shippingFee ? (
+                          ongkir?.maximumFreeOngkir >= price.shippingFee ? (
                           <div>
                             Rp.{" "}
                             <span className="line-through text-gray-400">

@@ -25,5 +25,6 @@ interface ProductVariant {
                 promoAmount : number
             }
         }]
+        bogo:[ProductVariant]
     }
 }
