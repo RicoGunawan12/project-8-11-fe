@@ -845,7 +845,7 @@ const CartPage = () => {
                       <div>Voucher:</div>
                     </span>
                     <span className="font-light text-black">
-                      - Rp. {price.voucher}
+                      - Rp. {price.voucher > price.totalPrice ? price.totalPrice : price.voucher}
                     </span>
                   </div>
                 ) : null}
