@@ -62,7 +62,7 @@ const ProductDetailPage = () => {
     setChosenImage(
       data.product.product_covers[0]?.productCover
         ? process.env.BACK_BASE_URL +
-        data.product.product_covers[0].productCover
+            data.product.product_covers[0].productCover
         : "/placeholder.webp"
     );
     setRelatedProduct(data.relatedProducts);
@@ -100,10 +100,17 @@ const ProductDetailPage = () => {
   useEffect(() => {
     // Wait a bit to ensure gtag is fully loaded
     const checkGtagInterval = setInterval(() => {
-      console.log("Google Analytics ID: ", process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID);
+      console.log(
+        "Google Analytics ID: ",
+        process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
+      );
       console.log("window.gtag: ", window.gtag);
 
-      if (typeof window !== "undefined" && window.gtag && typeof window.gtag === "function") {
+      if (
+        typeof window !== "undefined" &&
+        window.gtag &&
+        typeof window.gtag === "function"
+      ) {
         window.gtag("event", "view_product_detail", {
           product_name: data?.productName,
           page_location: window.location.href,
@@ -116,7 +123,6 @@ const ProductDetailPage = () => {
     // Clean up the interval
     return () => clearInterval(checkGtagInterval);
   }, [data?.productName, id]);
-
 
   const addToCart = async () => {
     try {
@@ -135,12 +141,12 @@ const ProductDetailPage = () => {
 
         const promo_details = data?.promo_details[0]?.promo
           ? [
-            {
-              promo: {
-                promoAmount: data.promo_details[0].promo?.promoAmount,
+              {
+                promo: {
+                  promoAmount: data.promo_details[0].promo?.promoAmount,
+                },
               },
-            },
-          ]
+            ]
           : [];
 
         const fullVariantData = {
@@ -185,8 +191,7 @@ const ProductDetailPage = () => {
         toastSuccess("Product added to cart!");
       }
 
-      setQuantity(1)
-
+      setQuantity(1);
     } catch (error: any) {
       toastError(error.message);
     }
@@ -234,7 +239,7 @@ const ProductDetailPage = () => {
         currency: "IDR",
         value: product.promo_details[0]
           ? parseInt(product.product_variants[0]?.productPrice) -
-          product.promo_details[0].promo?.promoAmount
+            product.promo_details[0].promo?.promoAmount
           : parseInt(product.product_variants[0]?.productPrice),
       });
     }
@@ -248,202 +253,213 @@ const ProductDetailPage = () => {
     <div className="bg-white w-screen h-screen pt-20">
       <NavigationBar />
       <div className="w-screen overflow-hidden px-4 py-8">
-  <div className="w-full grid lg:grid-cols-2 gap-8 min-h-[600px]">
-    {/* Left Column: Product Images */}
-    <div className="flex flex-col w-full h-full overflow-hidden min-w-0" id="help">
-      {/* Main Product Image */}
-      <div className="flex items-center justify-center mb-6">
-        <Image
-          src={chosenImage}
-          width={100}
-          height={100}
-          style={{ objectFit: "contain" }}
-          alt="Product Image"
-          className="border rounded-lg w-2/3 max-w-full lg:max-w-[400px] aspect-square shadow-lg"
-        />
-      </div>
-
-      {/* Variant Thumbnails */}
-      <div className="flex gap-4 w-full overflow-x-auto pb-4 border-t pt-4 scrollbar-hide">
-        {data?.product_covers.map((product, idx) => (
-          <button
-            key={idx}
-            aria-label={`Select variant ${idx + 1}`}
-            className={`flex-shrink-0 cursor-pointer w-20 h-20 p-2 rounded-lg border-2 transition-transform transform ${
-              variantChosen === idx
-                ? "border-secondary shadow-md scale-105"
-                : "border-gray-300 hover:scale-105"
-            }`}
-            onClick={() => {
-              setVariantChosen(idx);
-              setChosenImage(
-                `${process.env.BACK_BASE_URL}${product.productCover}`
-              );
-            }}
+        <div className="w-full grid lg:grid-cols-2 px-6 gap-8 min-h-[600px]">
+          {/* Left Column: Product Images */}
+          <div
+            className="flex flex-col w-full h-full overflow-hidden min-w-0"
+            id="help"
           >
-            <Image
-              src={
-                product.productCover
-                  ? `${process.env.BACK_BASE_URL}${product.productCover}`
-                  : "/placeholder.webp"
-              }
-              width={150}
-              height={150}
-              alt={`Variant ${idx + 1}`}
-              className="object-contain w-full h-full rounded-md"
-            />
-          </button>
-        ))}
-      </div>
-    </div>
+            {/* Main Product Image */}
+            <div className="flex items-center justify-center mb-6">
+              <Image
+                src={chosenImage}
+                width={100}
+                height={100}
+                style={{ objectFit: "contain" }}
+                alt="Product Image"
+                className="border rounded-lg w-2/3 max-w-full lg:max-w-[400px] aspect-square shadow-lg"
+              />
+            </div>
 
-    {/* Right Column: Product Details */}
-    <div className="flex flex-col text-black space-y-6">
-      {/* Product Name and Price */}
-      <div>
-        <h2 className="text-3xl font-bold border-b pb-2">
-          {data?.productName}
-        </h2>
-        <div className="mt-4 text-xl">
-          {data.promo_details[0] && data.promo_details[0].promo != null ? (
+            {/* Variant Thumbnails */}
+            <div className="flex gap-4 w-full overflow-x-auto py-4 border-t px-6 scrollbar-hide">
+              {data?.product_covers.map((product, idx) => (
+                <button
+                  key={idx}
+                  aria-label={`Select variant ${idx + 1}`}
+                  className={`flex-shrink-0 cursor-pointer w-20 h-20 p-2 rounded-lg border-2 transition-transform transform ${
+                    variantChosen === idx
+                      ? "border-secondary shadow-md scale-105"
+                      : "border-gray-300 hover:scale-105"
+                  }`}
+                  onClick={() => {
+                    setVariantChosen(idx);
+                    setChosenImage(
+                      `${process.env.BACK_BASE_URL}${product.productCover}`
+                    );
+                  }}
+                >
+                  <Image
+                    src={
+                      product.productCover
+                        ? `${process.env.BACK_BASE_URL}${product.productCover}`
+                        : "/placeholder.webp"
+                    }
+                    width={150}
+                    height={150}
+                    alt={`Variant ${idx + 1}`}
+                    className="object-contain w-full h-full rounded-md"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column: Product Details */}
+          <div className="flex flex-col text-black space-y-6">
+            {/* Product Name and Price */}
             <div>
-              <span className="line-through mr-2 text-gray-600">
-                Rp. {data.product_variants[buyVariant]?.productPrice}
-              </span>
-              <span className="font-semibold text-primary">
-                Rp.{" "}
-                {Math.max(
-                  parseInt(data.product_variants[buyVariant]?.productPrice) -
-                    data.promo_details[0].promo?.promoAmount,
-                  0
+              <h2 className="text-3xl font-bold border-b pb-2">
+                {data?.productName}
+              </h2>
+              <div className="mt-4 text-xl">
+                {data.promo_details[0] &&
+                data.promo_details[0].promo != null ? (
+                  <div>
+                    <span className="line-through mr-2 text-gray-600">
+                      Rp. {data.product_variants[buyVariant]?.productPrice}
+                    </span>
+                    <span className="font-semibold text-primary">
+                      Rp.{" "}
+                      {Math.max(
+                        parseInt(
+                          data.product_variants[buyVariant]?.productPrice
+                        ) - data.promo_details[0].promo?.promoAmount,
+                        0
+                      )}
+                    </span>
+                  </div>
+                ) : (
+                  <div>
+                    Rp. {data.product_variants[buyVariant]?.productPrice}
+                  </div>
                 )}
-              </span>
+              </div>
             </div>
-          ) : (
-            <div>Rp. {data.product_variants[buyVariant]?.productPrice}</div>
-          )}
-        </div>
-      </div>
 
-      {/* Product Variants */}
-      <div className="flex flex-wrap gap-4">
-        {data?.product_variants.map((product, idx) => (
-          <button
-            key={idx}
-            aria-label={`Select color ${product.productColor}`}
-            className={`relative flex items-center border-2 gap-2 px-4 py-2 rounded-md transition-all ${
-              buyVariant === idx
-                ? "border-secondary shadow-lg"
-                : "border-gray-300"
-            } ${
-              product.productStock <= 0
-                ? "bg-gray-100 text-gray-500 opacity-50"
-                : "bg-white hover:bg-gray-50"
-            }`}
-            onClick={() => {
-              setBuyVariant(idx);
-              setQuantity(1);
-              setChosenImage(
-                `${process.env.BACK_BASE_URL}${product.productImage}`
-              );
-            }}
-            disabled={product.productStock <= 0}
-          >
-            <Image
-              src={
-                product.productImage
-                  ? `${process.env.BACK_BASE_URL}${product.productImage}`
-                  : "/placeholder.webp"
-              }
-              width={40}
-              height={40}
-              alt={product.productColor}
-              className="w-8 h-6 object-contain"
-            />
-            <span>{product.productColor}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Quantity Selector */}
-      <div>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center">
-            <button
-              onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
-              className="px-4 py-2 border rounded-l bg-gray-100 hover:bg-gray-200"
-              aria-label="Decrease quantity"
-            >
-              -
-            </button>
-            <div className="px-4 py-2 border-t border-b w-16 text-center">
-              {quantity}
+            {/* Product Variants */}
+            <div className="flex flex-wrap gap-4">
+              {data?.product_variants.map((product, idx) => (
+                <button
+                  key={idx}
+                  aria-label={`Select color ${product.productColor}`}
+                  className={`relative flex items-center border-2 gap-2 px-4 py-2 rounded-md transition-all ${
+                    buyVariant === idx
+                      ? "border-secondary shadow-lg"
+                      : "border-gray-300"
+                  } ${
+                    product.productStock <= 0
+                      ? "bg-gray-100 text-gray-500 opacity-50"
+                      : "bg-white hover:bg-gray-50"
+                  }`}
+                  onClick={() => {
+                    setBuyVariant(idx);
+                    setQuantity(1);
+                    setChosenImage(
+                      `${process.env.BACK_BASE_URL}${product.productImage}`
+                    );
+                  }}
+                  disabled={product.productStock <= 0}
+                >
+                  <Image
+                    src={
+                      product.productImage
+                        ? `${process.env.BACK_BASE_URL}${product.productImage}`
+                        : "/placeholder.webp"
+                    }
+                    width={40}
+                    height={40}
+                    alt={product.productColor}
+                    className="w-8 h-6 object-contain"
+                  />
+                  <span>{product.productColor}</span>
+                </button>
+              ))}
             </div>
-            <button
-              onClick={() => {
-                if (
-                  quantity < data?.product_variants[buyVariant]?.productStock
-                ) {
-                  setQuantity((prev) => prev + 1);
-                }
-              }}
-              className="px-4 py-2 border rounded-r bg-gray-100 hover:bg-gray-200"
-              aria-label="Increase quantity"
-            >
-              +
-            </button>
-          </div>
-          <div className="font-semibold">
-            {data?.product_variants[buyVariant]?.productStock === 0 ? (
-              <span className="text-red-500">Out of Stock</span>
-            ) : (
-              <span className="text-green-400">
-                In Stock: {data?.product_variants[buyVariant]?.productStock}
-              </span>
-            )}
+
+            {/* Quantity Selector */}
+            <div>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center">
+                  <button
+                    onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
+                    className="px-4 py-2 border rounded-l bg-gray-100 hover:bg-gray-200"
+                    aria-label="Decrease quantity"
+                  >
+                    -
+                  </button>
+                  <div className="px-4 py-2 border-t border-b w-16 text-center">
+                    {quantity}
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (
+                        quantity <
+                        data?.product_variants[buyVariant]?.productStock
+                      ) {
+                        setQuantity((prev) => prev + 1);
+                      }
+                    }}
+                    className="px-4 py-2 border rounded-r bg-gray-100 hover:bg-gray-200"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+                <div className="font-semibold">
+                  {data?.product_variants[buyVariant]?.productStock === 0 ? (
+                    <span className="text-red-500">Out of Stock</span>
+                  ) : (
+                    <span className="text-green-400">
+                      In Stock:{" "}
+                      {data?.product_variants[buyVariant]?.productStock}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-4 mt-6">
+                <Button
+                  onClick={addToCart}
+                  className="w-1/2 bg-white border-secondary border-1 text-secondary hover:bg-gray-50"
+                  disabled={
+                    data?.product_variants[buyVariant]?.productStock <= 0
+                  }
+                >
+                  Add to Cart
+                </Button>
+                <Button
+                  onClick={async () => {
+                    setLoading(true);
+                    await addToCart();
+                    route.push("/cart");
+                  }}
+                  className="w-1/2 bg-secondary border-1 border-secondary text-white hover:bg-secondary-dark"
+                  disabled={
+                    data?.product_variants[buyVariant]?.productStock <= 0
+                  }
+                >
+                  Buy Now
+                </Button>
+              </div>
+            </div>
+
+            {/* Product Description */}
+            <div>
+              <h3 className="text-2xl font-bold mb-4">Description</h3>
+              <p className="mb-2">
+                <span className="font-semibold">Size: </span>
+                {data?.productSize} mL
+              </p>
+              <div
+                className="max-h-48 overflow-y-auto"
+                dangerouslySetInnerHTML={{ __html: data?.productDescription }}
+              ></div>
+            </div>
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex space-x-4 mt-6">
-          <Button
-            onClick={addToCart}
-            className="w-1/2 bg-white border-secondary text-secondary hover:bg-gray-50"
-            disabled={data?.product_variants[buyVariant]?.productStock <= 0}
-          >
-            Add to Cart
-          </Button>
-          <Button
-            onClick={async () => {
-              setLoading(true);
-              await addToCart();
-              route.push("/cart");
-            }}
-            className="w-1/2 bg-secondary text-white hover:bg-secondary-dark"
-            disabled={data?.product_variants[buyVariant]?.productStock <= 0}
-          >
-            Buy Now
-          </Button>
-        </div>
       </div>
-
-      {/* Product Description */}
-      <div>
-        <h3 className="text-2xl font-bold mb-4">Description</h3>
-        <p className="mb-2">
-          <span className="font-semibold">Size: </span>
-          {data?.productSize} mL
-        </p>
-        <div
-          className="max-h-48 overflow-y-auto"
-          dangerouslySetInnerHTML={{ __html: data?.productDescription }}
-        ></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 
       <div className="w-full p-6 flex flex-col justify-between items-center">
         <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">
@@ -559,8 +575,9 @@ const ProductDetailPage = () => {
               <div className="text-xs">
                 <Image
                   src={
-                    product.product_covers[0] ? process.env.BACK_BASE_URL +
-                      product.product_covers[0].productCover
+                    product.product_covers[0]
+                      ? process.env.BACK_BASE_URL +
+                        product.product_covers[0].productCover
                       : "/placeholder.webp"
                   }
                   alt={product.productName}
@@ -582,7 +599,7 @@ const ProductDetailPage = () => {
                   </p>
                   <p>{product.productName}</p>
                   {product.promo_details[0] &&
-                    product.promo_details[0].promo != null ? (
+                  product.promo_details[0].promo != null ? (
                     <div className="flex text-xs font-normal justify-start">
                       <span className="line-through mr-2 text-gray-600">
                         Rp. {product.product_variants[0]?.productPrice}
@@ -591,9 +608,10 @@ const ProductDetailPage = () => {
                         Rp.{" "}
                         {parseInt(product.product_variants[0]?.productPrice) -
                           product.promo_details[0].promo?.promoAmount >
-                          0
-                          ? parseInt(product.product_variants[0]?.productPrice) -
-                          product.promo_details[0].promo?.promoAmount
+                        0
+                          ? parseInt(
+                              product.product_variants[0]?.productPrice
+                            ) - product.promo_details[0].promo?.promoAmount
                           : 0}
                       </span>
                     </div>
@@ -612,10 +630,11 @@ const ProductDetailPage = () => {
       <div className="lg:hidden w-full p-2 flex justify-around fixed bottom-2">
         <button
           onClick={addToCart}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0
-            ? "bg-gray-300 cursor-not-allowed"
-            : null
-            }`}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${
+            data?.product_variants[buyVariant].productStock === 0
+              ? "bg-gray-300 cursor-not-allowed"
+              : null
+          }`}
           disabled={data?.product_variants[buyVariant].productStock === 0}
         >
           <span>Add to Cart</span>
@@ -626,10 +645,11 @@ const ProductDetailPage = () => {
             await addToCart();
             route.push("/cart");
           }}
-          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${data?.product_variants[buyVariant].productStock === 0
-            ? "bg-gray-300 cursor-not-allowed"
-            : null
-            }`}
+          className={`text-white rounded-xl bg-secondary flex shadow-2xl border-1 justify-center font-semibold text-xs px-6 py-2 w-2/5 ${
+            data?.product_variants[buyVariant].productStock === 0
+              ? "bg-gray-300 cursor-not-allowed"
+              : null
+          }`}
           disabled={data?.product_variants[buyVariant].productStock === 0}
         >
           <span>Buy Now</span>
