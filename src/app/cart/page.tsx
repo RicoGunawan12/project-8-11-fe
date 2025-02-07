@@ -693,7 +693,7 @@ const CartPage = () => {
                   <option key={index} value={option.shipping_name}>
                     <div className="flex justify-between">
                       <div>{option.shipping_name} - Rp. {option.shipping_cost}</div>
-                      <div>{ option.is_cod ? "" : "X COD"}</div>
+                      <div>{ option?.is_cod ? "" : "X COD"}</div>
                     </div>
                   </option>
                 ))}
@@ -765,12 +765,19 @@ const CartPage = () => {
                       type="checkbox"
                       className="sr-only peer"
                       checked={isCOD}
+                      disabled={!selectedShipping?.is_cod}
                       onChange={() => {
                         setIsCOD(!isCOD);
                       }}
                     />
                     <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                   </label>
+                  {
+                    selectedShipping ?
+                    !selectedShipping?.is_cod ? <div className="text-sm text-red-400">COD is not available for this shipping option</div> : ""
+                    :
+                    ""
+                  }
                 </div>
               )}
 
