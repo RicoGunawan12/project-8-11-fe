@@ -318,7 +318,7 @@ const CartPage = () => {
         (price.voucher || 0) >= 1000
 
       ) {
-        router.push(resp.payTransactionResponse.actions[0].url);
+        router.push(resp.payTransactionResponse.invoice_url);
       } else {
         router.push(`/transactions/${resp.transaction.transactionId}`);
       }
