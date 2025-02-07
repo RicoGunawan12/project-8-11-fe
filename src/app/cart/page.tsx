@@ -855,16 +855,18 @@ const CartPage = () => {
                   </span>
                   <span className="font-light text-black">
                     Rp.{" "}
-                    {price.totalPrice +
-                      (ongkir?.status === "Active"
-                        ? ongkir?.minimumPaymentAmount <
-                          price.totalPrice - price.voucher
-                          ? price.shippingFee > ongkir?.maximumFreeOngkir
-                            ? price.shippingFee - ongkir?.maximumFreeOngkir
-                            : 0
-                          : price.shippingFee
-                        : price.shippingFee) -
-                      (price.voucher || 0)}
+                    {
+                      price.totalPrice +
+                        (ongkir?.status === "Active"
+                          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                            ? price.shippingFee > ongkir?.maximumFreeOngkir
+                              ? price.shippingFee - ongkir?.maximumFreeOngkir
+                              : 0
+                            : price.shippingFee
+                          : price.shippingFee) -
+                        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
+                    }
+
                   </span>
                 </div>
               </div>
