@@ -691,7 +691,10 @@ const CartPage = () => {
                 </option>
                 {shippingOptions.map((option, index) => (
                   <option key={index} value={option.shipping_name}>
-                    {option.shipping_name} - Rp. {option.shipping_cost}
+                    <div className="flex justify-between">
+                      <div>{option.shipping_name} - Rp. {option.shipping_cost}</div>
+                      <div>{ option.is_cod ? "" : "X COD"}</div>
+                    </div>
                   </option>
                 ))}
               </select>

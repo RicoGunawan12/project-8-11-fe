@@ -100,8 +100,8 @@ const ProductDetailPage = () => {
   useEffect(() => {
     // Wait a bit to ensure gtag is fully loaded
     const checkGtagInterval = setInterval(() => {
-      console.log("Google Analytics ID: ", process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID);
-      console.log("window.gtag: ", window.gtag);
+      // console.log("Google Analytics ID: ", process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID);
+      // console.log("window.gtag: ", window.gtag);
 
       if (typeof window !== "undefined" && window.gtag && typeof window.gtag === "function") {
         window.gtag("event", "view_product_detail", {
