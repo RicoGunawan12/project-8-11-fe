@@ -243,26 +243,10 @@ const TransactionPage = () => {
         <div className="flex justify-center items-center flex-col gap-6">
           {/* Transaction Information Card */}
           <div className="p-4 md:p-6 border-2 w-full md:w-3/4 rounded-md shadow-2xl bg-gray-50">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
               <h2 className="text-xl md:text-2xl font-semibold text-black mb-4 md:mb-0">
                 Transactions Information
               </h2>
-              
-              <Link
-                href={`https://wa.me/${adminContact.phone?.replace(/\D/g, '')}`}
-                target="_blank"
-                className="hover:underline flex gap-2"
-              >
-                <Image
-                src={`/icons/wwa.png`}
-                alt="Acc Icon"
-                width={24}
-                height={24}
-                className="filter invert hover:invert-0"
-              />
-                Need Help?
-              </Link>
-
               {/* Action Buttons */}
               <div className="w-full md:w-auto">
                 {(() => {
@@ -318,6 +302,20 @@ const TransactionPage = () => {
               </div>
             </div>
 
+            <Link
+              href={`https://wa.me/${adminContact.phone?.replace(/\D/g, '')}`}
+              target="_blank"
+              className="hover:underline flex gap-2 mb-4"
+            >
+              <Image
+              src={`/icons/wwa.png`}
+              alt="Acc Icon"
+              width={24}
+              height={24}
+              className="filter"
+            />
+              Need Help?
+            </Link>
             
             <div className="hidden md:block mb-2">
                 <div className="flex gap-2 mb-2">
