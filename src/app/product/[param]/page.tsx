@@ -57,7 +57,8 @@ const ProductDetailPage = () => {
       ...defaultRatingDistribution,
       ...data.ratingDistributionObject,
     };
-
+    console.log(data.product)
+    console.log(data.relatedProducts)
     setData(data.product);
     setChosenImage(
       data.product.product_covers[0]?.productCover
@@ -351,7 +352,7 @@ const ProductDetailPage = () => {
                     setBuyVariant(idx);
                     setQuantity(1);
                     setChosenImage(
-                      `${process.env.BACK_BASE_URL}${product.productImage}`
+                      `${process.env.BACK_BASE_URL}/assets/product/${data.productName}/${product.productImage}`
                     );
                   }}
                   disabled={product.productStock <= 0}
@@ -359,7 +360,8 @@ const ProductDetailPage = () => {
                   <Image
                     src={
                       product.productImage
-                        ? `${process.env.BACK_BASE_URL}${product.productImage}`
+                        ? `${process.env.BACK_BASE_URL}/assets/product/${data.productName}/${product.productImage}`
+                        
                         : "/placeholder.webp"
                     }
                     width={40}
