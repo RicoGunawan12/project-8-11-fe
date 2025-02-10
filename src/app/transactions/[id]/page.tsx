@@ -12,6 +12,7 @@ import { formatDate, mapPaymentMethod } from "@/app/utilities/converter";
 import Image from "next/image";
 import DeleteConfirmationModal from "@/app/component/modal/deleteConfirmation";
 import { useLocaleStore } from "@/app/component/locale";
+import Link from "next/link";
 
 const TransactionPage = () => {
   const router = useRouter();
@@ -21,6 +22,9 @@ const TransactionPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>();
+  
+  const [adminContact, setAdminContact] = useState<any>();
+  
 
   // New state for modals
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -37,6 +41,30 @@ const TransactionPage = () => {
     };
   
     checkAuthenticated();
+  }, []);
+
+  useEffect(() => {
+    async function getAdminContact() {
+      try {
+        const adminResponse = await fetch(`${process.env.CONTACTS}/admin`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const adminData = await adminResponse.json();
+
+        if (!adminResponse.ok) {
+          throw new Error(adminData.message);
+        }
+        console.log(adminData);
+        setAdminContact(adminData.contact);
+      } catch (error) {
+        
+      }
+    }
+    getAdminContact();
   }, []);
 
   const fetchData = async () => {
@@ -220,6 +248,21 @@ const TransactionPage = () => {
                 Transactions Information
               </h2>
               
+              <Link
+                href={`https://wa.me/${adminContact.phone?.replace(/\D/g, '')}`}
+                target="_blank"
+                className="hover:underline flex gap-2"
+              >
+                <Image
+                src={`/icons/wwa.png`}
+                alt="Acc Icon"
+                width={24}
+                height={24}
+                className="filter invert hover:invert-0"
+              />
+                Need Help?
+              </Link>
+
               {/* Action Buttons */}
               <div className="w-full md:w-auto">
                 {(() => {
