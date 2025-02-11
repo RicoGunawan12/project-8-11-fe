@@ -126,7 +126,7 @@ const TransactionPage = () => {
 
         const data = await response.json();
         setTransaction(data.transaction);
-        const parsedData = JSON.parse(data.transacction.gatewayResponse);
+        const parsedData = JSON.parse(data.transaction.gatewayResponse);
         setGatewayResponse(parsedData);
       } catch (err: any) {
         setError("Error fetching data: " + err.message);
