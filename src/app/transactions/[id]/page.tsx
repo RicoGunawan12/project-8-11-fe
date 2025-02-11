@@ -283,7 +283,8 @@ const TransactionPage = () => {
                             )
                             || 
                             (
-                              ["BCA", 
+                              ["CREDIT_CARD",
+                                "BCA", 
                                 "BNI", 
                                 "BSI", 
                                 "BRI", 
@@ -306,7 +307,8 @@ const TransactionPage = () => {
                             ) 
                             || 
                             (
-                              ["BCA", 
+                              ["CREDIT_CARD",
+                                "BCA", 
                                 "BNI", 
                                 "BSI", 
                                 "BRI", 
@@ -346,7 +348,8 @@ const TransactionPage = () => {
                             )
                             || 
                             (
-                              ["BCA", 
+                              ["CREDIT_CARD",
+                                "BCA", 
                                 "BNI", 
                                 "BSI", 
                                 "BRI", 
@@ -369,7 +372,8 @@ const TransactionPage = () => {
                             ) 
                             || 
                             (
-                              ["BCA", 
+                              ["CREDIT_CARD",
+                                "BCA", 
                                 "BNI", 
                                 "BSI", 
                                 "BRI", 
