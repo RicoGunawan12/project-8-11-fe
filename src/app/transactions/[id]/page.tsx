@@ -468,6 +468,16 @@ const TransactionPage = () => {
                 </table>
               </div>
             </div>
+
+            {
+              transaction?.status === "Waiting for Return" &&
+              <div className="my-4">
+                <div className="mb-2">Please return the product to</div>
+                <div>Receiver: {adminAddress?.senderName} ({adminAddress?.senderPhoneNumber})</div>
+                <div>{adminAddress?.komshipLabel}</div>
+                <div>{adminAddress?.addressDetail}</div>
+              </div>
+            }    
           </div>
 
           {/* Transaction Details Card */}
