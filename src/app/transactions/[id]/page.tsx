@@ -24,7 +24,7 @@ const TransactionPage = () => {
   const [token, setToken] = useState<string | null>();
   
   const [adminContact, setAdminContact] = useState<any>();
-  
+  const [gatewayResponse, setGatewayResponse] = useState<any>();
 
   // New state for modals
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -126,6 +126,8 @@ const TransactionPage = () => {
 
         const data = await response.json();
         setTransaction(data.transaction);
+        const parsedData = JSON.parse(data.transacction.gatewayResponse);
+        setGatewayResponse(parsedData);
       } catch (err: any) {
         setError("Error fetching data: " + err.message);
       } finally {
@@ -273,8 +275,53 @@ const TransactionPage = () => {
                         <button
                           className="w-full md:w-auto text-sm font-semibold bg-red-500 p-2 flex justify-center text-white rounded-lg"
                           onClick={() => setShowCancelModal(true)}
+                          disabled={
+                            (
+                              gatewayResponse.payment_method === "EWALLET" && 
+                              gatewayResponse.payment_channel != "OVO" &&
+                              gatewayResponse.payment_channel != "JENIUSPAY"
+                            )
+                            || 
+                            (
+                              ["BCA", 
+                                "BNI", 
+                                "BSI", 
+                                "BRI", 
+                                "MANDIRI", 
+                                "PERMATA", 
+                                "SAHABAT_SAMPOERNA", 
+                                "BNC", 
+                                "DD_BRI", 
+                                "DD_BCA_KLIKPAY"].includes(gatewayResponse.payment_method)
+                            )
+                            ?
+                            false : true
+                          }
                         >
-                          Cancel Order
+                          {
+                            (
+                              gatewayResponse.payment_method === "EWALLET" && 
+                              gatewayResponse.payment_channel != "OVO" &&
+                              gatewayResponse.payment_channel != "JENIUSPAY"
+                            ) 
+                            || 
+                            (
+                              ["BCA", 
+                                "BNI", 
+                                "BSI", 
+                                "BRI", 
+                                "MANDIRI", 
+                                "PERMATA", 
+                                "SAHABAT_SAMPOERNA", 
+                                "BNC", 
+                                "DD_BRI", 
+                                "DD_BCA_KLIKPAY"].includes(gatewayResponse.payment_method)
+                            ) 
+                            ?
+                            "Cancel Order"
+                            :
+                            "Contact Customer Service to Cancel"
+                          }
                         </button>
                       );
                     case "Shipping":
@@ -291,8 +338,53 @@ const TransactionPage = () => {
                         <button
                           className="w-full md:w-auto text-sm font-semibold bg-green-500 p-2 flex justify-center text-white rounded-lg"
                           onClick={() => setShowReturnModal(true)}
+                          disabled={
+                            (
+                              gatewayResponse.payment_method === "EWALLET" && 
+                              gatewayResponse.payment_channel != "OVO" &&
+                              gatewayResponse.payment_channel != "JENIUSPAY"
+                            )
+                            || 
+                            (
+                              ["BCA", 
+                                "BNI", 
+                                "BSI", 
+                                "BRI", 
+                                "MANDIRI", 
+                                "PERMATA", 
+                                "SAHABAT_SAMPOERNA", 
+                                "BNC", 
+                                "DD_BRI", 
+                                "DD_BCA_KLIKPAY"].includes(gatewayResponse.payment_method)
+                            )
+                            ?
+                            false : true
+                          }
                         >
-                          Return Order
+                          {
+                            (
+                              gatewayResponse.payment_method === "EWALLET" && 
+                              gatewayResponse.payment_channel != "OVO" &&
+                              gatewayResponse.payment_channel != "JENIUSPAY"
+                            ) 
+                            || 
+                            (
+                              ["BCA", 
+                                "BNI", 
+                                "BSI", 
+                                "BRI", 
+                                "MANDIRI", 
+                                "PERMATA", 
+                                "SAHABAT_SAMPOERNA", 
+                                "BNC", 
+                                "DD_BRI", 
+                                "DD_BCA_KLIKPAY"].includes(gatewayResponse.payment_method)
+                            ) 
+                            ?
+                            "Return Order"
+                            :
+                            "Contact Customer Service to Return"
+                          }
                         </button>
                       );
                     default:
@@ -303,7 +395,7 @@ const TransactionPage = () => {
             </div>
 
             <Link
-              href={`https://wa.me/${adminContact.phone?.replace(/\D/g, '')}`}
+              href={`https://wa.me/${adminContact?.phone?.replace(/\D/g, '')}`}
               target="_blank"
               className="hover:underline flex gap-2 mb-4"
             >
