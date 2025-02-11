@@ -442,21 +442,25 @@ const ProductDetailPage = () => {
               </div>
             </div>
 
-            {/* Product Description */}
-            <div>
-              <h3 className="text-2xl font-bold mb-4">Description</h3>
-              <p className="mb-2">
-                <span className="font-semibold">Size: </span>
-                {data?.productSize} mL
-              </p>
-              <div
-                className="max-h-48 overflow-y-auto"
-                dangerouslySetInnerHTML={{ __html: data?.productDescription }}
-              ></div>
-            </div>
+
           </div>
         </div>
       </div>
+
+                  {/* Product Description */}
+            <div className="w-full p-6 flex flex-col justify-between items-center text-black">
+              <div className="w-1/2">
+                <h3 className="text-2xl font-bold mb-4">Product Description</h3>
+                <p className="mb-2">
+                  <span className="font-semibold">Size: </span>
+                  {data?.productSize} mL
+                </p>
+                <div
+                  className="max-h-48 overflow-y-auto"
+                  dangerouslySetInnerHTML={{ __html: data?.productDescription }}
+                ></div>
+              </div>
+            </div>
 
       <div className="w-full p-6 flex flex-col justify-between items-center">
         <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">
