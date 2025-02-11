@@ -277,9 +277,9 @@ const TransactionPage = () => {
                           onClick={() => setShowCancelModal(true)}
                           disabled={
                             (
-                              gatewayResponse.payment_method === "EWALLET" && 
-                              gatewayResponse.payment_channel != "OVO" &&
-                              gatewayResponse.payment_channel != "JENIUSPAY"
+                              gatewayResponse?.payment_method === "EWALLET" && 
+                              gatewayResponse?.payment_channel != "OVO" &&
+                              gatewayResponse?.payment_channel != "JENIUSPAY"
                             )
                             || 
                             (
@@ -292,7 +292,7 @@ const TransactionPage = () => {
                                 "SAHABAT_SAMPOERNA", 
                                 "BNC", 
                                 "DD_BRI", 
-                                "DD_BCA_KLIKPAY"].includes(gatewayResponse.payment_method)
+                                "DD_BCA_KLIKPAY"].includes(gatewayResponse?.payment_method)
                             )
                             ?
                             false : true
@@ -300,9 +300,9 @@ const TransactionPage = () => {
                         >
                           {
                             (
-                              gatewayResponse.payment_method === "EWALLET" && 
-                              gatewayResponse.payment_channel != "OVO" &&
-                              gatewayResponse.payment_channel != "JENIUSPAY"
+                              gatewayResponse?.payment_method === "EWALLET" && 
+                              gatewayResponse?.payment_channel != "OVO" &&
+                              gatewayResponse?.payment_channel != "JENIUSPAY"
                             ) 
                             || 
                             (
@@ -315,7 +315,7 @@ const TransactionPage = () => {
                                 "SAHABAT_SAMPOERNA", 
                                 "BNC", 
                                 "DD_BRI", 
-                                "DD_BCA_KLIKPAY"].includes(gatewayResponse.payment_method)
+                                "DD_BCA_KLIKPAY"].includes(gatewayResponse?.payment_method)
                             ) 
                             ?
                             "Cancel Order"
@@ -340,9 +340,9 @@ const TransactionPage = () => {
                           onClick={() => setShowReturnModal(true)}
                           disabled={
                             (
-                              gatewayResponse.payment_method === "EWALLET" && 
-                              gatewayResponse.payment_channel != "OVO" &&
-                              gatewayResponse.payment_channel != "JENIUSPAY"
+                              gatewayResponse?.payment_method === "EWALLET" && 
+                              gatewayResponse?.payment_channel != "OVO" &&
+                              gatewayResponse?.payment_channel != "JENIUSPAY"
                             )
                             || 
                             (
@@ -355,7 +355,7 @@ const TransactionPage = () => {
                                 "SAHABAT_SAMPOERNA", 
                                 "BNC", 
                                 "DD_BRI", 
-                                "DD_BCA_KLIKPAY"].includes(gatewayResponse.payment_method)
+                                "DD_BCA_KLIKPAY"].includes(gatewayResponse?.payment_method)
                             )
                             ?
                             false : true
@@ -363,9 +363,9 @@ const TransactionPage = () => {
                         >
                           {
                             (
-                              gatewayResponse.payment_method === "EWALLET" && 
-                              gatewayResponse.payment_channel != "OVO" &&
-                              gatewayResponse.payment_channel != "JENIUSPAY"
+                              gatewayResponse?.payment_method === "EWALLET" && 
+                              gatewayResponse?.payment_channel != "OVO" &&
+                              gatewayResponse?.payment_channel != "JENIUSPAY"
                             ) 
                             || 
                             (
@@ -378,7 +378,7 @@ const TransactionPage = () => {
                                 "SAHABAT_SAMPOERNA", 
                                 "BNC", 
                                 "DD_BRI", 
-                                "DD_BCA_KLIKPAY"].includes(gatewayResponse.payment_method)
+                                "DD_BCA_KLIKPAY"].includes(gatewayResponse?.payment_method)
                             ) 
                             ?
                             "Return Order"
