@@ -284,16 +284,7 @@ const TransactionPage = () => {
                             || 
                             (
                               ["CREDIT_CARD",
-                                "BCA", 
-                                "BNI", 
-                                "BSI", 
-                                "BRI", 
-                                "MANDIRI", 
-                                "PERMATA", 
-                                "SAHABAT_SAMPOERNA", 
-                                "BNC", 
-                                "DD_BRI", 
-                                "DD_BCA_KLIKPAY"].includes(gatewayResponse?.payment_method)
+                                "DIRECT_DEBIT"].includes(gatewayResponse?.payment_method)
                             )
                             ?
                             false : true
@@ -308,16 +299,7 @@ const TransactionPage = () => {
                             || 
                             (
                               ["CREDIT_CARD",
-                                "BCA", 
-                                "BNI", 
-                                "BSI", 
-                                "BRI", 
-                                "MANDIRI", 
-                                "PERMATA", 
-                                "SAHABAT_SAMPOERNA", 
-                                "BNC", 
-                                "DD_BRI", 
-                                "DD_BCA_KLIKPAY"].includes(gatewayResponse?.payment_method)
+                                "DIRECT_DEBIT"].includes(gatewayResponse?.payment_method)
                             ) 
                             ?
                             "Cancel Order"
@@ -349,16 +331,7 @@ const TransactionPage = () => {
                             || 
                             (
                               ["CREDIT_CARD",
-                                "BCA", 
-                                "BNI", 
-                                "BSI", 
-                                "BRI", 
-                                "MANDIRI", 
-                                "PERMATA", 
-                                "SAHABAT_SAMPOERNA", 
-                                "BNC", 
-                                "DD_BRI", 
-                                "DD_BCA_KLIKPAY"].includes(gatewayResponse?.payment_method)
+                                "DIRECT_DEBIT"].includes(gatewayResponse?.payment_method)
                             )
                             ?
                             false : true
@@ -373,16 +346,7 @@ const TransactionPage = () => {
                             || 
                             (
                               ["CREDIT_CARD",
-                                "BCA", 
-                                "BNI", 
-                                "BSI", 
-                                "BRI", 
-                                "MANDIRI", 
-                                "PERMATA", 
-                                "SAHABAT_SAMPOERNA", 
-                                "BNC", 
-                                "DD_BRI", 
-                                "DD_BCA_KLIKPAY"].includes(gatewayResponse?.payment_method)
+                                "DIRECT_DEBIT"].includes(gatewayResponse?.payment_method)
                             ) 
                             ?
                             "Return Order"
