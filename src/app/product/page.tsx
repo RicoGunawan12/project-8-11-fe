@@ -184,6 +184,7 @@ const ProductPage = () => {
                         src={(result?.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + result?.product_covers[0]?.productCover : "/placeholder.webp")}
                         width={200}
                         height={200}
+                        priority
                       />
                     ) : (
                       <Image
@@ -192,6 +193,7 @@ const ProductPage = () => {
                         src="/d.jpg"
                         width={300}
                         height={200}
+                        priority
                       />
                     )}
                   </div>

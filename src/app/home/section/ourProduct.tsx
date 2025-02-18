@@ -134,6 +134,7 @@ const OurProductSection = () => {
                       width={200}
                       height={200}
                       className="w-full object-fill aspect-square"
+                      priority
                     />
 
                     <div className="text-lg font-semibold text-black w-full text-left p-2">

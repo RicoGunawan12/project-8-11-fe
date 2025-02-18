@@ -484,6 +484,7 @@ const CartPage = () => {
                     className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
                     width={200}
                     height={200}
+                    priority
                   />
                   <div className="mt-4 sm:mt-0 sm:ml-4 flex-1 text-center sm:text-left">
                     <h3 className="text-sm sm:text-lg font-semibold">

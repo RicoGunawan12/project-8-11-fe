@@ -62,6 +62,7 @@ const BlogsPage: React.FC = () => {
                     width={500}
                     height={500}
                     className="w-full h-40 md:h-48 lg:h-52 object-cover rounded-md"
+                    priority
                   />
                   <div className="mt-4">
                     <h2 className="text-lg md:text-xl font-semibold text-black truncate">
