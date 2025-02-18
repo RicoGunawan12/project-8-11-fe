@@ -186,6 +186,17 @@ const ProductDetailPage = () => {
 
         toastSuccess("Product added to cart!");
       }
+      if (
+        typeof window !== "undefined" &&
+        window.gtag &&
+        typeof window.gtag === "function"
+      ) {
+        window.gtag("event", "add_to_cart", {
+          product_name: data?.productName,
+          page_location: window.location.href,
+          page_path: `/product/${id}`,
+        });
+      }
 
       setQuantity(1);
     } catch (error: any) {

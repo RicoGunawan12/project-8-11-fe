@@ -322,6 +322,15 @@ const CartPage = () => {
       } else {
         router.push(`/transactions/${resp.transaction.transactionId}`);
       }
+      if (
+        typeof window !== "undefined" &&
+        window.gtag &&
+        typeof window.gtag === "function"
+      ) {
+        window.gtag("event", "checkout", {
+          page_location: window.location.href
+        });
+      }
     } catch (error: any) {
       toastError(error.message || "Failed to complete the checkout process");
     }
