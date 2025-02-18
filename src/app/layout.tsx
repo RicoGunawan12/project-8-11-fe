@@ -1,4 +1,3 @@
-import React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
@@ -8,6 +7,7 @@ import ContactButton from "./component/contact";
 import Script from "next/script";
 import { GoogleTagManager } from "@next/third-parties/google";
 import Image from "next/image";
+import { NextSeo } from "next-seo";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -27,10 +27,63 @@ type RootLayoutProps = {
 const GOOGLE_ANALYTICS_ID = process.env.GOOGLE_ANALYTICS;
 const FACEBOOK_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
 
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: { slug: string };
+// }) {
+//   const { slug} = params;
+//   const siteURL = process.env.PUBLIC_SITE
+
+//   return {
+    
+//     title: 'TYESO Indonesia',
+//     description: 'TYESO Official Indonesia Website',
+//     metadataBase: `${siteURL}/${slug ?? ""}`,
+//     alternates: {
+//       canonical: `${siteURL}/${slug ?? ""}`,
+//     },
+
+//     icons: {
+//       icon: '/images/icon.ico',
+//       shortcut: '/images/icon.ico',
+//       apple: '/images/icon.ico',
+//       other: {
+//         rel: 'apple-touch-icon-precomposed',
+//         url: '/images/icon.ico',
+//       },
+//     },
+
+//     openGraph: {
+//       title: 'TYESO Indonesia',
+//       description: 'TYESO Official Indonesia Website',
+//       url: `${siteURL}/${slug ?? ""}`,
+//       siteName: 'Next.js',
+//       images: [
+//         {
+//           url: 'https://nextjs.org/og.png',
+//           width: 800,
+//           height: 600,
+//         },
+//         {
+//           url: 'https://nextjs.org/og-alt.png',
+//           width: 1800,
+//           height: 1600,
+//           alt: 'My custom alt',
+//         },
+//       ],
+//       locale: 'en_US',
+//       type: 'website',
+//     },
+//   };
+// }
+
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
+      
       <head>
+      
         {/* Google Analytics Script */}
         {GOOGLE_ANALYTICS_ID && (
           <>
@@ -84,9 +137,10 @@ src="https://www.facebook.com/tr?id=485548430893380&ev=PageView&noscript=1"
           </>
         )}
       </head>
-
+      
 
       <body className={poppinsFont.className}>
+      
         {children}
         <ToastContainer />
         <ContactButton />

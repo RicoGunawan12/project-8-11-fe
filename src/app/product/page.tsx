@@ -13,6 +13,7 @@ import { Loading } from "../utilities/loading";
 import { Categories } from "../model/category";
 import { useSearchParams } from "next/navigation";
 import StarRating from "../utilities/rating";
+import { NextSeo } from "next-seo";
 
 const ProductPage = () => {
   const searchParams = useSearchParams();
@@ -125,7 +126,27 @@ const ProductPage = () => {
   }
 
   return (
+    
     <div className="w-screen min-h-screen bg-white">
+      <NextSeo
+              canonical="https://tyeso.indonesia.com"
+              openGraph={{
+                title: "Tyeso",
+                description: "Tyeso Home",
+                url: "https://tyeso.indonesia.com",
+                type: "website",
+                images: [
+                  {
+                    url: "https://www.example.com/images/og-image.jpg",
+                    width: 1200,
+                    height: 630,
+                    alt: "Og Image Alt",
+                  },
+                ],
+                siteName: "Tyeso",
+              }}
+            />
+      
       <NavigationBar />
       <div className="mt-20 flex-grow">
         <Banner page="Product Page" text="Product" />
