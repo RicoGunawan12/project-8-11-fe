@@ -477,7 +477,7 @@ const CartPage = () => {
                     src={
                       item.product_variant.productImage
                         ? process.env.BACK_BASE_URL +
-                          item.product_variant.productImage
+                          "/assets/product/" + item.product_variant.product.productName + item.product_variant.productImage
                         : "/placeholder.webp"
                     }
                     alt="Product"

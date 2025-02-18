@@ -59,7 +59,7 @@ const BlogDetail = () => {
               </p>
             </div>
 
-            <div className="text-gray-700 leading-relaxed text-lg" dangerouslySetInnerHTML={{__html: data.postContent}}>
+            <div className="text-gray-700 leading-8 text-lg " dangerouslySetInnerHTML={{__html: data.postContent}}>
               
             </div>
           </div>
