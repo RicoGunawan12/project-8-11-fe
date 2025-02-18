@@ -64,24 +64,24 @@ const Banner = () => {
       {/* Background */}
       <div className="absolute inset-0 transition-transform duration-500 ease-out">
         {/* Default Background for Mobile */}
-        <div
+        {/* <div
           className="absolute inset-0 bg-black/40"
           style={{
             backgroundImage: `url('${backgroundImageUrlMobile}')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-        />
+        /> */}
 
         {/* Background for Larger Screens */}
-        <div
+        {/* <div
           className="hidden sm:block absolute inset-0 bg-black/40"
           style={{
             backgroundImage: `url('${backgroundImageUrl}')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-        />
+        /> */}
       </div>
 
 
