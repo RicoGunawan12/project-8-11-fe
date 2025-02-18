@@ -142,7 +142,7 @@ const NavigationBar = () => {
   }, []);
 
   return (
-    <div className="w-screen bg-secondary h-20 p-6 fixed top-0 flex justify-between items-center shadow-md z-[100]">
+    <div className="w-screen bg-secondary h-20 p-6 fixed top-0 flex justify-between items-center shadow-md z-[100] text-black">
       {/* Logo */}
       <div className="flex items-center">
         <Link href="/" className="text-3xl font-bold text-white">
@@ -426,22 +426,22 @@ const NavigationBar = () => {
                 <ul>
                   {searchResults.map((product) => (
                     <li key={product.productId} className="border-b py-2">
-                      <Link href={`/product/${product.productId}`} className="hover:underline flex items-center space-x-4">
+                      <Link href={`/product/${product.productId}`} className="hover:underline flex items-center space-x-4 text-black">
                         <img
                           src={product.product_covers[0].productCover ? process.env.BACK_BASE_URL + product.product_covers[0].productCover : "/placeholder.webp"}
                           alt={product.productName}
                           className="w-20 h-20 object-cover"
                         />
                         <div className="flex flex-col">
-                          <span>{product.productName}</span>
+                          <span className="text-black">{product.productName}</span>
                           {
                             product.promo_details[0] && product.promo_details[0].promo != null ?
                               <div className="flex justify-start">
                                 <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0]?.productPrice}</span>
-                                <span className="font-semibold">Rp. {product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount > 0 ? product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount : 0}</span>
+                                <span className="font-semibold text-black">Rp. {product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount > 0 ? product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount : 0}</span>
                               </div>
                               :
-                              <div >
+                              <div className="text-black">
                                 Rp. {product.product_variants[0]?.productPrice}
                               </div>
                           }
@@ -465,7 +465,7 @@ const NavigationBar = () => {
                 <button
                   onClick={handlePrevPage}
                   disabled={currentPage === 1}
-                  className={`px-4 py-2 rounded-lg ${currentPage === 1 ? "bg-gray-300" : "bg-blue-500 text-white hover:bg-blue-600"
+                  className={`px-4 py-2 rounded-lg ${currentPage === 1 ? "bg-gray-300" : "bg-secondary text-white hover:bg-blue-600"
                     }`}
                 >
                   Previous
@@ -473,7 +473,7 @@ const NavigationBar = () => {
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
-                  className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? "bg-gray-300" : "bg-blue-500 text-white hover:bg-blue-600"
+                  className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? "bg-secondary" : "bg-blue-500 text-white hover:bg-blue-600"
                     }`}
                 >
                   Next
