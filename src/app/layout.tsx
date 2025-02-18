@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import React from "react";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
@@ -7,17 +7,11 @@ import ContactButton from "./component/contact";
 import Script from "next/script";
 import { GoogleTagManager } from "@next/third-parties/google";
 import Image from "next/image";
-import { NextSeo } from "next-seo";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-
-export const metadata: Metadata = {
-  title: "TYESO Indonesia",
-  description: "TYESO Official Indonesia Website",
-};
 
 type RootLayoutProps = {
   children: React.ReactNode;
