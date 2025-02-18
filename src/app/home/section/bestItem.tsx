@@ -66,6 +66,7 @@ const BestItem = () => {
           height={500}
           alt="logo pic"
           className="rounded-tl-banner w-[90%] max-w-[350px] lg:max-w-[550px] min-h-96 h-full"
+          priority
         />
       </div>
 

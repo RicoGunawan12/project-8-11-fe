@@ -177,6 +177,7 @@ const BestSellerProduct = () => {
                   height={550}
                   alt="logo pic"
                   className="w-full h-[300px] object-cover"
+                  priority
                 />
                 <div className="bg-white py-6 px-10 h-[100px]">
                   <div className="text-black font-semibold truncate">{product.productName}</div>

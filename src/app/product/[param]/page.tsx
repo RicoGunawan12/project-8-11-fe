@@ -264,6 +264,7 @@ const ProductDetailPage = () => {
                 style={{ objectFit: "contain" }}
                 alt="Product Image"
                 className="border rounded-lg w-2/3 max-w-full lg:max-w-[400px] aspect-square shadow-lg"
+                priority
               />
             </div>
 
@@ -295,6 +296,7 @@ const ProductDetailPage = () => {
                     height={150}
                     alt={`Variant ${idx + 1}`}
                     className="object-contain w-full h-full rounded-md"
+                    priority
                   />
                 </button>
               ))}
@@ -368,6 +370,7 @@ const ProductDetailPage = () => {
                     height={40}
                     alt={product.productColor}
                     className="w-8 h-6 object-contain"
+                    priority
                   />
                   <span>{product.productColor}</span>
                 </button>
@@ -585,6 +588,7 @@ const ProductDetailPage = () => {
                   width={200}
                   height={200}
                   className="w-full object-fill aspect-square"
+                  priority
                 />
 
                 <div className="text-lg font-semibold text-black w-full text-left p-2">

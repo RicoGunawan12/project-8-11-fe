@@ -113,6 +113,7 @@ const LoginPage = () => {
             width={24} 
             height={24}
             className="object-contain filter invert "
+            priority
           />
         </button>
       </div>
@@ -164,6 +165,7 @@ const LoginPage = () => {
             src="/a.jpg"
             width={650}
             height={220}
+            priority
           />
         </div>
 
