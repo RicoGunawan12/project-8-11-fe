@@ -12,6 +12,7 @@ import Image from "next/image";
 const poppinsFont = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  preload: true
 });
 
 export const metadata: Metadata = {
