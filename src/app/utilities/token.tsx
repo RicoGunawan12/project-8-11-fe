@@ -17,6 +17,24 @@ export const getTokenCookie = () => {
   return null;
 };
 
+export const getUserId = () => {
+
+  if (typeof document !== "undefined") {
+    const name = "userId=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookieArray = decodedCookie.split(";");
+
+    for (let i = 0; i < cookieArray.length; i++) {
+      let cookie = cookieArray[i].trim();
+      if (cookie.startsWith(name)) {
+        return cookie.substring(name.length, cookie.length);
+      }
+    }
+  }
+
+  return null;
+};
+
 export const checkTokenCookieValid = async () => {
   if (typeof document === undefined) return false;
 

@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import NavigationBar from "../component/navbar";
 import Image from "next/image";
-import { deleteTokenCookie, getTokenCookie } from "../utilities/token";
+import { deleteTokenCookie, getTokenCookie, getUserId } from "../utilities/token";
 import { useRouter } from "next/navigation";
 import { toastError, toastSuccess } from "../utilities/toast";
 import { Cart } from "../model/cart";
@@ -328,7 +328,8 @@ const CartPage = () => {
         typeof window.gtag === "function"
       ) {
         window.gtag("event", "checkout", {
-          page_location: window.location.href
+          page_location: window.location.href,
+          user_id : getUserId()
         });
       }
     } catch (error: any) {
