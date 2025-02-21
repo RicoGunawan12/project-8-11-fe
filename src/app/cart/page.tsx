@@ -305,6 +305,17 @@ const CartPage = () => {
       }
 
       if (
+        typeof window !== "undefined" &&
+        window.gtag &&
+        typeof window.gtag === "function"
+      ) {
+        window.gtag("event", "checkout", {
+          page_location: window.location.href,
+          user_id: getUserId()
+        });
+      }
+
+      if (
         !isCOD &&
         price.totalPrice +
         (ongkir?.status === "Active"
@@ -321,16 +332,6 @@ const CartPage = () => {
         router.push(resp.payTransactionResponse.invoice_url);
       } else {
         router.push(`/transactions/${resp.transaction.transactionId}`);
-      }
-      if (
-        typeof window !== "undefined" &&
-        window.gtag &&
-        typeof window.gtag === "function"
-      ) {
-        window.gtag("event", "checkout", {
-          page_location: window.location.href,
-          user_id : getUserId()
-        });
       }
     } catch (error: any) {
       toastError(error.message || "Failed to complete the checkout process");
