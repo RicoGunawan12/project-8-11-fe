@@ -1,5 +1,4 @@
 import React from "react";
-import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
@@ -7,6 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import ContactButton from "./component/contact";
 import Script from "next/script";
 import { GoogleTagManager } from "@next/third-parties/google";
+import Image from "next/image";
+import { headers } from "next/headers";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -14,19 +15,102 @@ const poppinsFont = Poppins({
   preload: true,
 });
 
-export const metadata: Metadata = {
-  title: "TYESO Indonesia",
-  description: "TYESO Official Indonesia Website",
+type RootLayoutProps = {
+  children: React.ReactNode;
 };
 
 const GOOGLE_ANALYTICS_ID = process.env.GOOGLE_ANALYTICS;
 const FACEBOOK_PIXEL_ID = process.env.META_PIXEL;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: { slug: string };
+// }) {
+//   const { slug} = params;
+//   const siteURL = process.env.PUBLIC_SITE
+
+//   return {
+    
+//     title: 'TYESO Indonesia',
+//     description: 'TYESO Official Indonesia Website',
+//     metadataBase: `${siteURL}/${slug ?? ""}`,
+//     alternates: {
+//       canonical: `${siteURL}/${slug ?? ""}`,
+//     },
+
+//     icons: {
+//       icon: '/images/icon.ico',
+//       shortcut: '/images/icon.ico',
+//       apple: '/images/icon.ico',
+//       other: {
+//         rel: 'apple-touch-icon-precomposed',
+//         url: '/images/icon.ico',
+//       },
+//     },
+
+//     openGraph: {
+//       title: 'TYESO Indonesia',
+//       description: 'TYESO Official Indonesia Website',
+//       url: `${siteURL}/${slug ?? ""}`,
+//       siteName: 'Next.js',
+//       images: [
+//         {
+//           url: 'https://nextjs.org/og.png',
+//           width: 800,
+//           height: 600,
+//         },
+//         {
+//           url: 'https://nextjs.org/og-alt.png',
+//           width: 1800,
+//           height: 1600,
+//           alt: 'My custom alt',
+//         },
+//       ],
+//       locale: 'en_US',
+//       type: 'website',
+//     },
+//   };
+// }
+
+export async function generateMetadata() {
+  var headersList = headers();
+  var fullPath = (await headersList).get("x-url") || "/";
+  
+  var slug = fullPath.split("/")[3] || "home";
+  if(slug=='auth') slug=fullPath.split('/')[4]
+  var response = await fetch(`${process.env.METADATA}/${slug}`); 
+
+  if (!response.ok) {
+    return {
+      title: "TYESO Indonesia",
+      description: "TYESO Official Indonesia Website",
+      keywords: ["Tyeso", "Product", "Bottle"],
+    };
+  }
+
+  var data = await response.json();
+
+  return {
+    title: data.title,
+    description: data.description,
+    metadataBase: data.metadataBase,
+    alternates: data.alternates,
+    icons: data.icons,
+    openGraph: data.openGraph,
+    keywords: data.keywords,
+  };
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
+
   return (
     <html lang="en">
+      
       <head>
-        {/* Google Analytics */}
+      
+        {/* Google Analytics Script */}
+
         {GOOGLE_ANALYTICS_ID && (
           <>
             <Script async src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`} />
@@ -58,6 +142,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `}
           </Script>
         )}
+      </head>
+      
+
 
         <noscript>
           <img
@@ -70,6 +157,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </noscript>
       </head>
       <body className={poppinsFont.className}>
+      
         {children}
         <ToastContainer />
         <ContactButton />
