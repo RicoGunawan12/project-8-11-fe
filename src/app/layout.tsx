@@ -143,19 +143,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </Script>
         )}
       </head>
-      
-
-
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src={`https://www.facebook.com/tr?id=${FACEBOOK_PIXEL_ID}&ev=PageView&noscript=1`}
-            alt="fb-pixel"
-          />
-        </noscript>
-      </head>
       <body className={poppinsFont.className}>
       
         {children}
