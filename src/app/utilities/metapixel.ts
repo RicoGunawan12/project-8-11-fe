@@ -16,7 +16,7 @@ declare global {
   // Track page view
   export const pageView = () => {
     if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'PageView');
+      window.fbq('track', 'Page View');
     }
   };
   

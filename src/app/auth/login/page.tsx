@@ -7,7 +7,7 @@ import { toastSuccess, toastError } from '../../utilities/toast';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ErrorMessage } from "@/app/model/error";
-import { setTokenCookie } from "@/app/utilities/setToken";
+import { setCurrentUserId, setTokenCookie } from "@/app/utilities/setToken";
 import { checkTokenCookieValid } from "@/app/utilities/token";
 
 const LoginPage = () => {
@@ -87,7 +87,9 @@ const LoginPage = () => {
           localStorage.removeItem("cartItem");
           // toastSuccess("Cart items synced successfully!");
         }
+        console.log(data)
         await setTokenCookie(data.token)
+        await setCurrentUserId(data.userId)
         router.push("/");
       }
 
@@ -113,6 +115,7 @@ const LoginPage = () => {
             width={24} 
             height={24}
             className="object-contain filter invert "
+            priority
           />
         </button>
       </div>
@@ -164,6 +167,7 @@ const LoginPage = () => {
             src="/a.jpg"
             width={650}
             height={220}
+            priority
           />
         </div>
 

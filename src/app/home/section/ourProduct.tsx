@@ -7,6 +7,7 @@ import { toastError } from "@/app/utilities/toast";
 import { Loading } from "@/app/utilities/loading";
 import { ProductCard } from "@/app/model/productCard";
 import StarRating from "@/app/utilities/rating";
+import { getUserId } from "@/app/utilities/token";
 
 // Declare fbq for TypeScript
 declare global {
@@ -52,10 +53,14 @@ const OurProductSection = () => {
 
   // Track category view
   const trackViewCategory = (categoryName: string) => {
+
+    console.log("window: ", window)
+
     if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'ViewContent', {
+      window.fbq('track', 'View Category', {
         content_type: 'product_category',
-        content_name: categoryName
+        content_name: categoryName,
+        user_id : getUserId()
       });
     }
   };
@@ -63,7 +68,7 @@ const OurProductSection = () => {
   // Track product view
   const trackViewProduct = (product: ProductCard) => {
     if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'ViewContent', {
+      window.fbq('track', 'View Product', {
         content_type: 'product',
         content_ids: [product.productId],
         content_name: product.productName,
@@ -71,7 +76,8 @@ const OurProductSection = () => {
         currency: 'IDR',
         value: product.promo_details[0]
           ? parseInt(product.product_variants[0]?.productPrice) - product.promo_details[0].promo?.promoAmount
-          : parseInt(product.product_variants[0]?.productPrice)
+          : parseInt(product.product_variants[0]?.productPrice),
+        user_id : getUserId()
       });
     }
   };
@@ -134,6 +140,7 @@ const OurProductSection = () => {
                       width={200}
                       height={200}
                       className="w-full object-fill aspect-square"
+                      priority
                     />
 
                     <div className="text-lg font-semibold text-black w-full text-left p-2">

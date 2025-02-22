@@ -1,8 +1,6 @@
 "use client";
 import { useLocaleStore } from "@/app/component/locale";
-import Page from "@/app/model/pageModel";
 import { Loading } from "@/app/utilities/loading";
-import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toastError } from "@/app/utilities/toast";

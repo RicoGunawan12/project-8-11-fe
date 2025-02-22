@@ -6,7 +6,7 @@ import NavigationBar from "@/app/component/navbar";
 import { Button, Input } from "@nextui-org/react";
 import { ProductCard } from "@/app/model/productCard";
 import { Loading, LoadingOverlay } from "@/app/utilities/loading";
-import { getTokenCookie } from "@/app/utilities/token";
+import { getTokenCookie, getUserId } from "@/app/utilities/token";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
 import Footer from "@/app/component/footer";
 import StarRating from "@/app/utilities/rating";
@@ -31,6 +31,7 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(false);
   const [ratingDistribution, setRatingDistribution] = useState<RatingCount>();
   const [chosenImage, setChosenImage] = useState<string>("");
+  const [userId, setUserId] = useState<string>("")
 
   const fetchProductDetail = async () => {
     const response = await fetch(`${process.env.PRODUCTS}/related/${id}`, {
@@ -99,6 +100,7 @@ const ProductDetailPage = () => {
   }, [id]);
 
   useEffect(() => {
+
     // Wait a bit to ensure gtag is fully loaded
     const checkGtagInterval = setInterval(() => {
 
@@ -111,6 +113,7 @@ const ProductDetailPage = () => {
           product_name: data?.productName,
           page_location: window.location.href,
           page_path: `/product/${id}`,
+          user_id : getUserId()
         });
         clearInterval(checkGtagInterval);
       }
@@ -186,6 +189,18 @@ const ProductDetailPage = () => {
 
         toastSuccess("Product added to cart!");
       }
+      if (
+        typeof window !== "undefined" &&
+        window.gtag &&
+        typeof window.gtag === "function"
+      ) {
+        window.gtag("event", "add_to_cart", {
+          product_name: data?.productName,
+          page_location: window.location.href,
+          page_path: `/product/${id}`,
+          user_id : getUserId()
+        });
+      }
 
       setQuantity(1);
     } catch (error: any) {
@@ -228,7 +243,7 @@ const ProductDetailPage = () => {
 
   const trackViewProduct = (product: ProductCard) => {
     if (typeof window !== "undefined" && window.fbq) {
-      window.fbq("track", "ViewContent", {
+      window.fbq("track", "View Product", {
         content_type: "product",
         content_ids: [product.productId],
         content_name: product.productName,
@@ -237,6 +252,7 @@ const ProductDetailPage = () => {
           ? parseInt(product.product_variants[0]?.productPrice) -
             product.promo_details[0].promo?.promoAmount
           : parseInt(product.product_variants[0]?.productPrice),
+        user_id : getUserId()
       });
     }
   };
@@ -264,6 +280,7 @@ const ProductDetailPage = () => {
                 style={{ objectFit: "contain" }}
                 alt="Product Image"
                 className="border rounded-lg w-2/3 max-w-full lg:max-w-[400px] aspect-square shadow-lg"
+                priority
               />
             </div>
 
@@ -295,6 +312,7 @@ const ProductDetailPage = () => {
                     height={150}
                     alt={`Variant ${idx + 1}`}
                     className="object-contain w-full h-full rounded-md"
+                    priority
                   />
                 </button>
               ))}
@@ -368,6 +386,7 @@ const ProductDetailPage = () => {
                     height={40}
                     alt={product.productColor}
                     className="w-8 h-6 object-contain"
+                    priority
                   />
                   <span>{product.productColor}</span>
                 </button>
@@ -456,7 +475,6 @@ const ProductDetailPage = () => {
                   {data?.productSize} mL
                 </p>
                 <div
-                  className="max-h-48 overflow-y-auto"
                   dangerouslySetInnerHTML={{ __html: data?.productDescription }}
                 ></div>
               </div>
@@ -585,6 +603,7 @@ const ProductDetailPage = () => {
                   width={200}
                   height={200}
                   className="w-full object-fill aspect-square"
+                  priority
                 />
 
                 <div className="text-lg font-semibold text-black w-full text-left p-2">

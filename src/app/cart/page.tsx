@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import NavigationBar from "../component/navbar";
 import Image from "next/image";
-import { deleteTokenCookie, getTokenCookie } from "../utilities/token";
+import { deleteTokenCookie, getTokenCookie, getUserId } from "../utilities/token";
 import { useRouter } from "next/navigation";
 import { toastError, toastSuccess } from "../utilities/toast";
 import { Cart } from "../model/cart";
@@ -305,6 +305,17 @@ const CartPage = () => {
       }
 
       if (
+        typeof window !== "undefined" &&
+        window.gtag &&
+        typeof window.gtag === "function"
+      ) {
+        window.gtag("event", "checkout", {
+          page_location: window.location.href,
+          user_id: getUserId()
+        });
+      }
+
+      if (
         !isCOD &&
         price.totalPrice +
         (ongkir?.status === "Active"
@@ -477,13 +488,14 @@ const CartPage = () => {
                     src={
                       item.product_variant.productImage
                         ? process.env.BACK_BASE_URL +
-                          item.product_variant.productImage
+                          "/assets/product/" + item.product_variant.product.productName + item.product_variant.productImage
                         : "/placeholder.webp"
                     }
                     alt="Product"
                     className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
                     width={200}
                     height={200}
+                    priority
                   />
                   <div className="mt-4 sm:mt-0 sm:ml-4 flex-1 text-center sm:text-left">
                     <h3 className="text-sm sm:text-lg font-semibold">

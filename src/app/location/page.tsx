@@ -51,9 +51,8 @@ const LocationPage: React.FC = () => {
     new Set(data?.map((location) => location.province))
   );
 
-  const selectedLocations = data?.filter(
-    (location) => location.province === selectedProvince
-  ) || [];
+  const selectedLocations =
+    data?.filter((location) => location.province === selectedProvince) || [];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -63,22 +62,28 @@ const LocationPage: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-white">
       <NavigationBar />
       <div className="mt-20 flex-grow">
-        <Banner page="Location Page" text="Locations"/>
+        <Banner page="Location Page" text="Locations" />
         <div className="p-4 md:p-12 text-black">
           <h1 className="text-2xl font-bold mb-6 truncate">
-            {locale == "contentJSONEng" ? "Find our offline store" : "Temukan toko offline kami"}
+            {locale == "contentJSONEng"
+              ? "Find our offline store"
+              : "Temukan toko offline kami"}
           </h1>
-          
+
           {/* Mobile Province Dropdown */}
           <div className="md:hidden mb-6">
             <button
               onClick={toggleMenu}
               className="w-full flex items-center justify-between p-4 bg-gray-100 rounded-lg"
             >
-              <span className="font-medium">{selectedProvince || "Select Province"}</span>
-              <FontAwesomeIcon 
-                icon={faChevronDown} 
-                className={`w-4 transition-transform duration-200 ${isMenuOpen ? "rotate-180" : ""}`}
+              <span className="font-medium">
+                {selectedProvince || "Select Province"}
+              </span>
+              <FontAwesomeIcon
+                icon={faChevronDown}
+                className={`w-4 transition-transform duration-200 ${
+                  isMenuOpen ? "rotate-180" : ""
+                }`}
               />
             </button>
             {isMenuOpen && (
@@ -95,7 +100,12 @@ const LocationPage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <span className="truncate">{province}</span>
                       <span className="text-gray-500">
-                        ({data?.filter(loc => loc.province === province).length})
+                        (
+                        {
+                          data?.filter((loc) => loc.province === province)
+                            .length
+                        }
+                        )
                       </span>
                     </div>
                   </button>
@@ -112,12 +122,12 @@ const LocationPage: React.FC = () => {
                   key={province}
                   onClick={() => setSelectedProvince(province)}
                   className={`w-full text-left py-2 px-4 text-base hover:text-gray-600 focus:outline-none flex items-center justify-between ${
-                    selectedProvince === province ? 'font-medium' : ''
+                    selectedProvince === province ? "font-medium" : ""
                   }`}
                 >
                   <span className="truncate">{province}</span>
                   <span className="text-gray-500">
-                    ({data?.filter(loc => loc.province === province).length})
+                    ({data?.filter((loc) => loc.province === province).length})
                   </span>
                 </button>
               ))}
@@ -127,26 +137,46 @@ const LocationPage: React.FC = () => {
             <div className="md:w-3/4">
               {selectedProvince && (
                 <div className="mb-6">
-                  <h2 className="text-xl font-bold mb-4 truncate">{selectedProvince}</h2>
-                  <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+                  <h2 className="text-xl font-bold mb-4 truncate">
+                    {selectedProvince}
+                  </h2>
+                  <div className="grid gap-6 max-sm:grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
                     {selectedLocations.map((location) => (
                       <div
                         key={location.locationId}
                         className="bg-gray-100 rounded-lg p-4 md:p-6"
                       >
-                        <h3 className="text-lg font-medium mb-4 truncate">{location.addressDetail}</h3>
+                        <h3 className="text-lg font-medium mb-4 truncate">
+                          {location.addressDetail}
+                        </h3>
                         <div className="flex flex-col gap-3 text-gray-600">
                           <div className="flex items-start gap-2">
-                            <FontAwesomeIcon icon={faLocationArrow} className="w-4 mt-1 flex-shrink-0" />
-                            <p className="break-words">{location.addressDetail}</p>
+                            <FontAwesomeIcon
+                              icon={faLocationArrow}
+                              className="w-4 mt-1 flex-shrink-0"
+                            />
+                            <p className="break-words">
+                              {location.addressDetail}
+                            </p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <FontAwesomeIcon icon={faClock} className="w-4 flex-shrink-0" />
-                            <p className="truncate">{location.openTime} - {location.closeTime} WIB</p>
+                            <FontAwesomeIcon
+                              icon={faClock}
+                              className="w-4 flex-shrink-0"
+                            />
+                            <p className="truncate">
+                              {location.openTime} - {location.closeTime} WIB
+                            </p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <FontAwesomeIcon icon={faPhone} className="w-4 flex-shrink-0" />
-                            <a href={`tel:${location.phoneNumber}`} className="text-orange-500 truncate">
+                            <FontAwesomeIcon
+                              icon={faPhone}
+                              className="w-4 flex-shrink-0"
+                            />
+                            <a
+                              href={`tel:${location.phoneNumber}`}
+                              className="text-orange-500 truncate"
+                            >
                               {location.phoneNumber}
                             </a>
                           </div>
@@ -156,7 +186,9 @@ const LocationPage: React.FC = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {locale == "contentJSONEng" ? "View on google maps" : "Lihat di google maps"}
+                            {locale == "contentJSONEng"
+                              ? "View on google maps"
+                              : "Lihat di google maps"}
                           </a>
                         </div>
                       </div>

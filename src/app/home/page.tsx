@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import HomePageContent from './section/content';
 
 // export async function generateMetadata() {
