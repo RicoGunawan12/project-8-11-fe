@@ -7,6 +7,7 @@ import ContactButton from "./component/contact";
 import Script from "next/script";
 import { GoogleTagManager } from "@next/third-parties/google";
 import Image from "next/image";
+import { headers } from "next/headers";
 
 const poppinsFont = Poppins({
   subsets: ["latin"],
@@ -72,6 +73,32 @@ const FACEBOOK_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
 //   };
 // }
 
+export async function generateMetadata(){
+  const headersList = headers();
+  const fullURL = (await headersList).get("referer") || ""; 
+
+  const slug = fullURL.split("/").pop() || "home"; 
+
+  const response = await fetch(`${process.env.METADATA}/${slug}`);
+  if (!response.ok) {
+    return {
+      title: "TYESO Indonesia",
+      description: "TYESO Official Indonesia Website",
+      keywords: ['Tyeso', 'Product', 'Bottle']
+    };
+  }
+
+  const data = await response.json();
+  return {
+    title: data.title,
+    description: data.description,
+    metadataBase: data.metadataBase,
+    alternates: data.alternates,
+    icons: data.icons,
+    openGraph: data.openGraph,
+    keywords: data.keywords,
+  };
+}
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">

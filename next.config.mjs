@@ -42,6 +42,7 @@ const nextConfig = {
     LOGIN_ENDPOINT: process.env.LOGIN_ENDPOINT,
     COD: process.env.COD,
     FREE_ONGKIR: process.env.FREE_ONGKIR,
+    METADATA: process.env.METADATA,
   },
   eslint: {
     ignoreDuringBuilds: true,
