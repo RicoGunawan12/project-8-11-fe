@@ -81,7 +81,6 @@ export async function generateMetadata() {
   if(slug=='auth') slug=fullPath.split('/')[4]
   var response = await fetch(`${process.env.METADATA}/${slug}`); 
 
-  console.log("Full Path:", slug);
   if (!response.ok) {
     return {
       title: "TYESO Indonesia",
