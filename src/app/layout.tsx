@@ -73,22 +73,25 @@ const FACEBOOK_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
 //   };
 // }
 
-export async function generateMetadata(){
-  const headersList = headers();
-  const fullURL = (await headersList).get("referer") || ""; 
+export async function generateMetadata() {
+  var headersList = headers();
+  var fullPath = (await headersList).get("x-url") || "/";
+  
+  var slug = fullPath.split("/")[3] || "home";
+  if(slug=='auth') slug=fullPath.split('/')[4]
+  var response = await fetch(`${process.env.METADATA}/${slug}`); 
 
-  const slug = fullURL.split("/").pop() || "home"; 
-
-  const response = await fetch(`${process.env.METADATA}/${slug}`);
+  console.log("Full Path:", slug);
   if (!response.ok) {
     return {
       title: "TYESO Indonesia",
       description: "TYESO Official Indonesia Website",
-      keywords: ['Tyeso', 'Product', 'Bottle']
+      keywords: ["Tyeso", "Product", "Bottle"],
     };
   }
 
-  const data = await response.json();
+  var data = await response.json();
+
   return {
     title: data.title,
     description: data.description,
@@ -99,6 +102,7 @@ export async function generateMetadata(){
     keywords: data.keywords,
   };
 }
+
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
