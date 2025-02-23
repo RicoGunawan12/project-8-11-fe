@@ -48,7 +48,6 @@ const ContactPage: React.FC = () => {
         if (!response.ok) {
           throw new Error(data.message);
         }
-        console.log(data.contacts);
         setSocMed(data.contacts);
 
         const adminResponse = await fetch(`${process.env.CONTACTS}/admin`, {
@@ -63,7 +62,6 @@ const ContactPage: React.FC = () => {
         if (!adminResponse.ok) {
           throw new Error(data.message);
         }
-        console.log(adminData);
         setAdminContact(adminData.contact);
         if (!Array.isArray(data)) throw new Error("Data is not an array");
       } catch (error: any) {

@@ -24,7 +24,6 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     };
   }
 
-  console.log(id, `${process.env.PRODUCTS}/${id}`);
   const productResponse = await fetch(`${process.env.PRODUCTS}/${id}`, {
     method: "GET",
     headers: {

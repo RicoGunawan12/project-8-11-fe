@@ -58,7 +58,6 @@ const TransactionPage = () => {
         if (!adminResponse.ok) {
           throw new Error(adminData.message);
         }
-        console.log(adminData);
         setAdminContact(adminData.contact);
       } catch (error) {
         

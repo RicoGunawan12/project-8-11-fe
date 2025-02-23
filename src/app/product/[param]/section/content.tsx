@@ -58,8 +58,6 @@ const ProductDetailContent = () => {
       ...defaultRatingDistribution,
       ...data.ratingDistributionObject,
     };
-    console.log(data.product)
-    console.log(data.relatedProducts)
     setData(data.product);
     setChosenImage(
       data.product.product_covers[0]?.productCover

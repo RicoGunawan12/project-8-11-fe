@@ -54,7 +54,6 @@ const OurProductSection = () => {
   // Track category view
   const trackViewCategory = (categoryName: string) => {
 
-    console.log("window: ", window)
 
     if (typeof window !== 'undefined' && window.fbq) {
       window.fbq('track', 'View Category', {

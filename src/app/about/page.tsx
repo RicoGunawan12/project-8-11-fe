@@ -27,7 +27,6 @@ const AboutUsPage = () => {
           method: "GET",
         });
         const aboutResult = await aboutResponse.json();
-        console.log(result);
         setAbout(aboutResult.response[0] || null);
       } catch (error: any) {
         toastError(error.message || "An error occurred while fetching data.");
