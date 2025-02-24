@@ -183,7 +183,7 @@ const BestSellerProduct = () => {
                   <div className="text-black">
                     {product.promo_details[0] &&
                     product.promo_details[0].promo != null ? (
-                      <div className="flex text-xs font-normal justify-start">
+                      <div className="flex flex-wrap text-xs font-normal justify-start">
                         <span className="line-through mr-2 text-gray-600">
                           Rp. {product.product_variants[0]?.productPrice}
                         </span>
