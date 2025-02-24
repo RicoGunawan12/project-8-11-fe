@@ -54,17 +54,17 @@ const NewCollection = () => {
         {page && page[0]?.[locale]?.[1]?.content || ""}
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 flex-wrap lg:flex-row w-full lg:w-2/3 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 flex-wrap lg:flex-row w-full lg:w-3/4 h-auto lg:h-3/5 items-center lg:justify-around mt-6 gap-4">
         {
           data.map((datum: Categories) => {
             return (
-              <Link key={datum.productCategoryId} href={`/product?category=${encodeURIComponent(datum.productCategoryName)}`} className="w-full lg:w-[300px] flex flex-col items-center justify-center">
+              <Link key={datum.productCategoryId} href={`/product?category=${encodeURIComponent(datum.productCategoryName)}`} className="w-full flex flex-col items-center justify-center">
                 <Image
                   src={`${process.env.BACK_BASE_URL}${datum.productCategoryPhoto}`}
                   width={400}
                   height={400}
                   alt="logo pic"
-                  className="aspect-square w-3/4 h-auto lg:w-[400px] lg:h-[400px] object-cover"
+                  className="aspect-square object-cover"
                   priority
                 />
                 <div className="w-full text-center font-semibold text-black text-md">
