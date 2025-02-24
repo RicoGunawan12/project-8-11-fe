@@ -109,6 +109,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       
       <head>
         <meta name="google-site-verification" content="R6DF0U5vOfBBKyr2cIHG8jqQJxw8xfibw9typf964N0" />
+        <link rel="icon" href="/favicon.ico" sizes="any"/>
       
         {/* Google Analytics Script */}
 
