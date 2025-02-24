@@ -707,7 +707,7 @@ const CartPage = () => {
                     <option key={index} value={option.shipping_name}>
                       <div className="flex justify-between w-full">
                         <div>{option.shipping_name} - Rp. {option.shipping_cost}</div>
-                        <div className="text-red-500">{option?.is_cod ? "" : "X COD"}</div>
+                        {/* <div className="text-red-500">{option?.is_cod ? "" : "X COD"}</div> */}
                       </div>
                     </option>
                 ))}

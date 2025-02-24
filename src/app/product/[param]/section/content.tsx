@@ -466,7 +466,7 @@ const ProductDetailContent = () => {
 
                   {/* Product Description */}
             <div className="w-full p-6 flex flex-col justify-between items-center text-black">
-              <div className="w-1/2">
+              <div className="w-1/2 max-sm:w-7/8">
                 <h3 className="text-2xl font-bold mb-4">Product Description</h3>
                 <p className="mb-2">
                   <span className="font-semibold">Size: </span>
@@ -615,7 +615,7 @@ const ProductDetailContent = () => {
                       disabled
                     />
                   </p>
-                  <p>{product.productName}</p>
+                  <p className="truncate">{product.productName}</p>
                   {product.promo_details[0] &&
                   product.promo_details[0].promo != null ? (
                     <div className="flex text-xs font-normal justify-start">

@@ -181,7 +181,29 @@ const BestSellerProduct = () => {
                 <div className="bg-white py-6 px-10 h-[100px]">
                   <div className="text-black font-semibold truncate">{product.productName}</div>
                   <div className="text-black">
-                    Rp. {product.product_variants[0]?.productPrice}
+                    {product.promo_details[0] &&
+                    product.promo_details[0].promo != null ? (
+                      <div className="flex text-xs font-normal justify-start">
+                        <span className="line-through mr-2 text-gray-600">
+                          Rp. {product.product_variants[0]?.productPrice}
+                        </span>
+                        <span className="font-semibold">
+                          Rp.{" "}
+                          {product.product_variants[0]?.productPrice -
+                            product.promo_details[0].promo?.promoAmount >
+                          0
+                            ? 
+                                product.product_variants[0]?.productPrice
+                               - product.promo_details[0].promo?.promoAmount
+                            : 0}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex text-xs font-normal justify-start">
+                        <p>Rp. {product.product_variants[0]?.productPrice}</p>
+                      </div>
+                    )}
+                    {/* Rp. {product.product_variants[0]?.productPrice} */}
                   </div>
                 </div>
               </Link>
