@@ -43,6 +43,7 @@ const nextConfig = {
     COD: process.env.COD,
     FREE_ONGKIR: process.env.FREE_ONGKIR,
     METADATA: process.env.METADATA,
+    APP_URL: process.env.APP_URL,
   },
   eslint: {
     ignoreDuringBuilds: true,
