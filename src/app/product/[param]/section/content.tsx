@@ -479,7 +479,7 @@ const ProductDetailContent = () => {
             </div>
 
       <div className="w-full p-6 flex flex-col justify-between items-center">
-        <div className="text-2xl w-1/2 flex justify-between text-black font-bold mb-8">
+        <div className="text-2xl flex justify-between text-black font-bold mb-8">
           CUSTOMER REVIEWS
         </div>
 
