@@ -331,7 +331,7 @@ const ProductDetailContent = () => {
                     <span className="line-through mr-2 text-gray-600">
                       Rp. {data.product_variants[buyVariant]?.productPrice}
                     </span>
-                    <span className="font-semibold text-primary">
+                    <span className="font-semibold text-black">
                       Rp.{" "}
                       {Math.max(
                         parseInt(

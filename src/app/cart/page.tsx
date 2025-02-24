@@ -701,13 +701,15 @@ const CartPage = () => {
                     ? "Select a Shipping Option"
                     : "Pilih Opsi Pengiriman"}
                 </option>
-                {shippingOptions.map((option, index) => (
-                  <option key={index} value={option.shipping_name}>
-                    <div className="flex justify-between">
-                      <div>{option.shipping_name} - Rp. {option.shipping_cost}</div>
-                      <div>{ option?.is_cod ? "" : "X COD"}</div>
-                    </div>
-                  </option>
+                {shippingOptions
+                  .filter(option => option.shipping_name !== "SAP")
+                  .map((option, index) => (
+                    <option key={index} value={option.shipping_name}>
+                      <div className="flex justify-between">
+                        <div>{option.shipping_name} - Rp. {option.shipping_cost}</div>
+                        <div>{option?.is_cod ? "" : "X COD"}</div>
+                      </div>
+                    </option>
                 ))}
               </select>
 
@@ -822,7 +824,7 @@ const CartPage = () => {
                               ? <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span>{price.shippingFee - ongkir?.maximumFreeOngkir}</span>
                               : locale == "contentJSONEng"
                               ? <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span> 0 (Free Delivery)</span>
-                              : <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span> 0 (Gratis Biaya Pengiriman)</span>
+                              : <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span> 0 (Gratis)</span>
                             : price.shippingFee
                           : price.shippingFee}
                       </span>

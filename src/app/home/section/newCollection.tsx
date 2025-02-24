@@ -58,7 +58,7 @@ const NewCollection = () => {
         {
           data.map((datum: Categories) => {
             return (
-              <Link key={datum.productCategoryId} href={`/product?category=${datum.productCategoryName}`} className="w-full lg:w-[300px] flex flex-col items-center justify-center">
+              <Link key={datum.productCategoryId} href={`/product?category=${encodeURIComponent(datum.productCategoryName)}`} className="w-full lg:w-[300px] flex flex-col items-center justify-center">
                 <Image
                   src={`${process.env.BACK_BASE_URL}${datum.productCategoryPhoto}`}
                   width={400}
