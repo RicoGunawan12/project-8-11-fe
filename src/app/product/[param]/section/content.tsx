@@ -368,7 +368,7 @@ const ProductDetailContent = () => {
                     setBuyVariant(idx);
                     setQuantity(1);
                     setChosenImage(
-                      `${process.env.BACK_BASE_URL}/assets/product/${data.productName}/${product.productImage}`
+                      `${process.env.BACK_BASE_URL}/assets/product/${data.productName.replace(/\//g, "")}/${product.productImage}`
                     );
                   }}
                   disabled={product.productStock <= 0}
@@ -376,7 +376,7 @@ const ProductDetailContent = () => {
                   <Image
                     src={
                       product.productImage
-                        ? `${process.env.BACK_BASE_URL}/assets/product/${data.productName}/${product.productImage}`
+                        ? `${process.env.BACK_BASE_URL}/assets/product/${data.productName.replace(/\//g, "")}/${product.productImage}`
                         
                         : "/placeholder.webp"
                     }
