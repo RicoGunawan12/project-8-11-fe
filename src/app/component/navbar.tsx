@@ -472,7 +472,7 @@ const NavigationBar = () => {
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
-                  className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? "bg-secondary" : "bg-blue-500 text-white hover:bg-blue-600"
+                  className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? "bg-gray-300" : "bg-secondary text-white hover:bg-blue-600"
                     }`}
                 >
                   Next

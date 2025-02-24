@@ -229,9 +229,9 @@ const ProductPageContent = () => {
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 1}
-              className={`px-4 py-2 rounded-lg w-[100px] ${currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-primary text-white"
+              className={`px-4 py-2 rounded-lg w-[100px] bg-secondary text-white ${currentPage === 1
+                  ? "cursor-not-allowed"
+                  : ""
                 }`}
             >
               Previous
@@ -242,9 +242,9 @@ const ProductPageContent = () => {
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={`px-4 py-2 rounded-lg w-[100px] ${currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-primary text-white"
+              className={`px-4 py-2 rounded-lg w-[100px] bg-secondary text-white ${currentPage === totalPages
+                  ? "cursor-not-allowed"
+                  : ""
                 }`}
             >
               Next

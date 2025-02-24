@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  customer:
+    container_name: "tyeso_customer-app"
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.tyesoindonesia.id
+    networks:
+      - app-network
+    volumes:
+      - customer_data:/app/public
+
+volumes:
+  customer_data:
+    external: true
+
+networks:
+  app-network:
+    name: tyeso_env-network
+    driver: bridge
