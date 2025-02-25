@@ -308,14 +308,20 @@ const CartPage = () => {
         throw new Error(resp.message);
       }
 
-      if (
-        typeof window !== "undefined" &&
-        window.gtag &&
-        typeof window.gtag === "function"
-      ) {
-        window.gtag("event", "checkout", {
-          page_location: window.location.href,
-          user_id: getUserId()
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'Purchase Successful', {
+          content_type: 'Purchase',
+          currency: 'IDR',
+          grand_total: price.totalPrice +
+          (ongkir?.status === "Active"
+            ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+              ? price.shippingFee > ongkir?.maximumFreeOngkir
+                ? price.shippingFee - ongkir?.maximumFreeOngkir
+                : 0
+              : price.shippingFee
+            : price.shippingFee) -
+          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
+          user_id : getUserId()
         });
       }
 
@@ -464,6 +470,26 @@ const CartPage = () => {
 
     updateCartQuantity();
   }, [debouncedQuantities, clientToken]);
+
+  const trackCheckOut = () => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'Initiate Checkout', {
+        content_type: 'Cart',
+        content_product: [data],
+        currency: 'IDR',
+        grand_total: price.totalPrice +
+        (ongkir?.status === "Active"
+          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+            ? price.shippingFee > ongkir?.maximumFreeOngkir
+              ? price.shippingFee - ongkir?.maximumFreeOngkir
+              : 0
+            : price.shippingFee
+          : price.shippingFee) -
+        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
+        user_id : getUserId()
+      });
+    }
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col text-black">
@@ -892,7 +918,10 @@ const CartPage = () => {
               <button
                 id="checkout_event"
                 className="w-full bg-secondary text-white py-2 sm:py-3 mt-4 rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all"
-                onClick={checkOut}
+                onClick={() =>{
+                  trackCheckOut()
+                  checkOut()
+                }}
               >
                 Checkout
               </button>
