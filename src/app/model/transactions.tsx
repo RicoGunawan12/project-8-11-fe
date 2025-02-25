@@ -22,16 +22,17 @@ export interface TransactionDetail {
   paidProductPrice: number;
   productVariantId: string;
   product_variant: {
-    product_color : string,
-  product_size : string,
-  sku : string,
-  productPrice : string,
-  productWeigth : string,
-  productWidth : string
-  productLength : string,
-  productHeight : string,
-  productStock : string,
-  productImage : string
+    productColor : string,
+    productSize : string,
+    sku : string,
+    productPrice : string,
+    productWeigth : string,
+    productWidth : string
+    productLength : string,
+    productHeight : string,
+    productStock : string,
+    productImage : string,
+    product: Product
   };
   quantity: number;
   realizedPromo: number;

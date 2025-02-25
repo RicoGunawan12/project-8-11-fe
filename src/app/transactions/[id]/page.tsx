@@ -484,6 +484,7 @@ const TransactionPage = () => {
                   <thead className="bg-gray-200">
                     <tr>
                       <th className="py-2 px-4 border-b">Product</th>
+                      <th className="py-2 px-4 border-b">Product Name</th>
                       <th className="py-2 px-4 border-b">Quantity</th>
                       <th className="py-2 px-4 border-b">Price</th>
                       <th className="py-2 px-4 border-b">Total</th>
@@ -494,13 +495,14 @@ const TransactionPage = () => {
                       <tr key={detail.transactionDetailId} className="bg-white hover:bg-gray-100">
                         <td className="py-2 px-4 border-b">
                           <Image
-                            src={`${process.env.BACK_BASE_URL}${detail.product_variant.productImage}`}
+                            src={`${process.env.BACK_BASE_URL}/assets/product/${detail.product_variant.product.productName.replace(/\//g, "")}/${detail.product_variant.productImage}`}
                             alt="Product"
                             className="w-[150px] h-full object-fill"
                             width={200}
                             height={200}
                           />
                         </td>
+                        <td className="py-2 px-4 border-b">{detail.product_variant.product.productName} - {detail.product_variant.productColor}</td>
                         <td className="py-2 px-4 border-b">{detail.quantity}</td>
                         <td className="py-2 px-4 border-b">Rp. {detail.paidProductPrice}</td>
                         <td className="py-2 px-4 border-b">Rp. {detail.paidProductPrice * detail.quantity}</td>
