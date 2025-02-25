@@ -273,8 +273,8 @@ const ProductDetailContent = () => {
             <div className="flex items-center justify-center mb-6">
               <Image
                 src={chosenImage}
-                width={100}
-                height={100}
+                width={500}
+                height={500}
                 style={{ objectFit: "contain" }}
                 alt="Product Image"
                 className="border rounded-lg w-2/3 max-w-full lg:max-w-[400px] aspect-square shadow-lg"
@@ -479,7 +479,7 @@ const ProductDetailContent = () => {
             </div>
 
       <div className="w-full p-6 flex flex-col justify-between items-center">
-        <div className="text-2xl flex justify-between text-black font-bold mb-8">
+        <div className="text-2xl w-full lg:w-1/2 flex justify-between text-black font-bold mb-8">
           CUSTOMER REVIEWS
         </div>
 

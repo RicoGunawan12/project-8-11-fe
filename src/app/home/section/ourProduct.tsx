@@ -148,7 +148,7 @@ const OurProductSection = () => {
                         <p>{product.countRating} reviews</p>
                       </div>
                       <div className="w-full overflow-hidden whitespace-nowrap">
-                        <p className="truncate">{product.productName}</p>
+                        <p className="truncate max-w-full">{product.productName}</p>
                       </div>
                       {product.promo_details[0] && product.promo_details[0].promo != null ? (
                         <div className="flex flex-wrap text-xs font-normal justify-start">
