@@ -53,6 +53,7 @@ const CartPage = () => {
   const [maxCOD, setMaxCOD] = useState<number>(0);
   const [isCOD, setIsCOD] = useState<boolean>(false);
   const [ongkir, setOngkir] = useState<Ongkir>();
+  const [totalWeight, setTotalweight] = useState<number>(0);
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -215,6 +216,8 @@ const CartPage = () => {
       }
     }, 0);
 
+    setTotalweight(totalWeight);
+
     var literalTotal = 0;
     data.forEach((item) => {
       literalTotal += item.product_variant?.productPrice;
@@ -289,6 +292,7 @@ const CartPage = () => {
             //   : price.shippingFee,
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
+          weight: totalWeight,
           voucherCode: voucherCode,
           customerNotes: customerNotes,
           productNotes: productNotes,
