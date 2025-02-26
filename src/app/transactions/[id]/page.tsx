@@ -514,26 +514,36 @@ const TransactionPage = () => {
             </div>
           </div>
 
-          {/* <div className="p-4 md:p-6 border-2 w-full md:w-3/4 rounded-md shadow-2xl bg-gray-50">
-            <h2 className="text-xl md:text-2xl font-semibold text-black mb-4">
-              Track Delivery
-            </h2>
+          <div className="w-full rounded-md border-2 bg-gray-50 p-4 shadow-2xl md:w-3/4 md:p-6">
+            <h2 className="mb-4 text-xl font-semibold text-black md:text-2xl">Track Delivery</h2>
 
-            <div className="w-1/2 flex flex-col items-center justify-center">
-              {
-                transaction?.delivery ?
-                <div className="text-center">Waiting for shipping</div>
-                :
-                transaction?.delivery.history.map((track, index) => {
-                  return <div className={`border-1 rounded-l py-2 ${index != transaction?.delivery.history.length - 1 ? "text-gray" : ""}`}>
-                    <div>{track.date}</div>
-                    <div>{track.status}</div>
-                    <div>{track.desc}</div>
+            {
+              transaction?.delivery ?
+                <div className="flex w-full flex-col items-center justify-center">
+                  <div className="w-1/2 relative">
+                    {/* Vertical Line */}
+                    <div className="absolute left-2 top-0 h-full w-0.5 bg-gray-400"></div>
+
+                    {transaction?.delivery?.history.map((track, index) => (
+                      <div key={index} className="relative flex w-full space-x-4 py-4">
+                        {/* Bullet Point */}
+                        <div className="absolute left-0 top-5 h-4 w-4 rounded-full bg-blue-500 border-2 border-white shadow-md"></div>
+
+                        {/* Tracking Details */}
+                        <div className="ml-6">
+                          <div className="text-l font-semibold text-gray-700">{track.date}</div>
+                          <div className="text-l font-bold text-black">{track.status}</div>
+                          <div className="text-l text-gray-600">{track.desc}</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                })
-              }
-            </div>
-          </div> */}
+                </div>
+              :
+              <div className="text-center">Waiting for pick up</div>
+            }
+          </div>
+
         </div>
       </div>
       
