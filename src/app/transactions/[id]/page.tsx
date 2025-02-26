@@ -524,7 +524,7 @@ const TransactionPage = () => {
             {
               delivery ?
                 <div className="flex w-full flex-col items-center justify-center">
-                  <div className="w-1/2 relative">
+                  <div className="w-3/4 sm:w-1/2 relative">
                     {/* Vertical Line */}
                     <div className="absolute left-2 top-0 h-full w-0.5 bg-gray-400"></div>
 
