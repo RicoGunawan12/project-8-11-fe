@@ -200,7 +200,7 @@ const ProductPageContent = () => {
                       <StarRating rating={parseFloat(result?.averageRating) ? parseFloat(result?.averageRating) : 0} disabled />
                       <p>{result.countRating} reviews</p>
                     </div>
-                    <p className="text-medium uppercase font-bold truncate max-w-[200px]">
+                    <p className="text-medium uppercase font-bold truncate max-w-full">
                       {result.productName}
                     </p>
                     <p>
