@@ -542,7 +542,7 @@ const TransactionPage = () => {
                   </div>
                 </div>
               :
-              <div className="text-center mt-6">Waiting for pick up</div>
+              <div className="text-center mt-6 h-full flex items-center">Waiting for pick up</div>
             }
           </div>
 
