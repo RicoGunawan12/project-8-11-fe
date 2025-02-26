@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Transaction } from "@/app/model/transactions";
+import { Delivery, Transaction } from "@/app/model/transactions";
 import { useParams, useRouter } from "next/navigation";
 import { checkTokenCookieValid, getTokenCookie } from "@/app/utilities/token";
 import NavigationBar from "@/app/component/navbar";
@@ -19,6 +19,7 @@ const TransactionPage = () => {
   const params = useParams();
   const id = params.id;
   const [transaction, setTransaction] = useState<Transaction | null>(null);
+  const [delivery, setDelivery] = useState<Delivery | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>();
@@ -125,6 +126,7 @@ const TransactionPage = () => {
 
         const data = await response.json();
         setTransaction(data.transaction);
+        setDelivery(data.delivery)
         const parsedData = JSON.parse(data.transaction.gatewayResponse);
         setGatewayResponse(parsedData);
       } catch (err: any) {
@@ -520,13 +522,13 @@ const TransactionPage = () => {
             <h2 className="mb-4 text-xl font-semibold text-black md:text-2xl">Track Delivery</h2>
 
             {
-              transaction?.delivery ?
+              delivery ?
                 <div className="flex w-full flex-col items-center justify-center">
                   <div className="w-1/2 relative">
                     {/* Vertical Line */}
                     <div className="absolute left-2 top-0 h-full w-0.5 bg-gray-400"></div>
 
-                    {transaction?.delivery?.history.map((track, index) => (
+                    {delivery?.history.map((track, index) => (
                       <div key={index} className="relative flex w-full space-x-4 py-4">
                         {/* Bullet Point */}
                         <div className="absolute left-0 top-5 h-4 w-4 rounded-full bg-blue-500 border-2 border-white shadow-md"></div>
