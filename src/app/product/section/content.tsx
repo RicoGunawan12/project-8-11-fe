@@ -180,8 +180,8 @@ const ProductPageContent = () => {
                         alt="Card background"
                         className="object-fill w-full aspect-square"
                         src={(result?.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + result?.product_covers[0]?.productCover : "/placeholder.webp")}
-                        width={200}
-                        height={200}
+                        width={500}
+                        height={500}
                         priority
                       />
                     ) : (
@@ -189,8 +189,8 @@ const ProductPageContent = () => {
                         alt="Card background"
                         className="object-fill w-[450px] h-full md:h-[250px] sm:h-[200px]"
                         src="/d.jpg"
-                        width={300}
-                        height={200}
+                        width={500}
+                        height={500}
                         priority
                       />
                     )}
@@ -200,7 +200,7 @@ const ProductPageContent = () => {
                       <StarRating rating={parseFloat(result?.averageRating) ? parseFloat(result?.averageRating) : 0} disabled />
                       <p>{result.countRating} reviews</p>
                     </div>
-                    <p className="text-medium uppercase font-bold truncate max-w-[200px]">
+                    <p className="text-lg uppercase font-bold truncate max-w-full">
                       {result.productName}
                     </p>
                     <p>

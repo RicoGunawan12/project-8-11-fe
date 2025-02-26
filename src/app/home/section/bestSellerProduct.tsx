@@ -179,7 +179,7 @@ const BestSellerProduct = () => {
                   priority
                 />
                 <div className="bg-white py-6 px-10 h-[100px]">
-                  <div className="text-black font-semibold truncate">{product.productName}</div>
+                  <div className="text-black font-semibold truncate max-w-full text-lg">{product.productName}</div>
                   <div className="text-black">
                     {product.promo_details[0] &&
                     product.promo_details[0].promo != null ? (

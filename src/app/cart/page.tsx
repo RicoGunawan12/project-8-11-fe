@@ -53,6 +53,7 @@ const CartPage = () => {
   const [maxCOD, setMaxCOD] = useState<number>(0);
   const [isCOD, setIsCOD] = useState<boolean>(false);
   const [ongkir, setOngkir] = useState<Ongkir>();
+  const [totalWeight, setTotalweight] = useState<number>(0);
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -215,6 +216,8 @@ const CartPage = () => {
       }
     }, 0);
 
+    setTotalweight(totalWeight);
+
     var literalTotal = 0;
     data.forEach((item) => {
       literalTotal += item.product_variant?.productPrice;
@@ -289,6 +292,7 @@ const CartPage = () => {
             //   : price.shippingFee,
           deliveryCashback: selectedShipping?.shipping_cashback,
           notes: "",
+          weight: totalWeight,
           voucherCode: voucherCode,
           customerNotes: customerNotes,
           productNotes: productNotes,
@@ -304,14 +308,20 @@ const CartPage = () => {
         throw new Error(resp.message);
       }
 
-      if (
-        typeof window !== "undefined" &&
-        window.gtag &&
-        typeof window.gtag === "function"
-      ) {
-        window.gtag("event", "checkout", {
-          page_location: window.location.href,
-          user_id: getUserId()
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'Purchase Successful', {
+          content_type: 'Purchase',
+          currency: 'IDR',
+          grand_total: price.totalPrice +
+          (ongkir?.status === "Active"
+            ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+              ? price.shippingFee > ongkir?.maximumFreeOngkir
+                ? price.shippingFee - ongkir?.maximumFreeOngkir
+                : 0
+              : price.shippingFee
+            : price.shippingFee) -
+          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
+          user_id : getUserId()
         });
       }
 
@@ -461,6 +471,26 @@ const CartPage = () => {
     updateCartQuantity();
   }, [debouncedQuantities, clientToken]);
 
+  const trackCheckOut = () => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'Initiate Checkout', {
+        content_type: 'Cart',
+        content_product: [data],
+        currency: 'IDR',
+        grand_total: price.totalPrice +
+        (ongkir?.status === "Active"
+          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+            ? price.shippingFee > ongkir?.maximumFreeOngkir
+              ? price.shippingFee - ongkir?.maximumFreeOngkir
+              : 0
+            : price.shippingFee
+          : price.shippingFee) -
+        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
+        user_id : getUserId()
+      });
+    }
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col text-black">
       <NavigationBar />
@@ -488,7 +518,7 @@ const CartPage = () => {
                     src={
                       item.product_variant.productImage
                         ? process.env.BACK_BASE_URL +
-                          "/assets/product/" + item.product_variant.product.productName.replace(/\//g, "") + item.product_variant.productImage.startsWith('/') ? item.product_variant.productImage : '/' + item.product_variant.productImage
+                          "/assets/product/" + item.product_variant.product.productName.replace(/\//g, "") + (item.product_variant.productImage.startsWith('/') ? item.product_variant.productImage : '/' + item.product_variant.productImage)
                         : "/placeholder.webp"
                     }
                     alt="Product"
@@ -593,6 +623,7 @@ const CartPage = () => {
                             id: item.cartItemId,
                           });
                           setIsModalOpen(true);
+                          
                         }}
                         icon={faTrashCan}
                       />
@@ -702,7 +733,7 @@ const CartPage = () => {
                     : "Pilih Opsi Pengiriman"}
                 </option>
                 {shippingOptions
-                  .filter(option => option.shipping_name !== "SAP" && option.shipping_name !== "SICEPAT")
+                  .filter(option => option.shipping_name == "JNT")
                   .map((option, index) => (
                     <option key={index} value={option.shipping_name}>
                       <div className="flex justify-between w-full">
@@ -888,7 +919,10 @@ const CartPage = () => {
               <button
                 id="checkout_event"
                 className="w-full bg-secondary text-white py-2 sm:py-3 mt-4 rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all"
-                onClick={checkOut}
+                onClick={() =>{
+                  trackCheckOut()
+                  checkOut()
+                }}
               >
                 Checkout
               </button>
