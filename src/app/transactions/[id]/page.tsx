@@ -514,7 +514,7 @@ const TransactionPage = () => {
             </div>
           </div>
 
-          <div className="p-4 md:p-6 border-2 w-full md:w-3/4 rounded-md shadow-2xl bg-gray-50">
+          {/* <div className="p-4 md:p-6 border-2 w-full md:w-3/4 rounded-md shadow-2xl bg-gray-50">
             <h2 className="text-xl md:text-2xl font-semibold text-black mb-4">
               Track Delivery
             </h2>
@@ -533,7 +533,7 @@ const TransactionPage = () => {
                 })
               }
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       
