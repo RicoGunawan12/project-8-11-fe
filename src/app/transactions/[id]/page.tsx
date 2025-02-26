@@ -460,7 +460,7 @@ const TransactionPage = () => {
                     <div key={detail.transactionDetailId} className="bg-white p-4 rounded-lg shadow">
                       <div className="flex flex-col items-center mb-4">
                         <Image
-                          src={`${process.env.BACK_BASE_URL}/assets/product/${detail.product_variant.productImage}`}
+                          src={`${process.env.BACK_BASE_URL}/assets/product/${detail.product_variant.product.productName.replace(/\//g, "")}/${detail.product_variant.productImage}`}
                           alt="Product"
                           className="w-[150px] h-full object-fill"
                           width={200}
