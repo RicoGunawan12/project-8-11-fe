@@ -136,8 +136,8 @@ const OurProductSection = () => {
                     <Image
                       src={(product?.product_covers[0]?.productCover ? process.env.BACK_BASE_URL + product?.product_covers[0]?.productCover : "/placeholder.webp")}
                       alt={product.productName}
-                      width={200}
-                      height={200}
+                      width={400}
+                      height={400}
                       className="w-full object-fill aspect-square"
                       priority
                     />
@@ -148,7 +148,7 @@ const OurProductSection = () => {
                         <p>{product.countRating} reviews</p>
                       </div>
                       <div className="w-full overflow-hidden whitespace-nowrap">
-                        <p className="truncate max-w-full">{product.productName}</p>
+                        <p className="truncate max-w-full text-lg">{product.productName}</p>
                       </div>
                       {product.promo_details[0] && product.promo_details[0].promo != null ? (
                         <div className="flex flex-wrap text-xs font-normal justify-start">

@@ -598,8 +598,8 @@ const ProductDetailContent = () => {
                       : "/placeholder.webp"
                   }
                   alt={product.productName}
-                  width={200}
-                  height={200}
+                  width={500}
+                  height={500}
                   className="w-full object-fill aspect-square"
                   priority
                 />
@@ -615,7 +615,7 @@ const ProductDetailContent = () => {
                       disabled
                     />
                   </p>
-                  <p className="truncate">{product.productName}</p>
+                  <p className="truncate text-lg">{product.productName}</p>
                   {product.promo_details[0] &&
                   product.promo_details[0].promo != null ? (
                     <div className="flex flex-wrap text-xs font-normal justify-start">

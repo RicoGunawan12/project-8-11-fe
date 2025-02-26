@@ -62,8 +62,8 @@ const BestItem = () => {
       <div className="w-full lg:w-2/5  flex justify-center lg:justify-start lg:mt-0">
         <Image
           src={`${process.env.BACK_BASE_URL}${page[0]?.[locale]?.[2]?.photo}`}
-          width={500}
-          height={500}
+          width={600}
+          height={600}
           alt="logo pic"
           className="rounded-tl-banner w-[90%] max-w-[350px] lg:max-w-[550px] min-h-96 h-full"
           priority

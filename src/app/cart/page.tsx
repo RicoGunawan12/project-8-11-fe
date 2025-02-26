@@ -733,7 +733,7 @@ const CartPage = () => {
                     : "Pilih Opsi Pengiriman"}
                 </option>
                 {shippingOptions
-                  .filter(option => option.shipping_name !== "SAP" && option.shipping_name !== "SICEPAT")
+                  .filter(option => option.shipping_name == "JNT")
                   .map((option, index) => (
                     <option key={index} value={option.shipping_name}>
                       <div className="flex justify-between w-full">
