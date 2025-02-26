@@ -88,7 +88,17 @@ export interface Transaction {
   user: User;
   voucherId: string | null;
   paymentLink: string
-  awb: string
+  awb: string;
+  delivery: {
+    airway_bill: string;
+    last_status: string;
+    history: {
+      desc: string;
+      date: string;
+      code: string;
+      status: string;
+    }[]
+  }
 }
 
 export interface Payment {
