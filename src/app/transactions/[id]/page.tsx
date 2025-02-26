@@ -460,7 +460,7 @@ const TransactionPage = () => {
                     <div key={detail.transactionDetailId} className="bg-white p-4 rounded-lg shadow">
                       <div className="flex flex-col items-center mb-4">
                         <Image
-                          src={`${process.env.BACK_BASE_URL}${detail.product_variant.productImage}`}
+                          src={`${process.env.BACK_BASE_URL}/assets/product/${detail.product_variant.productImage}`}
                           alt="Product"
                           className="w-[150px] h-full object-fill"
                           width={200}
@@ -468,6 +468,8 @@ const TransactionPage = () => {
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
+                        <div className="font-semibold">Product Name:</div>
+                        <div>{detail.product_variant.product.productName} - {detail.product_variant.productColor}</div>
                         <div className="font-semibold">Quantity:</div>
                         <div>{detail.quantity}</div>
                         <div className="font-semibold">Price:</div>
@@ -514,7 +516,7 @@ const TransactionPage = () => {
             </div>
           </div>
 
-          <div className="w-full rounded-md border-2 bg-gray-50 p-4 shadow-2xl md:w-3/4 md:p-6">
+          <div className="w-full min-h-[250px] rounded-md border-2 bg-gray-50 p-4 shadow-2xl md:w-3/4 md:p-6">
             <h2 className="mb-4 text-xl font-semibold text-black md:text-2xl">Track Delivery</h2>
 
             {
@@ -540,7 +542,7 @@ const TransactionPage = () => {
                   </div>
                 </div>
               :
-              <div className="text-center">Waiting for pick up</div>
+              <div className="text-center mt-6">Waiting for pick up</div>
             }
           </div>
 
