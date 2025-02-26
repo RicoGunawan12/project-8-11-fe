@@ -518,7 +518,7 @@ const CartPage = () => {
                     src={
                       item.product_variant.productImage
                         ? process.env.BACK_BASE_URL +
-                          "/assets/product/" + item.product_variant.product.productName.replace(/\//g, "") + item.product_variant.productImage.startsWith('/') ? item.product_variant.productImage : '/' + item.product_variant.productImage
+                          "/assets/product/" + item.product_variant.product.productName.replace(/\//g, "") + (item.product_variant.productImage.startsWith('/') ? item.product_variant.productImage : '/' + item.product_variant.productImage)
                         : "/placeholder.webp"
                     }
                     alt="Product"
@@ -623,6 +623,7 @@ const CartPage = () => {
                             id: item.cartItemId,
                           });
                           setIsModalOpen(true);
+                          
                         }}
                         icon={faTrashCan}
                       />
