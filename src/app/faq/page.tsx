@@ -79,9 +79,13 @@ const FAQItem: React.FC<FAQ> = ({ faqId, faqQuestion, faqAnswer }) => {
             transition={{ duration: 0.3 }}
             className="overflow-hidden mt-2"
           >
-            <p className="text-gray-600 font-light line-clamp-3 hover:line-clamp-none cursor-pointer">
+            <div
+              className="text-gray-600 font-light line-clamp-3 hover:line-clamp-none cursor-pointer"
+              dangerouslySetInnerHTML={{ __html: faqAnswer }}
+            ></div>
+            {/* <p className="text-gray-600 font-light line-clamp-3 hover:line-clamp-none cursor-pointer">
               {faqAnswer}
-            </p>
+            </p> */}
           </motion.div>
         )}
       </AnimatePresence>
