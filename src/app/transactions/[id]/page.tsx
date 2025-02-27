@@ -401,11 +401,12 @@ const TransactionPage = () => {
                 </Link>
               </div>
               <div>
-                <button
+                { (transaction?.status === "Unpaid") ? <></>: <button
                   className="w-full md:w-auto text-sm font-semibold bg-green-500 p-2 flex justify-center text-white rounded-lg"
                   onClick={() => sendInvoiceToEmail()}>
                   Send Invoice to E-mail
-                </button>
+                </button> }
+                
               </div>
 
             </div>
