@@ -233,6 +233,26 @@ const TransactionPage = () => {
     }
   };
 
+  const sendInvoiceToEmail = async () => {
+    try {
+      const response = await fetch(`${process.env.TRANSACTIONS}/invoice/email/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send transaction to your e-mail, please inquire this issue further to developer");
+      }
+
+      const data = await response.json();
+      toastSuccess("Invoice has been sent to your e-mail");
+    } catch (err: any) {
+      toastError("Failed to send transaction to your e-mail, please inquire this issue further to developer");
+    }
+  }
+
   if (loading) {
     return <Loading />;
   }
@@ -363,20 +383,33 @@ const TransactionPage = () => {
               </div>
             </div>
 
-            <Link
-              href={`https://wa.me/${adminContact?.phone?.replace(/\D/g, '')}`}
-              target="_blank"
-              className="hover:underline flex gap-2 mb-4"
-            >
-              <Image
-              src={`/icons/wwa.png`}
-              alt="Acc Icon"
-              width={24}
-              height={24}
-              className="filter"
-            />
-              Need Help?
-            </Link>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
+              <div>
+                <Link
+                  href={`https://wa.me/${adminContact?.phone?.replace(/\D/g, '')}`}
+                  target="_blank"
+                  className="hover:underline flex gap-2 mb-4"
+                >
+                  <Image
+                  src={`/icons/wwa.png`}
+                  alt="Acc Icon"
+                  width={24}
+                  height={24}
+                  className="filter"
+                />
+                  Need Help?
+                </Link>
+              </div>
+              <div>
+                { (transaction?.status === "Unpaid") ? <></>: <button
+                  className="w-full md:w-auto text-sm font-semibold bg-green-500 p-2 flex justify-center text-white rounded-lg"
+                  onClick={() => sendInvoiceToEmail()}>
+                  Send Invoice to E-mail
+                </button> }
+                
+              </div>
+
+            </div>
             
             <div className="hidden md:block mb-2">
                 <div className="flex gap-2 mb-2">

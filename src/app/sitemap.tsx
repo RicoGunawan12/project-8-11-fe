@@ -21,6 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1
     },
     {
+      url: `${process.env.APP_URL}/favicon.ico`,
+      lastModified: new Date(),
+      changeFrequency: 'always',
+      priority: 1
+    },
+    {
       url: `${process.env.APP_URL}/blog`,
       lastModified: new Date(),
       changeFrequency: 'daily',
