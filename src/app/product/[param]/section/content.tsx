@@ -187,16 +187,11 @@ const ProductDetailContent = () => {
 
         toastSuccess("Product added to cart!");
       }
-      if (
-        typeof window !== "undefined" &&
-        window.gtag &&
-        typeof window.gtag === "function"
-      ) {
-        window.gtag("event", "add_to_cart", {
-          product_name: data?.productName,
-          page_location: window.location.href,
-          page_path: `/product/${id}`,
-          user_id : getUserId()
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'Add to Cart', {
+          content_type: 'Cart',
+          content_product: [data],
+          user_id : getUserId() || "guest"
         });
       }
 
