@@ -12,12 +12,13 @@ import { Shipping } from "../model/shipping";
 import { useDebounce } from "use-debounce";
 import { Payment } from "../model/transactions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../component/footer";
 import { useLocaleStore } from "../component/locale";
 import DeleteConfirmationModal from "../component/modal/deleteConfirmation";
 import { pre } from "framer-motion/client";
 import { Ongkir } from "../model/ongkir";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
 
 const CartPage = () => {
   const router = useRouter();
@@ -46,6 +47,7 @@ const CartPage = () => {
   const [update, setUpdate] = useState(false);
   const { locale } = useLocaleStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVoucherOpen, setIsVoucherOpen] = useState(false);
   const [removedProduct, setRemoveProduct] = useState<{
     name: string;
     id: string;
@@ -744,6 +746,13 @@ const CartPage = () => {
                 ))}
               </select>
 
+              <button
+                  className="w-full bg-secondary text-white py-2 rounded-md mb-4 text-sm sm:text-base"
+                  onClick={() => {
+                    setIsVoucherOpen(true);
+                  }}
+                >{locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"}</button>
+
               {/* Voucher Section */}
               <label
                 htmlFor="voucher"
@@ -956,8 +965,58 @@ const CartPage = () => {
             }}
           />
         </div>
+
+        <div className="fixed items-center">
+          <Modal
+        
+            backdrop="opaque" 
+            isOpen={isVoucherOpen}
+            onClose={() => setIsVoucherOpen(false)}
+            closeButton={false}
+            className='text-black h-[500px] w-[500px] '
+          >
+            <ModalContent>
+              {/* Modal Header */}
+              <ModalHeader>
+                <h4 className="font-bold text-lg">
+                  Vouchers
+                </h4>
+              </ModalHeader>
+
+              {/* Modal Body */}
+              <ModalBody>
+                <div>
+                  <input
+                    type="text"
+                    id="voucher"
+                    className="w-full p-2 border rounded-md focus:outline-none"
+                    value={voucherCode}
+                    onChange={(e) => setVoucherCode(e.target.value)}
+                    placeholder="Search Voucher"
+                  />
+                </div>
+                <p className="text-center text-gray-600 mt-20">
+                  <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
+                  {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
+                </p>
+              </ModalBody>
+
+              {/* Modal Footer */}
+              <ModalFooter>
+                {/* <Button color="secondary" variant="solid" onPress={onCancel}>
+                  Close
+                </Button>
+                <Button color="danger" className='bg-red-500' variant="solid" onPress={onDelete}>
+                  Confirm
+                </Button> */}
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </div>
       </div>
       <Footer />
+
+      
     </div>
   );
 };
