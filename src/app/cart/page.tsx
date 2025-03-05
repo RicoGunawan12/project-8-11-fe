@@ -746,12 +746,12 @@ const CartPage = () => {
                 ))}
               </select>
 
-              <button
+              {/*<button
                   className="w-full bg-secondary text-white py-2 rounded-md mb-4 text-sm sm:text-base"
                   onClick={() => {
                     setIsVoucherOpen(true);
                   }}
-                >{locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"}</button>
+                >{locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"}</button>*/}
 
               {/* Voucher Section */}
               <label
