@@ -12,13 +12,14 @@ import { Shipping } from "../model/shipping";
 import { useDebounce } from "use-debounce";
 import { Payment } from "../model/transactions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTrashCan, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../component/footer";
 import { useLocaleStore } from "../component/locale";
 import DeleteConfirmationModal from "../component/modal/deleteConfirmation";
 import { pre } from "framer-motion/client";
 import { Ongkir } from "../model/ongkir";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import { Voucher } from "../model/voucher";
 
 const CartPage = () => {
   const router = useRouter();
@@ -43,6 +44,7 @@ const CartPage = () => {
     shippingFee: 0,
     voucher: 0,
     grandTotal: 0,
+    visibleVoucher: 0
   });
   const [update, setUpdate] = useState(false);
   const { locale } = useLocaleStore();
@@ -56,6 +58,53 @@ const CartPage = () => {
   const [isCOD, setIsCOD] = useState<boolean>(false);
   const [ongkir, setOngkir] = useState<Ongkir>();
   const [totalWeight, setTotalweight] = useState<number>(0);
+
+  const [visibleVoucher, setVisibleVoucher] = useState<Voucher[]>([]);
+  const [selectedVouchers, setSelectedVouchers] = useState<Voucher[]>([]);
+  const [appliedVouchers, setAppliedVouchers] = useState<Voucher[]>([]);
+
+  const handleSelect = (voucher: Voucher) => {
+    if (price.totalPrice < voucher.minimumPayment) return;
+    if (voucher.voucherSpecialEvent) {
+
+    }
+    else if (selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)) {
+      return
+    }
+    setSelectedVouchers((prev: Voucher[]) => {
+      // const filteredVouchers = prev.filter((v) => v.voucherType !== voucher.voucherType);
+      
+      if (prev.some((v) => v.voucherId === voucher.voucherId)) {
+        return prev.filter((v) => v.voucherId !== voucher.voucherId);
+      } else {
+        return [...prev, voucher];
+      }
+    });
+  };
+
+  const handleApplyVoucher = async () => {
+    setAppliedVouchers([...selectedVouchers]);
+    setIsVoucherOpen(false)
+
+    let totalVoucherDiscount = 0;
+    let totalVoucherFreeOngkir = 0;
+    selectedVouchers.forEach((voucher: Voucher) => {
+      if (voucher.voucherType === "fixed") {
+        totalVoucherDiscount += voucher.discount;
+      } else if (voucher.voucherType === "percentage") {
+        const discountAmount = (price.totalPrice * voucher.discount) / 100;
+        totalVoucherDiscount += Math.min(discountAmount, voucher.maxDiscount);
+      } else if (voucher.voucherType === "ongkir") {
+        totalVoucherFreeOngkir += voucher.discount;
+      }
+    });
+    setPrice((prev) => ({
+      ...prev,
+      // shippingFee: prev.shippingFee - totalVoucherFreeOngkir,
+      visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir,
+      grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir, // Subtract voucher from grand total
+    }));
+  }
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -140,6 +189,26 @@ const CartPage = () => {
         setLoading(false);
       }
     };
+    
+    const getVisibleVoucher = async () => {
+      try {
+        const voucherResponse = await fetch(`${process.env.VOUCHER}/visible`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!voucherResponse.ok) {
+          throw new Error("Failed to fetch visible voucher");
+        }
+        const fetchedVisibleVoucher = await voucherResponse.json();
+        console.log(fetchedVisibleVoucher);
+        
+        setVisibleVoucher(fetchedVisibleVoucher.vouchers);
+      } catch (error: any) {
+        // toastError(error.message || "An unexpected error occurred");
+        
+      }
+    }
+    getVisibleVoucher();
 
     if (token) {
       setLoading(true);
@@ -267,12 +336,17 @@ const CartPage = () => {
   }, [debouncedChosenAddress, debouncedQuantities, clientToken]);
 
   const checkOut = async () => {
-    if (!selectedShipping) {
-      toastError("Please select a shipping option and payment method.");
-      return;
-    }
+    // if (!selectedShipping) {
+    //   toastError("Please select a shipping option and payment method.");
+    //   return;
+    // }
 
     try {
+      const vouchers = [];
+      appliedVouchers.forEach((voucher: Voucher) => {
+        vouchers.push(voucher.voucherId);
+      })
+      vouchers.push(voucherCode === "" ? "0" : voucherCode);
       const response = await fetch(`${process.env.TRANSACTIONS}`, {
         method: "POST",
         headers: {
@@ -282,9 +356,9 @@ const CartPage = () => {
         body: JSON.stringify({
           addressId: chosenAddress?.addressId,
           paymentMethod: isCOD ? "COD" : "Non COD",
-          expedition: selectedShipping?.shipping_name,
-          shippingType: selectedShipping?.service_name,
-          deliveryFee: price.shippingFee,
+          expedition: "selectedShipping?.shipping_name",
+          shippingType: "selectedShipping?.service_name",
+          deliveryFee: price?.shippingFee || 0,
             // ongkir?.status === "Active"
             //   ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
             //     ? price.shippingFee > ongkir?.maximumFreeOngkir
@@ -292,10 +366,10 @@ const CartPage = () => {
             //       : 0
             //     : price.shippingFee
             //   : price.shippingFee,
-          deliveryCashback: selectedShipping?.shipping_cashback,
+          deliveryCashback: selectedShipping?.shipping_cashback || 0,
           notes: "",
           weight: totalWeight,
-          voucherCode: voucherCode,
+          voucherCode: vouchers,
           customerNotes: customerNotes,
           productNotes: productNotes,
         }),
@@ -419,7 +493,7 @@ const CartPage = () => {
       setUpdate(!update);
       toastSuccess("Item removed");
       setIsModalOpen(false);
-      window.location.reload();
+      // window.location.reload();
     } else {
       if (fetchData.status === 401) {
         router.push("/auth/login");
@@ -751,7 +825,21 @@ const CartPage = () => {
                   onClick={() => {
                     setIsVoucherOpen(true);
                   }}
-                >{locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"}</button>
+                >
+                  {
+                    appliedVouchers.length === 0 ?
+                    locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia":
+                    appliedVouchers.some((v) => v.minimumPayment > price.totalPrice) ?
+                    <div>
+                      <FontAwesomeIcon icon={faExclamationCircle} className="text-red-500"/>
+                      
+                    </div>
+                    :
+                    locale == "contentJSONEng" ? 
+                      `${appliedVouchers.length} voucher applied` : 
+                      `${appliedVouchers.length} voucher digunakan`
+                  }
+                </button>
 
               {/* Voucher Section */}
               <label
@@ -898,11 +986,39 @@ const CartPage = () => {
                     <span className="text-sm sm:text-lg font-semibold gap-2 flex">
                       <div>Voucher:</div>
                     </span>
-                    <span className="font-light text-black">
+                    <span className="font-light text-green-500">
                       - Rp. {price.voucher > price.totalPrice ? price.totalPrice : price.voucher}
                     </span>
                   </div>
                 ) : null}
+
+                {
+                  appliedVouchers.map((voucher: Voucher) => {
+                    return <div className="flex justify-between" key={voucher.voucherId}>
+                    <span className="text-sm sm:text-lg font-semibold gap-2 flex">
+                      <div>{ voucher.voucherName }</div>
+                    </span>
+                    <span className="font-light text-green-500">
+                    - Rp. {(() => {
+                            if (voucher.voucherType === "fixed") {
+                              return Math.min(price.totalPrice - Math.min(price.totalPrice * (voucher.discount / 100), voucher.discount)
+                                , voucher.discount);
+                            }
+                            if (voucher.voucherType === "percentage") {
+                              return (
+                                Math.min(price.totalPrice * (voucher.discount / 100), voucher.maxDiscount)
+                              )
+                            }
+                            if (voucher.voucherType === "ongkir") {
+                              return Math.min(price.totalPrice, voucher.discount);
+                            }
+                            return 0;
+                          })()}
+                    </span>
+                  </div>
+                  })
+                }
+
                 <div className="flex justify-between">
                   <span className="text-lg sm:text-xl font-semibold">
                     Grand Total:
@@ -918,7 +1034,20 @@ const CartPage = () => {
                               : 0
                             : price.shippingFee
                           : price.shippingFee) -
-                        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
+                        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher) 
+                        -
+                        Math.min(
+                          price.totalPrice +
+                          (ongkir?.status === "Active"
+                            ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                              ? price.shippingFee > ongkir?.maximumFreeOngkir
+                                ? price.shippingFee - ongkir?.maximumFreeOngkir
+                                : 0
+                              : price.shippingFee
+                            : price.shippingFee) -
+                          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
+                          price.visibleVoucher
+                        )
                     }
 
                   </span>
@@ -966,14 +1095,14 @@ const CartPage = () => {
           />
         </div>
 
-        <div className="fixed items-center">
+        <div className="fixed items-center z-[1000]">
           <Modal
         
             backdrop="opaque" 
             isOpen={isVoucherOpen}
             onClose={() => setIsVoucherOpen(false)}
             closeButton={false}
-            className='text-black h-[500px] w-[500px] '
+            className='text-black h-[600px] z-[888] fixed'
           >
             <ModalContent>
               {/* Modal Header */}
@@ -990,15 +1119,70 @@ const CartPage = () => {
                     type="text"
                     id="voucher"
                     className="w-full p-2 border rounded-md focus:outline-none"
-                    value={voucherCode}
-                    onChange={(e) => setVoucherCode(e.target.value)}
+                    // value={voucherCode}
+                    // onChange={(e) => setVoucherCode(e.target.value)}
                     placeholder="Search Voucher"
                   />
                 </div>
-                <p className="text-center text-gray-600 mt-20">
-                  <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
-                  {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
-                </p>
+                {
+                  visibleVoucher.length === 0 ?
+                  <p className="text-center text-gray-600 mt-20">
+                    <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
+                    {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
+                  </p>
+                  :
+                  <div className="mt-4 overflow-y-scroll h-[380px]">
+                    {
+                      visibleVoucher.map((voucher: Voucher) => (
+                        <div
+                          key={voucher.voucherId}
+                          className={`p-4 h-[130px] flex items-center cursor-pointer justify-between border-b-1 "border-gray-300"
+                              ${
+                                voucher.voucherSpecialEvent === true ?
+                                ""
+                                :
+                                price.totalPrice < voucher.minimumPayment ||
+                                selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)
+                                ? "opacity-50 cursor-auto" 
+                                : 
+                                ""
+                              }`
+                            }
+                          onClick={() => handleSelect(voucher)}
+                        >
+                          <div className="flex items-center gap-4">
+                            <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" />
+                            <div>
+                              <div className="text-lg font-medium">{voucher.voucherName}</div>
+                              <div className="text-sm text-gray-600">
+                                {voucher.voucherType === "percentage" && `Discount ${voucher.discount}%`}
+                                {voucher.voucherType === "fixed" && `Discount Rp ${voucher.maxDiscount}`}
+                                {voucher.voucherType === "ongkir" && `Free shipping Rp ${voucher.discount}`}
+                              </div>
+                              <div className="text-sm text-gray-500">Min. payment Rp {voucher.minimumPayment}</div>
+                              {
+                                voucher.voucherType === "percentage" && 
+                                <div className="text-sm text-gray-500">Max. discount Rp {voucher.maxDiscount}</div>  
+                              }
+                              
+                              {
+                                price.totalPrice < voucher.minimumPayment &&
+                                <div className="text-xs mt-2 text-red-500">Add Rp { voucher.minimumPayment - price.totalPrice } more to use this voucher</div>
+                              }
+                            </div>
+                          </div>
+                          <input
+                            type="checkbox"
+                            checked={selectedVouchers.some((v) => v.voucherId === voucher.voucherId)}
+                            readOnly
+                            className="h-5 w-5 cursor-pointer"
+                          />
+                        </div>
+                      ))
+                    }
+                    
+                  </div>
+                }
               </ModalBody>
 
               {/* Modal Footer */}
@@ -1009,6 +1193,7 @@ const CartPage = () => {
                 <Button color="danger" className='bg-red-500' variant="solid" onPress={onDelete}>
                   Confirm
                 </Button> */}
+                <Button color="secondary" onClick={handleApplyVoucher}>Apply Voucher</Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
