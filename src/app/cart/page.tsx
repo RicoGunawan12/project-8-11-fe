@@ -12,13 +12,14 @@ import { Shipping } from "../model/shipping";
 import { useDebounce } from "use-debounce";
 import { Payment } from "../model/transactions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTrashCan, faExclamationCircle, faPercentage, faMoneyBill, faShippingFast, faBottleWater } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../component/footer";
 import { useLocaleStore } from "../component/locale";
 import DeleteConfirmationModal from "../component/modal/deleteConfirmation";
 import { pre } from "framer-motion/client";
 import { Ongkir } from "../model/ongkir";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import { Voucher } from "../model/voucher";
 
 const CartPage = () => {
   const router = useRouter();
@@ -43,6 +44,7 @@ const CartPage = () => {
     shippingFee: 0,
     voucher: 0,
     grandTotal: 0,
+    visibleVoucher: 0
   });
   const [update, setUpdate] = useState(false);
   const { locale } = useLocaleStore();
@@ -57,8 +59,6 @@ const CartPage = () => {
   const [ongkir, setOngkir] = useState<Ongkir>();
   const [totalWeight, setTotalweight] = useState<number>(0);
 
-<<<<<<< Updated upstream
-=======
   const [visibleVoucher, setVisibleVoucher] = useState<Voucher[]>([]);
   const [selectedVouchers, setSelectedVouchers] = useState<Voucher[]>([]);
   const [appliedVouchers, setAppliedVouchers] = useState<Voucher[]>([]);
@@ -88,10 +88,11 @@ const CartPage = () => {
   const handleApplyVoucher = async () => {
     setAppliedVouchers([...selectedVouchers]);
     setIsVoucherOpen(false)
-    console.log(selectedVouchers)
+
     let totalVoucherDiscount = 0;
     let totalVoucherFreeOngkir = 0;
     let totalVoucherProduct = 0;
+
     selectedVouchers.forEach((voucher: Voucher) => {
       if (voucher.voucherType === "fixed") {
         totalVoucherDiscount += voucher.discount;
@@ -102,17 +103,23 @@ const CartPage = () => {
         totalVoucherFreeOngkir += voucher.discount;
       } else if(voucher.voucherType === "product"){
         totalVoucherProduct += voucher.discount
+        totalVoucherFreeOngkir += Math.min(voucher.discount, selectedShipping?.service_fee ?? 0);
       }
     });
     setPrice((prev) => ({
       ...prev,
       // shippingFee: prev.shippingFee - totalVoucherFreeOngkir,
+
       visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir + totalVoucherProduct,
       grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir - totalVoucherProduct, // Subtract voucher from grand total
     }));
   }
 
->>>>>>> Stashed changes
+      visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir,
+      grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir, // Subtract voucher from grand total
+    }));
+  }
+
   useEffect(() => {
     const token = getTokenCookie();
     setClientToken(token);
@@ -189,8 +196,6 @@ const CartPage = () => {
         }
         setOngkir(ongkirData.freeOngkir);
 
-<<<<<<< Updated upstream
-=======
         const voucherResponse = await fetch(`${process.env.VOUCHER}/visible`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -223,7 +228,6 @@ const CartPage = () => {
         setVisibleVoucher(vf);
         // setVisibleVoucher(fetchedVisibleVoucher.vouchers)
 
->>>>>>> Stashed changes
         setLoading(false);
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
@@ -231,6 +235,26 @@ const CartPage = () => {
         setLoading(false);
       }
     };
+    
+    const getVisibleVoucher = async () => {
+      try {
+        const voucherResponse = await fetch(`${process.env.VOUCHER}/visible`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!voucherResponse.ok) {
+          throw new Error("Failed to fetch visible voucher");
+        }
+        const fetchedVisibleVoucher = await voucherResponse.json();
+        console.log(fetchedVisibleVoucher);
+        
+        setVisibleVoucher(fetchedVisibleVoucher.vouchers);
+      } catch (error: any) {
+        // toastError(error.message || "An unexpected error occurred");
+        
+      }
+    }
+    getVisibleVoucher();
 
     if (token) {
       setLoading(true);
@@ -358,12 +382,17 @@ const CartPage = () => {
   }, [debouncedChosenAddress, debouncedQuantities, clientToken]);
 
   const checkOut = async () => {
-    if (!selectedShipping) {
-      toastError("Please select a shipping option and payment method.");
-      return;
-    }
+    // if (!selectedShipping) {
+    //   toastError("Please select a shipping option and payment method.");
+    //   return;
+    // }
 
     try {
+      const vouchers = [];
+      appliedVouchers.forEach((voucher: Voucher) => {
+        vouchers.push(voucher.voucherId);
+      })
+      vouchers.push(voucherCode === "" ? "0" : voucherCode);
       const response = await fetch(`${process.env.TRANSACTIONS}`, {
         method: "POST",
         headers: {
@@ -373,13 +402,11 @@ const CartPage = () => {
         body: JSON.stringify({
           addressId: chosenAddress?.addressId,
           paymentMethod: isCOD ? "COD" : "Non COD",
+
           expedition: selectedShipping?.shipping_name,
           shippingType: selectedShipping?.service_name,
-<<<<<<< Updated upstream
-          deliveryFee: price.shippingFee,
-=======
+
           deliveryFee: price?.shippingFee || 0,
->>>>>>> Stashed changes
             // ongkir?.status === "Active"
             //   ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
             //     ? price.shippingFee > ongkir?.maximumFreeOngkir
@@ -387,10 +414,10 @@ const CartPage = () => {
             //       : 0
             //     : price.shippingFee
             //   : price.shippingFee,
-          deliveryCashback: selectedShipping?.shipping_cashback,
+          deliveryCashback: selectedShipping?.shipping_cashback || 0,
           notes: "",
           weight: totalWeight,
-          voucherCode: voucherCode,
+          voucherCode: vouchers,
           customerNotes: customerNotes,
           productNotes: productNotes,
         }),
@@ -551,7 +578,7 @@ const CartPage = () => {
       setUpdate(!update);
       toastSuccess("Item removed");
       setIsModalOpen(false);
-      window.location.reload();
+      // window.location.reload();
     } else {
       if (fetchData.status === 401) {
         router.push("/auth/login");
@@ -904,6 +931,21 @@ const CartPage = () => {
                     setIsVoucherOpen(true);
                   }}
                 >{locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"}</button>*/}
+                >
+                  {
+                    appliedVouchers.length === 0 ?
+                    locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia":
+                    appliedVouchers.some((v) => v.minimumPayment > price.totalPrice) ?
+                    <div>
+                      <FontAwesomeIcon icon={faExclamationCircle} className="text-red-500"/>
+                      
+                    </div>
+                    :
+                    locale == "contentJSONEng" ? 
+                      `${appliedVouchers.length} voucher applied` : 
+                      `${appliedVouchers.length} voucher digunakan`
+                  }
+                </button>
 
               {/* Voucher Section */}
               <label
@@ -1050,18 +1092,20 @@ const CartPage = () => {
                     <span className="text-sm sm:text-lg font-semibold gap-2 flex">
                       <div>Voucher:</div>
                     </span>
-                    <span className="font-light text-black">
+                    <span className="font-light text-green-500">
                       - Rp. {price.voucher > price.totalPrice ? price.totalPrice : price.voucher}
                     </span>
                   </div>
                 ) : null}
-<<<<<<< Updated upstream
-=======
+
 
                 {
                   appliedVouchers.map((voucher: Voucher) => {
                     return <div className="flex justify-between" key={voucher.voucherId}>
+
                     <span className="text-sm sm:text-lg font-semibold gap-2 flex">
+
+                    <span className="text-sm sm:text-lg gap-2 flex">
                       <div>{ voucher.voucherName }</div>
                     </span>
                     <span className="font-light text-green-500">
@@ -1088,7 +1132,6 @@ const CartPage = () => {
                   })
                 }
 
->>>>>>> Stashed changes
                 <div className="flex justify-between">
                   <span className="text-lg sm:text-xl font-semibold">
                     Grand Total:
@@ -1104,9 +1147,6 @@ const CartPage = () => {
                               : 0
                             : price.shippingFee
                           : price.shippingFee) -
-<<<<<<< Updated upstream
-                        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
-=======
                         (price.voucher > price.totalPrice ? price.totalPrice : price.voucher) 
                         -
                         Math.min(
@@ -1118,12 +1158,10 @@ const CartPage = () => {
                                 : 0
                               : price.shippingFee
                             : price.shippingFee) -
-                          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
-                          
-                          ,
+
+                          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
                           price.visibleVoucher
                         )
->>>>>>> Stashed changes
                     }
 
                   </span>
@@ -1171,14 +1209,14 @@ const CartPage = () => {
           />
         </div>
 
-        <div className="fixed items-center">
+        <div className="fixed items-center z-[1000]">
           <Modal
         
             backdrop="opaque" 
             isOpen={isVoucherOpen}
             onClose={() => setIsVoucherOpen(false)}
             closeButton={false}
-            className='text-black h-[500px] w-[500px] '
+            className='text-black h-[600px] z-[888] fixed'
           >
             <ModalContent>
               {/* Modal Header */}
@@ -1195,17 +1233,15 @@ const CartPage = () => {
                     type="text"
                     id="voucher"
                     className="w-full p-2 border rounded-md focus:outline-none"
-                    value={voucherCode}
-                    onChange={(e) => setVoucherCode(e.target.value)}
+                    // value={voucherCode}
+                    // onChange={(e) => setVoucherCode(e.target.value)}
                     placeholder="Search Voucher"
                   />
                 </div>
-<<<<<<< Updated upstream
                 <p className="text-center text-gray-600 mt-20">
                   <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
                   {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
                 </p>
-=======
                 {
                   visibleVoucher.length === 0 ?
                   <p className="text-center text-gray-600 mt-20">
@@ -1234,7 +1270,24 @@ const CartPage = () => {
                           onClick={() => handleSelect(voucher)}
                         >
                           <div className="flex items-center gap-4">
+
                             <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" />
+                            {
+                              voucher.voucherType === "percentage" &&
+                              <FontAwesomeIcon icon={faPercentage} width={80} height={80} className="rounded-md text-3xl" />
+                            }
+                            {
+                              voucher.voucherType === "fixed" &&
+                              <FontAwesomeIcon icon={faMoneyBill} width={80} height={80} className="rounded-md text-3xl" />
+                            }
+                            {
+                              voucher.voucherType === "ongkir" &&
+                              <FontAwesomeIcon icon={faShippingFast} width={80} height={80} className="rounded-md text-3xl" />
+                            }
+                            {
+                              voucher.voucherType === "product" &&
+                              <FontAwesomeIcon icon={faBottleWater} width={80} height={80} className="rounded-md text-3xl" />
+                            }
                             <div>
                               <div className="text-lg font-medium">{voucher.voucherName}</div>
                               <div className="text-sm text-gray-600">
@@ -1266,7 +1319,6 @@ const CartPage = () => {
                     
                   </div>
                 }
->>>>>>> Stashed changes
               </ModalBody>
 
               {/* Modal Footer */}
@@ -1277,6 +1329,7 @@ const CartPage = () => {
                 <Button color="danger" className='bg-red-500' variant="solid" onPress={onDelete}>
                   Confirm
                 </Button> */}
+                <Button color="secondary" onClick={handleApplyVoucher}>Apply Voucher</Button>
               </ModalFooter>
             </ModalContent>
           </Modal>

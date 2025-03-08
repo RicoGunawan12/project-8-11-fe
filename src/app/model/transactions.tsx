@@ -111,5 +111,6 @@ export interface Payment {
   totalPrice : number,
   shippingFee : number,
   voucher : number,
+  visibleVoucher : number,
   grandTotal : number
 }

@@ -13,6 +13,7 @@ export interface Voucher {
     minimumPayment: number,
     variantsId: string,
     voucherVisibility: boolean,
+
     voucherSpecialEvent: boolean,
     productVariant : ProductVariant
 }
