@@ -68,6 +68,9 @@ const CartPage = () => {
     if (voucher.voucherSpecialEvent) {
 
     }
+    if( checkVariantVoucherExist(voucher) ){
+      return
+    }
     else if (selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)) {
       return
     }
@@ -88,6 +91,8 @@ const CartPage = () => {
 
     let totalVoucherDiscount = 0;
     let totalVoucherFreeOngkir = 0;
+    let totalVoucherProduct = 0;
+
     selectedVouchers.forEach((voucher: Voucher) => {
       if (voucher.voucherType === "fixed") {
         totalVoucherDiscount += voucher.discount;
@@ -95,12 +100,21 @@ const CartPage = () => {
         const discountAmount = (price.totalPrice * voucher.discount) / 100;
         totalVoucherDiscount += Math.min(discountAmount, voucher.maxDiscount);
       } else if (voucher.voucherType === "ongkir") {
+        totalVoucherFreeOngkir += voucher.discount;
+      } else if(voucher.voucherType === "product"){
+        totalVoucherProduct += voucher.discount
         totalVoucherFreeOngkir += Math.min(voucher.discount, selectedShipping?.service_fee ?? 0);
       }
     });
     setPrice((prev) => ({
       ...prev,
       // shippingFee: prev.shippingFee - totalVoucherFreeOngkir,
+
+      visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir + totalVoucherProduct,
+      grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir - totalVoucherProduct, // Subtract voucher from grand total
+    }));
+  }
+
       visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir,
       grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir, // Subtract voucher from grand total
     }));
@@ -120,7 +134,7 @@ const CartPage = () => {
             deleteTokenCookie();
             router.push("/auth/login");
         }
-        const cartData = await cartResponse.json();
+        const cartData : Cart[] = await cartResponse.json();
         if (!cartResponse.ok) {
           throw new Error(cartData.message || "Failed to fetch cart data");
         }
@@ -181,6 +195,38 @@ const CartPage = () => {
           );
         }
         setOngkir(ongkirData.freeOngkir);
+
+        const voucherResponse = await fetch(`${process.env.VOUCHER}/visible`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!voucherResponse.ok) {
+          throw new Error("Failed to fetch visible voucher");
+        }
+        const fetchedVisibleVoucher = await voucherResponse.json();
+        console.log(fetchedVisibleVoucher);
+
+        const vc : Voucher[] = fetchedVisibleVoucher.vouchers
+
+        const vf : Voucher[] = []
+
+        for(const v of vc){
+          if(v.voucherType === "product"){
+            for(const p of cartData){
+              console.log("this: ",p.productVariantId, v)
+              if(v.variantsId == p.productVariantId){
+                console.log("push")
+                v.discount = p.product_variant.productPrice
+              }
+          
+            }
+          }
+          
+          vf.push(v)
+        }
+        console.log(vf)
+        setVisibleVoucher(vf);
+        // setVisibleVoucher(fetchedVisibleVoucher.vouchers)
 
         setLoading(false);
       } catch (error: any) {
@@ -356,8 +402,10 @@ const CartPage = () => {
         body: JSON.stringify({
           addressId: chosenAddress?.addressId,
           paymentMethod: isCOD ? "COD" : "Non COD",
-          expedition: "selectedShipping?.shipping_name",
-          shippingType: "selectedShipping?.service_name",
+
+          expedition: selectedShipping?.shipping_name,
+          shippingType: selectedShipping?.service_name,
+
           deliveryFee: price?.shippingFee || 0,
             // ongkir?.status === "Active"
             //   ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
@@ -400,21 +448,58 @@ const CartPage = () => {
           user_id : getUserId()
         });
       }
+      
+      
 
       if (
-        !isCOD &&
+        !isCOD && 
         price.totalPrice +
         (ongkir?.status === "Active"
-          ? ongkir?.minimumPaymentAmount <
-            price.totalPrice - price.voucher
+          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
             ? price.shippingFee > ongkir?.maximumFreeOngkir
               ? price.shippingFee - ongkir?.maximumFreeOngkir
               : 0
             : price.shippingFee
           : price.shippingFee) -
-        (price.voucher || 0) >= 1000
-
+        (price.voucher || 0) >= 1000 && 
+          price.totalPrice +
+            (ongkir?.status === "Active"
+              ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                ? price.shippingFee > ongkir?.maximumFreeOngkir
+                  ? price.shippingFee - ongkir?.maximumFreeOngkir
+                  : 0
+                : price.shippingFee
+              : price.shippingFee) -
+            (price.voucher > price.totalPrice ? price.totalPrice : price.voucher) 
+            -
+            Math.min(
+              price.totalPrice +
+              (ongkir?.status === "Active"
+                ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                  ? price.shippingFee > ongkir?.maximumFreeOngkir
+                    ? price.shippingFee - ongkir?.maximumFreeOngkir
+                    : 0
+                  : price.shippingFee
+                : price.shippingFee) -
+              (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
+              
+              ,
+              price.visibleVoucher
+            )
+          != 0
+        
       ) {
+        console.log(
+          price.totalPrice +
+          (ongkir?.status === "Active"
+            ? ongkir?.minimumPaymentAmount <
+              price.totalPrice - price.voucher
+              ? price.shippingFee > ongkir?.maximumFreeOngkir
+                ? price.shippingFee - ongkir?.maximumFreeOngkir
+                : 0
+              : price.shippingFee
+            : price.shippingFee) -
+          (price.voucher || 0) >= 1000)
         router.push(resp.payTransactionResponse.invoice_url);
       } else {
         router.push(`/transactions/${resp.transaction.transactionId}`);
@@ -566,6 +651,26 @@ const CartPage = () => {
       });
     }
   };
+
+  const checkVariantVoucherExist = (voucher : Voucher) => {
+
+    console.log(voucher)
+
+    if(voucher.voucherType !== "product"){
+      console.log("exit not product")
+      return false;
+    }
+
+    for(const p of data){
+      if(p.productVariantId == voucher.variantsId){
+        console.log(voucher, p.product_variant.productPrice)
+        voucher.discount = p.product_variant.productPrice
+        return false
+      }
+    }
+
+    return true;
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col text-black">
@@ -820,11 +925,12 @@ const CartPage = () => {
                 ))}
               </select>
 
-              <button
+              {/*<button
                   className="w-full bg-secondary text-white py-2 rounded-md mb-4 text-sm sm:text-base"
                   onClick={() => {
                     setIsVoucherOpen(true);
                   }}
+                >{locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"}</button>*/}
                 >
                   {
                     appliedVouchers.length === 0 ?
@@ -992,9 +1098,13 @@ const CartPage = () => {
                   </div>
                 ) : null}
 
+
                 {
                   appliedVouchers.map((voucher: Voucher) => {
                     return <div className="flex justify-between" key={voucher.voucherId}>
+
+                    <span className="text-sm sm:text-lg font-semibold gap-2 flex">
+
                     <span className="text-sm sm:text-lg gap-2 flex">
                       <div>{ voucher.voucherName }</div>
                     </span>
@@ -1010,7 +1120,10 @@ const CartPage = () => {
                               )
                             }
                             if (voucher.voucherType === "ongkir") {
-                              return Math.min(price.shippingFee, voucher.discount);
+                              return Math.min(price.totalPrice, voucher.discount);
+                            }
+                            if(voucher.voucherType === "product"){
+                              return voucher.discount
                             }
                             return 0;
                           })()}
@@ -1045,6 +1158,7 @@ const CartPage = () => {
                                 : 0
                               : price.shippingFee
                             : price.shippingFee) -
+
                           (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
                           price.visibleVoucher
                         )
@@ -1124,6 +1238,10 @@ const CartPage = () => {
                     placeholder="Search Voucher"
                   />
                 </div>
+                <p className="text-center text-gray-600 mt-20">
+                  <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
+                  {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
+                </p>
                 {
                   visibleVoucher.length === 0 ?
                   <p className="text-center text-gray-600 mt-20">
@@ -1141,7 +1259,8 @@ const CartPage = () => {
                                 voucher.voucherSpecialEvent === true ?
                                 ""
                                 :
-                                price.totalPrice < voucher.minimumPayment ||
+                                price.totalPrice < voucher.minimumPayment || 
+                                checkVariantVoucherExist(voucher) ||
                                 selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)
                                 ? "opacity-50 cursor-auto" 
                                 : 
@@ -1151,7 +1270,8 @@ const CartPage = () => {
                           onClick={() => handleSelect(voucher)}
                         >
                           <div className="flex items-center gap-4">
-                            {/* <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" /> */}
+
+                            <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" />
                             {
                               voucher.voucherType === "percentage" &&
                               <FontAwesomeIcon icon={faPercentage} width={80} height={80} className="rounded-md text-3xl" />

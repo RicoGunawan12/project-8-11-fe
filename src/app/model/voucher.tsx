@@ -1,3 +1,5 @@
+import { ProductVariant } from "./product";
+
 export interface Voucher {
     voucherId : string,
     voucherCode : string,
@@ -11,5 +13,7 @@ export interface Voucher {
     minimumPayment: number,
     variantsId: string,
     voucherVisibility: boolean,
-    voucherSpecialEvent: boolean
+
+    voucherSpecialEvent: boolean,
+    productVariant : ProductVariant
 }
