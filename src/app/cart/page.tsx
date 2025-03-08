@@ -68,7 +68,7 @@ const CartPage = () => {
     if (voucher.voucherSpecialEvent) {
 
     }
-    if( checkVariantVoucherExist(voucher) ){
+    if( !checkVariantVoucherExist(voucher) && voucher.voucherType === "product" ){
       return
     }
     else if (selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)) {
@@ -115,10 +115,10 @@ const CartPage = () => {
     }));
   }
 
-      visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir,
-      grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir, // Subtract voucher from grand total
-    }));
-  }
+    //   visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir,
+    //   grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir, // Subtract voucher from grand total
+    // }));
+  // }
 
   useEffect(() => {
     const token = getTokenCookie();
@@ -654,8 +654,9 @@ const CartPage = () => {
 
   const checkVariantVoucherExist = (voucher : Voucher) => {
 
-    console.log(voucher)
-
+    console.log(voucher.voucherType, voucher.voucherName)
+    console.log(data);
+    
     if(voucher.voucherType !== "product"){
       console.log("exit not product")
       return false;
@@ -665,7 +666,7 @@ const CartPage = () => {
       if(p.productVariantId == voucher.variantsId){
         console.log(voucher, p.product_variant.productPrice)
         voucher.discount = p.product_variant.productPrice
-        return false
+        return true
       }
     }
 
@@ -925,13 +926,15 @@ const CartPage = () => {
                 ))}
               </select>
 
-              {/*<button
+              <button
                   className="w-full bg-secondary text-white py-2 rounded-md mb-4 text-sm sm:text-base"
                   onClick={() => {
                     setIsVoucherOpen(true);
                   }}
-                >{locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"}</button>*/}
                 >
+                  {/* {locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"} */}
+                {/* </button>
+                > */}
                   {
                     appliedVouchers.length === 0 ?
                     locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia":
@@ -1103,7 +1106,7 @@ const CartPage = () => {
                   appliedVouchers.map((voucher: Voucher) => {
                     return <div className="flex justify-between" key={voucher.voucherId}>
 
-                    <span className="text-sm sm:text-lg font-semibold gap-2 flex">
+                    {/* <span className="text-sm sm:text-lg font-semibold gap-2 flex"> */}
 
                     <span className="text-sm sm:text-lg gap-2 flex">
                       <div>{ voucher.voucherName }</div>
@@ -1238,10 +1241,10 @@ const CartPage = () => {
                     placeholder="Search Voucher"
                   />
                 </div>
-                <p className="text-center text-gray-600 mt-20">
+                {/* <p className="text-center text-gray-600 mt-20">
                   <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
                   {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
-                </p>
+                </p> */}
                 {
                   visibleVoucher.length === 0 ?
                   <p className="text-center text-gray-600 mt-20">
@@ -1260,10 +1263,12 @@ const CartPage = () => {
                                 ""
                                 :
                                 price.totalPrice < voucher.minimumPayment || 
-                                checkVariantVoucherExist(voucher) ||
                                 selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)
                                 ? "opacity-50 cursor-auto" 
                                 : 
+                                !checkVariantVoucherExist(voucher) && voucher.voucherType === "product"
+                                ? "opacity-50 cursor-auto" 
+                                :
                                 ""
                               }`
                             }
@@ -1271,7 +1276,7 @@ const CartPage = () => {
                         >
                           <div className="flex items-center gap-4">
 
-                            <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" />
+                            {/* <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" /> */}
                             {
                               voucher.voucherType === "percentage" &&
                               <FontAwesomeIcon icon={faPercentage} width={80} height={80} className="rounded-md text-3xl" />
