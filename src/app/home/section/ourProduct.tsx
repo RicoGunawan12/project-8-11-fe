@@ -87,7 +87,7 @@ const OurProductSection = () => {
     trackViewCategory(categoryName);
   };
 
-  if (loading) {
+  if (loading || !products) {
     return <Loading />;
   }
 

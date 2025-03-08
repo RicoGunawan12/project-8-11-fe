@@ -57,6 +57,62 @@ const CartPage = () => {
   const [ongkir, setOngkir] = useState<Ongkir>();
   const [totalWeight, setTotalweight] = useState<number>(0);
 
+<<<<<<< Updated upstream
+=======
+  const [visibleVoucher, setVisibleVoucher] = useState<Voucher[]>([]);
+  const [selectedVouchers, setSelectedVouchers] = useState<Voucher[]>([]);
+  const [appliedVouchers, setAppliedVouchers] = useState<Voucher[]>([]);
+
+  const handleSelect = (voucher: Voucher) => {
+    if (price.totalPrice < voucher.minimumPayment) return;
+    if (voucher.voucherSpecialEvent) {
+
+    }
+    if( checkVariantVoucherExist(voucher) ){
+      return
+    }
+    else if (selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)) {
+      return
+    }
+    setSelectedVouchers((prev: Voucher[]) => {
+      // const filteredVouchers = prev.filter((v) => v.voucherType !== voucher.voucherType);
+      
+      if (prev.some((v) => v.voucherId === voucher.voucherId)) {
+        return prev.filter((v) => v.voucherId !== voucher.voucherId);
+      } else {
+        return [...prev, voucher];
+      }
+    });
+  };
+
+  const handleApplyVoucher = async () => {
+    setAppliedVouchers([...selectedVouchers]);
+    setIsVoucherOpen(false)
+    console.log(selectedVouchers)
+    let totalVoucherDiscount = 0;
+    let totalVoucherFreeOngkir = 0;
+    let totalVoucherProduct = 0;
+    selectedVouchers.forEach((voucher: Voucher) => {
+      if (voucher.voucherType === "fixed") {
+        totalVoucherDiscount += voucher.discount;
+      } else if (voucher.voucherType === "percentage") {
+        const discountAmount = (price.totalPrice * voucher.discount) / 100;
+        totalVoucherDiscount += Math.min(discountAmount, voucher.maxDiscount);
+      } else if (voucher.voucherType === "ongkir") {
+        totalVoucherFreeOngkir += voucher.discount;
+      } else if(voucher.voucherType === "product"){
+        totalVoucherProduct += voucher.discount
+      }
+    });
+    setPrice((prev) => ({
+      ...prev,
+      // shippingFee: prev.shippingFee - totalVoucherFreeOngkir,
+      visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir + totalVoucherProduct,
+      grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir - totalVoucherProduct, // Subtract voucher from grand total
+    }));
+  }
+
+>>>>>>> Stashed changes
   useEffect(() => {
     const token = getTokenCookie();
     setClientToken(token);
@@ -71,7 +127,7 @@ const CartPage = () => {
             deleteTokenCookie();
             router.push("/auth/login");
         }
-        const cartData = await cartResponse.json();
+        const cartData : Cart[] = await cartResponse.json();
         if (!cartResponse.ok) {
           throw new Error(cartData.message || "Failed to fetch cart data");
         }
@@ -133,6 +189,41 @@ const CartPage = () => {
         }
         setOngkir(ongkirData.freeOngkir);
 
+<<<<<<< Updated upstream
+=======
+        const voucherResponse = await fetch(`${process.env.VOUCHER}/visible`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!voucherResponse.ok) {
+          throw new Error("Failed to fetch visible voucher");
+        }
+        const fetchedVisibleVoucher = await voucherResponse.json();
+        console.log(fetchedVisibleVoucher);
+
+        const vc : Voucher[] = fetchedVisibleVoucher.vouchers
+
+        const vf : Voucher[] = []
+
+        for(const v of vc){
+          if(v.voucherType === "product"){
+            for(const p of cartData){
+              console.log("this: ",p.productVariantId, v)
+              if(v.variantsId == p.productVariantId){
+                console.log("push")
+                v.discount = p.product_variant.productPrice
+              }
+          
+            }
+          }
+          
+          vf.push(v)
+        }
+        console.log(vf)
+        setVisibleVoucher(vf);
+        // setVisibleVoucher(fetchedVisibleVoucher.vouchers)
+
+>>>>>>> Stashed changes
         setLoading(false);
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
@@ -284,7 +375,11 @@ const CartPage = () => {
           paymentMethod: isCOD ? "COD" : "Non COD",
           expedition: selectedShipping?.shipping_name,
           shippingType: selectedShipping?.service_name,
+<<<<<<< Updated upstream
           deliveryFee: price.shippingFee,
+=======
+          deliveryFee: price?.shippingFee || 0,
+>>>>>>> Stashed changes
             // ongkir?.status === "Active"
             //   ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
             //     ? price.shippingFee > ongkir?.maximumFreeOngkir
@@ -326,21 +421,58 @@ const CartPage = () => {
           user_id : getUserId()
         });
       }
+      
+      
 
       if (
-        !isCOD &&
+        !isCOD && 
         price.totalPrice +
         (ongkir?.status === "Active"
-          ? ongkir?.minimumPaymentAmount <
-            price.totalPrice - price.voucher
+          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
             ? price.shippingFee > ongkir?.maximumFreeOngkir
               ? price.shippingFee - ongkir?.maximumFreeOngkir
               : 0
             : price.shippingFee
           : price.shippingFee) -
-        (price.voucher || 0) >= 1000
-
+        (price.voucher || 0) >= 1000 && 
+          price.totalPrice +
+            (ongkir?.status === "Active"
+              ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                ? price.shippingFee > ongkir?.maximumFreeOngkir
+                  ? price.shippingFee - ongkir?.maximumFreeOngkir
+                  : 0
+                : price.shippingFee
+              : price.shippingFee) -
+            (price.voucher > price.totalPrice ? price.totalPrice : price.voucher) 
+            -
+            Math.min(
+              price.totalPrice +
+              (ongkir?.status === "Active"
+                ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                  ? price.shippingFee > ongkir?.maximumFreeOngkir
+                    ? price.shippingFee - ongkir?.maximumFreeOngkir
+                    : 0
+                  : price.shippingFee
+                : price.shippingFee) -
+              (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
+              
+              ,
+              price.visibleVoucher
+            )
+          != 0
+        
       ) {
+        console.log(
+          price.totalPrice +
+          (ongkir?.status === "Active"
+            ? ongkir?.minimumPaymentAmount <
+              price.totalPrice - price.voucher
+              ? price.shippingFee > ongkir?.maximumFreeOngkir
+                ? price.shippingFee - ongkir?.maximumFreeOngkir
+                : 0
+              : price.shippingFee
+            : price.shippingFee) -
+          (price.voucher || 0) >= 1000)
         router.push(resp.payTransactionResponse.invoice_url);
       } else {
         router.push(`/transactions/${resp.transaction.transactionId}`);
@@ -492,6 +624,26 @@ const CartPage = () => {
       });
     }
   };
+
+  const checkVariantVoucherExist = (voucher : Voucher) => {
+
+    console.log(voucher)
+
+    if(voucher.voucherType !== "product"){
+      console.log("exit not product")
+      return false;
+    }
+
+    for(const p of data){
+      if(p.productVariantId == voucher.variantsId){
+        console.log(voucher, p.product_variant.productPrice)
+        voucher.discount = p.product_variant.productPrice
+        return false
+      }
+    }
+
+    return true;
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col text-black">
@@ -903,6 +1055,40 @@ const CartPage = () => {
                     </span>
                   </div>
                 ) : null}
+<<<<<<< Updated upstream
+=======
+
+                {
+                  appliedVouchers.map((voucher: Voucher) => {
+                    return <div className="flex justify-between" key={voucher.voucherId}>
+                    <span className="text-sm sm:text-lg font-semibold gap-2 flex">
+                      <div>{ voucher.voucherName }</div>
+                    </span>
+                    <span className="font-light text-green-500">
+                    - Rp. {(() => {
+                            if (voucher.voucherType === "fixed") {
+                              return Math.min(price.totalPrice - Math.min(price.totalPrice * (voucher.discount / 100), voucher.discount)
+                                , voucher.discount);
+                            }
+                            if (voucher.voucherType === "percentage") {
+                              return (
+                                Math.min(price.totalPrice * (voucher.discount / 100), voucher.maxDiscount)
+                              )
+                            }
+                            if (voucher.voucherType === "ongkir") {
+                              return Math.min(price.totalPrice, voucher.discount);
+                            }
+                            if(voucher.voucherType === "product"){
+                              return voucher.discount
+                            }
+                            return 0;
+                          })()}
+                    </span>
+                  </div>
+                  })
+                }
+
+>>>>>>> Stashed changes
                 <div className="flex justify-between">
                   <span className="text-lg sm:text-xl font-semibold">
                     Grand Total:
@@ -918,7 +1104,26 @@ const CartPage = () => {
                               : 0
                             : price.shippingFee
                           : price.shippingFee) -
+<<<<<<< Updated upstream
                         (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
+=======
+                        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher) 
+                        -
+                        Math.min(
+                          price.totalPrice +
+                          (ongkir?.status === "Active"
+                            ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                              ? price.shippingFee > ongkir?.maximumFreeOngkir
+                                ? price.shippingFee - ongkir?.maximumFreeOngkir
+                                : 0
+                              : price.shippingFee
+                            : price.shippingFee) -
+                          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
+                          
+                          ,
+                          price.visibleVoucher
+                        )
+>>>>>>> Stashed changes
                     }
 
                   </span>
@@ -995,10 +1200,73 @@ const CartPage = () => {
                     placeholder="Search Voucher"
                   />
                 </div>
+<<<<<<< Updated upstream
                 <p className="text-center text-gray-600 mt-20">
                   <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
                   {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
                 </p>
+=======
+                {
+                  visibleVoucher.length === 0 ?
+                  <p className="text-center text-gray-600 mt-20">
+                    <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
+                    {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
+                  </p>
+                  :
+                  <div className="mt-4 overflow-y-scroll h-[380px]">
+                    {
+                      visibleVoucher.map((voucher: Voucher) => (
+                        <div
+                          key={voucher.voucherId}
+                          className={`p-4 h-[130px] flex items-center cursor-pointer justify-between border-b-1 "border-gray-300"
+                              ${
+                                voucher.voucherSpecialEvent === true ?
+                                ""
+                                :
+                                price.totalPrice < voucher.minimumPayment || 
+                                checkVariantVoucherExist(voucher) ||
+                                selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)
+                                ? "opacity-50 cursor-auto" 
+                                : 
+                                ""
+                              }`
+                            }
+                          onClick={() => handleSelect(voucher)}
+                        >
+                          <div className="flex items-center gap-4">
+                            <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" />
+                            <div>
+                              <div className="text-lg font-medium">{voucher.voucherName}</div>
+                              <div className="text-sm text-gray-600">
+                                {voucher.voucherType === "percentage" && `Discount ${voucher.discount}%`}
+                                {voucher.voucherType === "fixed" && `Discount Rp ${voucher.maxDiscount}`}
+                                {voucher.voucherType === "ongkir" && `Free shipping Rp ${voucher.discount}`}
+                              </div>
+                              <div className="text-sm text-gray-500">Min. payment Rp {voucher.minimumPayment}</div>
+                              {
+                                voucher.voucherType === "percentage" && 
+                                <div className="text-sm text-gray-500">Max. discount Rp {voucher.maxDiscount}</div>  
+                              }
+                              
+                              {
+                                price.totalPrice < voucher.minimumPayment &&
+                                <div className="text-xs mt-2 text-red-500">Add Rp { voucher.minimumPayment - price.totalPrice } more to use this voucher</div>
+                              }
+                            </div>
+                          </div>
+                          <input
+                            type="checkbox"
+                            checked={selectedVouchers.some((v) => v.voucherId === voucher.voucherId)}
+                            readOnly
+                            className="h-5 w-5 cursor-pointer"
+                          />
+                        </div>
+                      ))
+                    }
+                    
+                  </div>
+                }
+>>>>>>> Stashed changes
               </ModalBody>
 
               {/* Modal Footer */}
