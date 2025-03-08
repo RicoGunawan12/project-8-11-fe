@@ -12,7 +12,7 @@ import { Shipping } from "../model/shipping";
 import { useDebounce } from "use-debounce";
 import { Payment } from "../model/transactions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faTrashCan, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTrashCan, faExclamationCircle, faPercentage, faMoneyBill, faShippingFast, faBottleWater } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../component/footer";
 import { useLocaleStore } from "../component/locale";
 import DeleteConfirmationModal from "../component/modal/deleteConfirmation";
@@ -95,7 +95,7 @@ const CartPage = () => {
         const discountAmount = (price.totalPrice * voucher.discount) / 100;
         totalVoucherDiscount += Math.min(discountAmount, voucher.maxDiscount);
       } else if (voucher.voucherType === "ongkir") {
-        totalVoucherFreeOngkir += voucher.discount;
+        totalVoucherFreeOngkir += Math.min(voucher.discount, selectedShipping?.service_fee ?? 0);
       }
     });
     setPrice((prev) => ({
@@ -995,7 +995,7 @@ const CartPage = () => {
                 {
                   appliedVouchers.map((voucher: Voucher) => {
                     return <div className="flex justify-between" key={voucher.voucherId}>
-                    <span className="text-sm sm:text-lg font-semibold gap-2 flex">
+                    <span className="text-sm sm:text-lg gap-2 flex">
                       <div>{ voucher.voucherName }</div>
                     </span>
                     <span className="font-light text-green-500">
@@ -1010,7 +1010,7 @@ const CartPage = () => {
                               )
                             }
                             if (voucher.voucherType === "ongkir") {
-                              return Math.min(price.totalPrice, voucher.discount);
+                              return Math.min(price.shippingFee, voucher.discount);
                             }
                             return 0;
                           })()}
@@ -1151,7 +1151,23 @@ const CartPage = () => {
                           onClick={() => handleSelect(voucher)}
                         >
                           <div className="flex items-center gap-4">
-                            <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" />
+                            {/* <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" /> */}
+                            {
+                              voucher.voucherType === "percentage" &&
+                              <FontAwesomeIcon icon={faPercentage} width={80} height={80} className="rounded-md text-3xl" />
+                            }
+                            {
+                              voucher.voucherType === "fixed" &&
+                              <FontAwesomeIcon icon={faMoneyBill} width={80} height={80} className="rounded-md text-3xl" />
+                            }
+                            {
+                              voucher.voucherType === "ongkir" &&
+                              <FontAwesomeIcon icon={faShippingFast} width={80} height={80} className="rounded-md text-3xl" />
+                            }
+                            {
+                              voucher.voucherType === "product" &&
+                              <FontAwesomeIcon icon={faBottleWater} width={80} height={80} className="rounded-md text-3xl" />
+                            }
                             <div>
                               <div className="text-lg font-medium">{voucher.voucherName}</div>
                               <div className="text-sm text-gray-600">
