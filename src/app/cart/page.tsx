@@ -53,6 +53,8 @@ const CartPage = () => {
   const [removedProduct, setRemoveProduct] = useState<{
     name: string;
     id: string;
+    price: number;
+    quantity: number
   }>();
   const [maxCOD, setMaxCOD] = useState<number>(0);
   const [isCOD, setIsCOD] = useState<boolean>(false);
@@ -68,7 +70,10 @@ const CartPage = () => {
     if (voucher.voucherSpecialEvent) {
 
     }
-    if( !checkVariantVoucherExist(voucher) && voucher.voucherType === "product" ){
+    else if (voucher.voucherType === "ongkir" && selectedShipping === null) {
+      return
+    }
+    else if( !checkVariantVoucherExist(voucher) && voucher.voucherType === "product" ){
       return
     }
     else if (selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)) {
@@ -95,12 +100,12 @@ const CartPage = () => {
 
     selectedVouchers.forEach((voucher: Voucher) => {
       if (voucher.voucherType === "fixed") {
-        totalVoucherDiscount += voucher.discount;
+        totalVoucherDiscount += voucher.maxDiscount;
       } else if (voucher.voucherType === "percentage") {
         const discountAmount = (price.totalPrice * voucher.discount) / 100;
         totalVoucherDiscount += Math.min(discountAmount, voucher.maxDiscount);
       } else if (voucher.voucherType === "ongkir") {
-        totalVoucherFreeOngkir += voucher.discount;
+        totalVoucherFreeOngkir += Math.min(voucher.discount, Math.min(price.shippingFee, price.totalPrice));
       } else if(voucher.voucherType === "product"){
         totalVoucherProduct += voucher.discount
         totalVoucherFreeOngkir += Math.min(voucher.discount, selectedShipping?.service_fee ?? 0);
@@ -533,9 +538,16 @@ const CartPage = () => {
       if (discount > result.maxDiscount) {
         discount = result.maxDiscount;
       }
-    } else {
-      discount = result.discount ? result.discount : 0;
+    } 
+    else if (result.voucherType == "fixed") {
+      discount = result.maxDiscount ? result.maxDiscount : 0;
     }
+    else if (result.voucherType == "ongkir") {
+      discount = Math.min(price.shippingFee, Math.min(price.totalPrice, result.discount))
+    }
+    // else if (result.voucherType == "product") {
+    //   discount = result.maxDiscount ? result.maxDiscount : 0;
+    // }
 
     setPrice((prev) => ({ ...prev, voucher: discount }));
     setLoading(false);
@@ -637,6 +649,7 @@ const CartPage = () => {
       window.fbq('track', 'Initiate Checkout', {
         content_type: 'Cart',
         content_product: [data],
+        voucher: [appliedVouchers],
         currency: 'IDR',
         grand_total: price.totalPrice +
         (ongkir?.status === "Active"
@@ -648,6 +661,30 @@ const CartPage = () => {
           : price.shippingFee) -
         (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
         user_id : getUserId()
+      });
+    }
+
+    if (
+      typeof window !== "undefined" &&
+      window.gtag &&
+      typeof window.gtag === "function"
+    ) {
+      window.gtag("event", "checkout", {
+        product: [data],
+        page_location: window.location.href,
+        // page_path: `/cart`,
+        user_id : getUserId(),
+        voucherCode: [appliedVouchers],
+        currency: 'IDR',
+        grand_total: price.totalPrice +
+        (ongkir?.status === "Active"
+          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+            ? price.shippingFee > ongkir?.maximumFreeOngkir
+              ? price.shippingFee - ongkir?.maximumFreeOngkir
+              : 0
+            : price.shippingFee
+          : price.shippingFee) -
+        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
       });
     }
   };
@@ -670,7 +707,7 @@ const CartPage = () => {
       }
     }
 
-    return true;
+    return false;
   }
 
   return (
@@ -769,6 +806,16 @@ const CartPage = () => {
                             1
                           ),
                         }));
+                        for (const voucher of appliedVouchers) {
+                          if (price.totalPrice - item.product_variant.productPrice < voucher.minimumPayment) {
+                            setAppliedVouchers([]);
+                            setSelectedVouchers([]);
+                            setVoucherCode("");
+                            toastError("There is change in voucher! Please check your voucher");
+                            break; 
+                          }
+                        }
+
                       }}
                       className="p-2 bg-gray-300 rounded"
                     >
@@ -803,6 +850,8 @@ const CartPage = () => {
                           setRemoveProduct({
                             name: item.product_variant.product.productName,
                             id: item.cartItemId,
+                            price: item.product_variant.productPrice,
+                            quantity: item.quantity
                           });
                           setIsModalOpen(true);
                           
@@ -1114,8 +1163,7 @@ const CartPage = () => {
                     <span className="font-light text-sm text-green-500">
                     - Rp. {(() => {
                             if (voucher.voucherType === "fixed") {
-                              return Math.min(price.totalPrice - Math.min(price.totalPrice * (voucher.discount / 100), voucher.discount)
-                                , voucher.discount);
+                              return Math.min(price.totalPrice, voucher.maxDiscount)
                             }
                             if (voucher.voucherType === "percentage") {
                               return (
@@ -1203,6 +1251,15 @@ const CartPage = () => {
             header={"Remove product from cart"}
             description={`Are you sure you want to remove ${removedProduct?.name}?`}
             onDelete={() => {
+              for (const voucher of appliedVouchers) {
+                if (price.totalPrice - ((removedProduct?.price ?? 0) * (removedProduct?.quantity ?? 0)) < voucher.minimumPayment) {
+                  setAppliedVouchers([]);
+                  setSelectedVouchers([]);
+                  setVoucherCode("");
+                  toastError("There is change in voucher! Please check your voucher");
+                  break; 
+                }
+              }
               handleRemoveCart(removedProduct?.id || "");
             }}
             isVisible={isModalOpen}
@@ -1269,6 +1326,9 @@ const CartPage = () => {
                                 !checkVariantVoucherExist(voucher) && voucher.voucherType === "product"
                                 ? "opacity-50 cursor-auto" 
                                 :
+                                voucher.voucherType === "ongkir" && selectedShipping === null
+                                ? "opacity-50 cursor-auto" 
+                                :
                                 ""
                               }`
                             }
@@ -1309,6 +1369,10 @@ const CartPage = () => {
                               {
                                 price.totalPrice < voucher.minimumPayment &&
                                 <div className="text-xs mt-2 text-red-500">Add Rp { voucher.minimumPayment - price.totalPrice } more to use this voucher</div>
+                              }
+                              {
+                                voucher.voucherType === "ongkir" && selectedShipping === null &&
+                                <div className="text-xs mt-2 text-red-500">Please select the shipping expedition first</div>
                               }
                             </div>
                           </div>
