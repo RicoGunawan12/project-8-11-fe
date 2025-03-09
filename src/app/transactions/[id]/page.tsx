@@ -14,6 +14,8 @@ import DeleteConfirmationModal from "@/app/component/modal/deleteConfirmation";
 import { useLocaleStore } from "@/app/component/locale";
 import Link from "next/link";
 import { data } from "framer-motion/client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBottleWater, faMoneyBill, faPercentage, faShippingFast } from "@fortawesome/free-solid-svg-icons";
 
 const TransactionPage = () => {
   const router = useRouter();
@@ -557,112 +559,109 @@ const TransactionPage = () => {
                   </div>
 
                   {/* Desktop view - table style */}
-                  <table className="hidden md:table w-full text-left border border-gray-300">
-                    <thead className="bg-gray-200">
-                      <tr>
-                        <th className="py-2 px-4 border-b">Product</th>
-                        <th className="py-2 px-4 border-b">Product Name</th>
-                        <th className="py-2 px-4 border-b">Quantity</th>
-                        <th className="py-2 px-4 border-b">Price</th>
-                        <th className="py-2 px-4 border-b">Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {transaction?.transaction_details.map((detail) => (
-                        <tr
-                          key={detail.transactionDetailId}
-                          className="bg-white hover:bg-gray-100"
-                        >
-                          <td className="py-2 px-4 border-b">
-                            <Image
-                              src={`${
-                                process.env.BACK_BASE_URL
-                              }/assets/product/${detail.product_variant.product.productName.replace(
-                                /\//g,
-                                ""
-                              )}/${detail.product_variant.productImage}`}
-                              alt="Product"
-                              className="w-[150px] h-full object-fill"
-                              width={200}
-                              height={200}
-                            />
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {detail.product_variant.product.productName} -{" "}
-                            {detail.product_variant.productColor}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {detail.quantity}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            Rp. {detail.paidProductPrice}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            Rp. {detail.paidProductPrice * detail.quantity}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            <div className="w-full min-h-[250px] rounded-md border-2 bg-gray-50 p-4 shadow-2xl md:w-3/4 md:p-6">
-              <h2 className="mb-4 text-xl font-semibold text-black md:text-2xl">
-                Voucher Used
-              </h2>
-
-              {transaction?.voucherCode ? (
-                <div className="flex w-full flex-col sm:flex-row">
-                  <div className="w-full relative flex-col">
-                    {transaction.voucherCode
-                      .filter(Boolean)
-                      .map((voucher, index) => (
-                        <div
-                          key={index}
-                          className="relative flex w-full space-x-4 py-4 sm:py-6"
-                        >
-                          {/* Voucher Details */}
-                          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-                            {/* Image */}
-                            <Image
-                              src="/a.jpg"
-                              alt="Voucher"
-                              width={200}
-                              height={200}
-                              className="rounded-md sm:w-40 sm:h-40 object-cover"
-                            />
-
-                            {/* Voucher Info */}
-                            <div className="flex-1 min-w-[33%]">
-                              <div className="text-lg font-bold text-gray-700">
-                                Voucher Name: {voucher.voucherName}
-                              </div>
-                              <div className="text-lg font-semibold text-black">
-                                Voucher Type: {voucher.voucherType}
-                              </div>
-                              {voucher.voucherType != "product" && (<div className="text-lg text-gray-600">
-                                Voucher Discount: {voucher.discount}
-                              </div>)}
-                            </div>
-
-                            {/* Product Variant (optional) */}
-                            {voucher.productVariant && (
-                              <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500">
-                                Free product: {voucher.productVariant.product.productName} -{" "} {voucher.productVariant.productColor}
-                              </div>
-                            )}
-                          </div>
+                  <div className="hidden md:block w-full text-left border ">
+                    {transaction?.transaction_details.map((detail) => (
+                      <div
+                        key={detail.transactionDetailId}
+                        className="bg-white grid grid-cols-4 gap-4 py-2 px-4 border-b justify-evenly hover:bg-gray-100"
+                      >
+                        <div className="flex items-center justify-center">
+                          <Image
+                            src={`${
+                              process.env.BACK_BASE_URL
+                            }/assets/product/${detail.product_variant.product.productName.replace(
+                              /\//g,
+                              ""
+                            )}/${detail.product_variant.productImage}`}
+                            alt="Product"
+                            className="w-[150px] h-full object-fill"
+                            width={200}
+                            height={200}
+                          />
                         </div>
-                      ))}
+                        <div>
+                          {detail.product_variant.product.productName} -{" "}
+                          {detail.product_variant.productColor}
+                        </div>
+                        <div>
+                          {detail.quantity} x Rp. {detail.paidProductPrice}
+                        </div>
+                        <div>
+                          Rp. {detail.paidProductPrice * detail.quantity}
+                        </div>
+                      </div>
+                    ))}
+
+                    {transaction?.voucherCode ? (
+                      <div className="flex w-full flex-col">
+                        {transaction.voucherCode
+                          .filter(Boolean)
+                          .map((voucher, index) => (
+                            <div
+                              key={index}
+                              className="relative grid grid-cols-4 w-full space-x-4 py-4 sm:py-6"
+                            >
+                              {/* Voucher Details */}
+                              {voucher.voucherType === "percentage" && (
+                                <FontAwesomeIcon
+                                  icon={faPercentage}
+                                  width={200}
+                                  height={200}
+                                  className="rounded-md text-3xl"
+                                />
+                              )}
+                              {voucher.voucherType === "fixed" && (
+                                <FontAwesomeIcon
+                                  icon={faMoneyBill}
+                                  width={200}
+                                  height={200}
+                                  className="rounded-md text-3xl"
+                                />
+                              )}
+                              {voucher.voucherType === "ongkir" && (
+                                <FontAwesomeIcon
+                                  icon={faShippingFast}
+                                  width={200}
+                                  height={200}
+                                  className="rounded-md text-3xl"
+                                />
+                              )}
+                              {voucher.voucherType === "product" && (
+                                <FontAwesomeIcon
+                                  icon={faBottleWater}
+                                  width={200}
+                                  height={200}
+                                  className="rounded-md text-3xl"
+                                />
+                              )}
+                              <div className="text-lg text-gray-700">
+                                Voucher Name: {voucher.voucherName} <br />
+                              </div>
+                              <div>Voucher Type: {voucher.voucherType}</div>
+
+                              {voucher.voucherType != "product" && (
+                                <div className="text-lg text-gray-600">
+                                  - Rp.{voucher.discount}
+                                </div>
+                              )}
+                              {voucher.productVariant && (
+                                <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500">
+                                  Free product:{" "}
+                                  {voucher.productVariant.product.productName} -{" "}
+                                  {voucher.productVariant.productColor}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <div className="text-center mt-6 h-full flex items-center">
+                        No Voucher Used
+                      </div>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <div className="text-center mt-6 h-full flex items-center">
-                  Waiting for pick up
-                </div>
-              )}
+              </div>
             </div>
 
             <div className="w-full min-h-[250px] rounded-md border-2 bg-gray-50 p-4 shadow-2xl md:w-3/4 md:p-6">

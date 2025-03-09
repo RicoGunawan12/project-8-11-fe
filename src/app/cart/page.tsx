@@ -2,7 +2,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import NavigationBar from "../component/navbar";
 import Image from "next/image";
-import { deleteTokenCookie, getTokenCookie, getUserId } from "../utilities/token";
+import {
+  deleteTokenCookie,
+  getTokenCookie,
+  getUserId,
+} from "../utilities/token";
 import { useRouter } from "next/navigation";
 import { toastError, toastSuccess } from "../utilities/toast";
 import { Cart } from "../model/cart";
@@ -12,13 +16,28 @@ import { Shipping } from "../model/shipping";
 import { useDebounce } from "use-debounce";
 import { Payment } from "../model/transactions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faTrashCan, faExclamationCircle, faPercentage, faMoneyBill, faShippingFast, faBottleWater } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faTrashCan,
+  faExclamationCircle,
+  faPercentage,
+  faMoneyBill,
+  faShippingFast,
+  faBottleWater,
+} from "@fortawesome/free-solid-svg-icons";
 import Footer from "../component/footer";
 import { useLocaleStore } from "../component/locale";
 import DeleteConfirmationModal from "../component/modal/deleteConfirmation";
 import { pre } from "framer-motion/client";
 import { Ongkir } from "../model/ongkir";
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@nextui-org/react";
 import { Voucher } from "../model/voucher";
 
 const CartPage = () => {
@@ -44,7 +63,7 @@ const CartPage = () => {
     shippingFee: 0,
     voucher: 0,
     grandTotal: 0,
-    visibleVoucher: 0
+    visibleVoucher: 0,
   });
   const [update, setUpdate] = useState(false);
   const { locale } = useLocaleStore();
@@ -54,7 +73,7 @@ const CartPage = () => {
     name: string;
     id: string;
     price: number;
-    quantity: number
+    quantity: number;
   }>();
   const [maxCOD, setMaxCOD] = useState<number>(0);
   const [isCOD, setIsCOD] = useState<boolean>(false);
@@ -68,20 +87,26 @@ const CartPage = () => {
   const handleSelect = (voucher: Voucher) => {
     if (price.totalPrice < voucher.minimumPayment) return;
     if (voucher.voucherSpecialEvent) {
-
-    }
-    else if (voucher.voucherType === "ongkir" && selectedShipping === null) {
-      return
-    }
-    else if( !checkVariantVoucherExist(voucher) && voucher.voucherType === "product" ){
-      return
-    }
-    else if (selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)) {
-      return
+    } else if (voucher.voucherType === "ongkir" && selectedShipping === null) {
+      return;
+    } else if (
+      !checkVariantVoucherExist(voucher) &&
+      voucher.voucherType === "product"
+    ) {
+      return;
+    } else if (
+      selectedVouchers.some(
+        (v) =>
+          v.voucherType === voucher.voucherType &&
+          v.voucherId !== voucher.voucherId &&
+          !v.voucherSpecialEvent
+      )
+    ) {
+      return;
     }
     setSelectedVouchers((prev: Voucher[]) => {
       // const filteredVouchers = prev.filter((v) => v.voucherType !== voucher.voucherType);
-      
+
       if (prev.some((v) => v.voucherId === voucher.voucherId)) {
         return prev.filter((v) => v.voucherId !== voucher.voucherId);
       } else {
@@ -92,7 +117,7 @@ const CartPage = () => {
 
   const handleApplyVoucher = async () => {
     setAppliedVouchers([...selectedVouchers]);
-    setIsVoucherOpen(false)
+    setIsVoucherOpen(false);
 
     let totalVoucherDiscount = 0;
     let totalVoucherFreeOngkir = 0;
@@ -105,24 +130,35 @@ const CartPage = () => {
         const discountAmount = (price.totalPrice * voucher.discount) / 100;
         totalVoucherDiscount += Math.min(discountAmount, voucher.maxDiscount);
       } else if (voucher.voucherType === "ongkir") {
-        totalVoucherFreeOngkir += Math.min(voucher.discount, Math.min(price.shippingFee, price.totalPrice));
-      } else if(voucher.voucherType === "product"){
-        totalVoucherProduct += voucher.discount
-        totalVoucherFreeOngkir += Math.min(voucher.discount, selectedShipping?.service_fee ?? 0);
+        totalVoucherFreeOngkir += Math.min(
+          voucher.discount,
+          Math.min(price.shippingFee, price.totalPrice)
+        );
+      } else if (voucher.voucherType === "product") {
+        totalVoucherProduct += voucher.discount;
+        totalVoucherFreeOngkir += Math.min(
+          voucher.discount,
+          selectedShipping?.service_fee ?? 0
+        );
       }
     });
     setPrice((prev) => ({
       ...prev,
       // shippingFee: prev.shippingFee - totalVoucherFreeOngkir,
 
-      visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir + totalVoucherProduct,
-      grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir - totalVoucherProduct, // Subtract voucher from grand total
+      visibleVoucher:
+        totalVoucherDiscount + totalVoucherFreeOngkir + totalVoucherProduct,
+      grandTotal:
+        prev.totalPrice -
+        totalVoucherDiscount -
+        totalVoucherFreeOngkir -
+        totalVoucherProduct, // Subtract voucher from grand total
     }));
-  }
+  };
 
-    //   visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir,
-    //   grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir, // Subtract voucher from grand total
-    // }));
+  //   visibleVoucher: totalVoucherDiscount + totalVoucherFreeOngkir,
+  //   grandTotal: prev.totalPrice - totalVoucherDiscount - totalVoucherFreeOngkir, // Subtract voucher from grand total
+  // }));
   // }
 
   useEffect(() => {
@@ -136,14 +172,13 @@ const CartPage = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (cartResponse.status === 401) {
-            deleteTokenCookie();
-            router.push("/auth/login");
+          deleteTokenCookie();
+          router.push("/auth/login");
         }
-        const cartData : Cart[] = await cartResponse.json();
+        const cartData: Cart[] = await cartResponse.json();
         if (!cartResponse.ok) {
           throw new Error(cartData.message || "Failed to fetch cart data");
         }
-
 
         const addressResponse = await fetch(`${process.env.ADDRESS}`, {
           method: "GET",
@@ -211,25 +246,24 @@ const CartPage = () => {
         const fetchedVisibleVoucher = await voucherResponse.json();
         console.log(fetchedVisibleVoucher);
 
-        const vc : Voucher[] = fetchedVisibleVoucher.vouchers
+        const vc: Voucher[] = fetchedVisibleVoucher.vouchers;
 
-        const vf : Voucher[] = []
+        const vf: Voucher[] = [];
 
-        for(const v of vc){
-          if(v.voucherType === "product"){
-            for(const p of cartData){
-              console.log("this: ",p.productVariantId, v)
-              if(v.variantsId == p.productVariantId){
-                console.log("push")
-                v.discount = p.product_variant.productPrice
+        for (const v of vc) {
+          if (v.voucherType === "product") {
+            for (const p of cartData) {
+              console.log("this: ", p.productVariantId, v);
+              if (v.variantsId == p.productVariantId) {
+                console.log("push");
+                v.discount = p.product_variant.productPrice;
               }
-          
             }
           }
-          
-          vf.push(v)
+
+          vf.push(v);
         }
-        console.log(vf)
+        console.log(vf);
         setVisibleVoucher(vf);
         // setVisibleVoucher(fetchedVisibleVoucher.vouchers)
 
@@ -240,7 +274,7 @@ const CartPage = () => {
         setLoading(false);
       }
     };
-    
+
     const getVisibleVoucher = async () => {
       try {
         const voucherResponse = await fetch(`${process.env.VOUCHER}/visible`, {
@@ -252,13 +286,12 @@ const CartPage = () => {
         }
         const fetchedVisibleVoucher = await voucherResponse.json();
         console.log(fetchedVisibleVoucher);
-        
+
         setVisibleVoucher(fetchedVisibleVoucher.vouchers);
       } catch (error: any) {
         // toastError(error.message || "An unexpected error occurred");
-        
       }
-    }
+    };
     getVisibleVoucher();
 
     if (token) {
@@ -396,7 +429,7 @@ const CartPage = () => {
       const vouchers = [];
       appliedVouchers.forEach((voucher: Voucher) => {
         vouchers.push(voucher.voucherId);
-      })
+      });
       vouchers.push(voucherCode === "" ? "0" : voucherCode);
       const response = await fetch(`${process.env.TRANSACTIONS}`, {
         method: "POST",
@@ -412,13 +445,13 @@ const CartPage = () => {
           shippingType: selectedShipping?.service_name,
 
           deliveryFee: price?.shippingFee || 0,
-            // ongkir?.status === "Active"
-            //   ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-            //     ? price.shippingFee > ongkir?.maximumFreeOngkir
-            //       ? price.shippingFee - ongkir?.maximumFreeOngkir
-            //       : 0
-            //     : price.shippingFee
-            //   : price.shippingFee,
+          // ongkir?.status === "Active"
+          //   ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+          //     ? price.shippingFee > ongkir?.maximumFreeOngkir
+          //       ? price.shippingFee - ongkir?.maximumFreeOngkir
+          //       : 0
+          //     : price.shippingFee
+          //   : price.shippingFee,
           deliveryCashback: selectedShipping?.shipping_cashback || 0,
           notes: "",
           weight: totalWeight,
@@ -437,11 +470,29 @@ const CartPage = () => {
         throw new Error(resp.message);
       }
 
-      if (typeof window !== 'undefined' && window.fbq) {
-        window.fbq('track', 'Purchase Successful', {
-          content_type: 'Purchase',
-          currency: 'IDR',
-          grand_total: price.totalPrice +
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq("track", "Purchase Successful", {
+          content_type: "Purchase",
+          currency: "IDR",
+          grand_total:
+            price.totalPrice +
+            (ongkir?.status === "Active"
+              ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                ? price.shippingFee > ongkir?.maximumFreeOngkir
+                  ? price.shippingFee - ongkir?.maximumFreeOngkir
+                  : 0
+                : price.shippingFee
+              : price.shippingFee) -
+            (price.voucher > price.totalPrice
+              ? price.totalPrice
+              : price.voucher),
+          user_id: getUserId(),
+        });
+      }
+
+      if (
+        !isCOD &&
+        price.totalPrice +
           (ongkir?.status === "Active"
             ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
               ? price.shippingFee > ongkir?.maximumFreeOngkir
@@ -449,24 +500,38 @@ const CartPage = () => {
                 : 0
               : price.shippingFee
             : price.shippingFee) -
-          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
-          user_id : getUserId()
-        });
-      }
-      
-      
-
-      if (
-        !isCOD && 
+          (price.voucher || 0) >=
+          1000 &&
         price.totalPrice +
-        (ongkir?.status === "Active"
-          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-            ? price.shippingFee > ongkir?.maximumFreeOngkir
-              ? price.shippingFee - ongkir?.maximumFreeOngkir
-              : 0
-            : price.shippingFee
-          : price.shippingFee) -
-        (price.voucher || 0) >= 1000 && 
+          (ongkir?.status === "Active"
+            ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+              ? price.shippingFee > ongkir?.maximumFreeOngkir
+                ? price.shippingFee - ongkir?.maximumFreeOngkir
+                : 0
+              : price.shippingFee
+            : price.shippingFee) -
+          (price.voucher > price.totalPrice
+            ? price.totalPrice
+            : price.voucher) -
+          Math.min(
+            price.totalPrice +
+              (ongkir?.status === "Active"
+                ? ongkir?.minimumPaymentAmount <
+                  price.totalPrice - price.voucher
+                  ? price.shippingFee > ongkir?.maximumFreeOngkir
+                    ? price.shippingFee - ongkir?.maximumFreeOngkir
+                    : 0
+                  : price.shippingFee
+                : price.shippingFee) -
+              (price.voucher > price.totalPrice
+                ? price.totalPrice
+                : price.voucher),
+
+            price.visibleVoucher
+          ) !=
+          0
+      ) {
+        console.log(
           price.totalPrice +
             (ongkir?.status === "Active"
               ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
@@ -475,36 +540,9 @@ const CartPage = () => {
                   : 0
                 : price.shippingFee
               : price.shippingFee) -
-            (price.voucher > price.totalPrice ? price.totalPrice : price.voucher) 
-            -
-            Math.min(
-              price.totalPrice +
-              (ongkir?.status === "Active"
-                ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-                  ? price.shippingFee > ongkir?.maximumFreeOngkir
-                    ? price.shippingFee - ongkir?.maximumFreeOngkir
-                    : 0
-                  : price.shippingFee
-                : price.shippingFee) -
-              (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
-              
-              ,
-              price.visibleVoucher
-            )
-          != 0
-        
-      ) {
-        console.log(
-          price.totalPrice +
-          (ongkir?.status === "Active"
-            ? ongkir?.minimumPaymentAmount <
-              price.totalPrice - price.voucher
-              ? price.shippingFee > ongkir?.maximumFreeOngkir
-                ? price.shippingFee - ongkir?.maximumFreeOngkir
-                : 0
-              : price.shippingFee
-            : price.shippingFee) -
-          (price.voucher || 0) >= 1000)
+            (price.voucher || 0) >=
+            1000
+        );
         router.push(resp.payTransactionResponse.invoice_url);
       } else {
         router.push(`/transactions/${resp.transaction.transactionId}`);
@@ -538,12 +576,13 @@ const CartPage = () => {
       if (discount > result.maxDiscount) {
         discount = result.maxDiscount;
       }
-    } 
-    else if (result.voucherType == "fixed") {
+    } else if (result.voucherType == "fixed") {
       discount = result.maxDiscount ? result.maxDiscount : 0;
-    }
-    else if (result.voucherType == "ongkir") {
-      discount = Math.min(price.shippingFee, Math.min(price.totalPrice, result.discount))
+    } else if (result.voucherType == "ongkir") {
+      discount = Math.min(
+        price.shippingFee,
+        Math.min(price.totalPrice, result.discount)
+      );
     }
     // else if (result.voucherType == "product") {
     //   discount = result.maxDiscount ? result.maxDiscount : 0;
@@ -559,16 +598,17 @@ const CartPage = () => {
   };
 
   const handleRemoveCart = async (cartItemId: string) => {
-
     if (!clientToken) {
       const cartData = JSON.parse(localStorage.getItem("cartItem") || "[]");
-  
+
       // Filter out the item with the given `cartItemId`
-      const updatedCartData = cartData.filter((item: any) => item.cartItemId !== cartItemId);
-  
+      const updatedCartData = cartData.filter(
+        (item: any) => item.cartItemId !== cartItemId
+      );
+
       // Save the updated cart back to local storage
       localStorage.setItem("cartItem", JSON.stringify(updatedCartData));
-  
+
       toastSuccess("Item removed");
       setUpdate(!update);
       setIsModalOpen(false);
@@ -645,22 +685,23 @@ const CartPage = () => {
   }, [debouncedQuantities, clientToken]);
 
   const trackCheckOut = () => {
-    if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'Initiate Checkout', {
-        content_type: 'Cart',
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "Initiate Checkout", {
+        content_type: "Cart",
         content_product: [data],
         voucher: [appliedVouchers],
-        currency: 'IDR',
-        grand_total: price.totalPrice +
-        (ongkir?.status === "Active"
-          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-            ? price.shippingFee > ongkir?.maximumFreeOngkir
-              ? price.shippingFee - ongkir?.maximumFreeOngkir
-              : 0
-            : price.shippingFee
-          : price.shippingFee) -
-        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
-        user_id : getUserId()
+        currency: "IDR",
+        grand_total:
+          price.totalPrice +
+          (ongkir?.status === "Active"
+            ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+              ? price.shippingFee > ongkir?.maximumFreeOngkir
+                ? price.shippingFee - ongkir?.maximumFreeOngkir
+                : 0
+              : price.shippingFee
+            : price.shippingFee) -
+          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
+        user_id: getUserId(),
       });
     }
 
@@ -673,42 +714,42 @@ const CartPage = () => {
         product: [data],
         page_location: window.location.href,
         // page_path: `/cart`,
-        user_id : getUserId(),
+        user_id: getUserId(),
         voucherCode: [appliedVouchers],
-        currency: 'IDR',
-        grand_total: price.totalPrice +
-        (ongkir?.status === "Active"
-          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-            ? price.shippingFee > ongkir?.maximumFreeOngkir
-              ? price.shippingFee - ongkir?.maximumFreeOngkir
-              : 0
-            : price.shippingFee
-          : price.shippingFee) -
-        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher)
+        currency: "IDR",
+        grand_total:
+          price.totalPrice +
+          (ongkir?.status === "Active"
+            ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+              ? price.shippingFee > ongkir?.maximumFreeOngkir
+                ? price.shippingFee - ongkir?.maximumFreeOngkir
+                : 0
+              : price.shippingFee
+            : price.shippingFee) -
+          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
       });
     }
   };
 
-  const checkVariantVoucherExist = (voucher : Voucher) => {
-
-    console.log(voucher.voucherType, voucher.voucherName)
+  const checkVariantVoucherExist = (voucher: Voucher) => {
+    console.log(voucher.voucherType, voucher.voucherName);
     console.log(data);
-    
-    if(voucher.voucherType !== "product"){
-      console.log("exit not product")
+
+    if (voucher.voucherType !== "product") {
+      console.log("exit not product");
       return false;
     }
 
-    for(const p of data){
-      if(p.productVariantId == voucher.variantsId){
-        console.log(voucher, p.product_variant.productPrice)
-        voucher.discount = p.product_variant.productPrice
-        return true
+    for (const p of data) {
+      if (p.productVariantId == voucher.variantsId) {
+        console.log(voucher, p.product_variant.productPrice);
+        voucher.discount = p.product_variant.productPrice;
+        return true;
       }
     }
 
     return false;
-  }
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col text-black">
@@ -737,7 +778,14 @@ const CartPage = () => {
                     src={
                       item.product_variant.productImage
                         ? process.env.BACK_BASE_URL +
-                          "/assets/product/" + item.product_variant.product.productName.replace(/\//g, "") + (item.product_variant.productImage.startsWith('/') ? item.product_variant.productImage : '/' + item.product_variant.productImage)
+                          "/assets/product/" +
+                          item.product_variant.product.productName.replace(
+                            /\//g,
+                            ""
+                          ) +
+                          (item.product_variant.productImage.startsWith("/")
+                            ? item.product_variant.productImage
+                            : "/" + item.product_variant.productImage)
                         : "/placeholder.webp"
                     }
                     alt="Product"
@@ -807,15 +855,20 @@ const CartPage = () => {
                           ),
                         }));
                         for (const voucher of appliedVouchers) {
-                          if (price.totalPrice - item.product_variant.productPrice < voucher.minimumPayment) {
+                          if (
+                            price.totalPrice -
+                              item.product_variant.productPrice <
+                            voucher.minimumPayment
+                          ) {
                             setAppliedVouchers([]);
                             setSelectedVouchers([]);
                             setVoucherCode("");
-                            toastError("There is change in voucher! Please check your voucher");
-                            break; 
+                            toastError(
+                              "There is change in voucher! Please check your voucher"
+                            );
+                            break;
                           }
                         }
-
                       }}
                       className="p-2 bg-gray-300 rounded"
                     >
@@ -851,10 +904,9 @@ const CartPage = () => {
                             name: item.product_variant.product.productName,
                             id: item.cartItemId,
                             price: item.product_variant.productPrice,
-                            quantity: item.quantity
+                            quantity: item.quantity,
                           });
                           setIsModalOpen(true);
-                          
                         }}
                         icon={faTrashCan}
                       />
@@ -964,40 +1016,49 @@ const CartPage = () => {
                     : "Pilih Opsi Pengiriman"}
                 </option>
                 {shippingOptions
-                  .filter(option => option.shipping_name == "JNT")
+                  .filter((option) => option.shipping_name == "JNT")
                   .map((option, index) => (
                     <option key={index} value={option.shipping_name}>
                       <div className="flex justify-between w-full">
-                        <div>{option.shipping_name} - Rp. {option.shipping_cost}</div>
+                        <div>
+                          {option.shipping_name} - Rp. {option.shipping_cost}
+                        </div>
                         {/* <div className="text-red-500">{option?.is_cod ? "" : "X COD"}</div> */}
                       </div>
                     </option>
-                ))}
+                  ))}
               </select>
 
               <button
-                  className="w-full bg-secondary text-white py-2 rounded-md mb-4 text-sm sm:text-base"
-                  onClick={() => {
-                    setIsVoucherOpen(true);
-                  }}
-                >
-                  {/* {locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"} */}
+                className="w-full bg-secondary text-white py-2 rounded-md mb-4 text-sm sm:text-base"
+                onClick={() => {
+                  setIsVoucherOpen(true);
+                }}
+              >
+                {/* {locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia"} */}
                 {/* </button>
                 > */}
-                  {
-                    appliedVouchers.length === 0 ?
-                    locale == "contentJSONEng" ? "Available vouchers" : "Voucher tersedia":
-                    appliedVouchers.some((v) => v.minimumPayment > price.totalPrice) ?
-                    <div>
-                      <FontAwesomeIcon icon={faExclamationCircle} className="text-red-500"/>
-                      
-                    </div>
-                    :
-                    locale == "contentJSONEng" ? 
-                      `${appliedVouchers.length} voucher applied` : 
-                      `${appliedVouchers.length} voucher digunakan`
-                  }
-                </button>
+                {appliedVouchers.length === 0 ? (
+                  locale == "contentJSONEng" ? (
+                    "Available vouchers"
+                  ) : (
+                    "Voucher tersedia"
+                  )
+                ) : appliedVouchers.some(
+                    (v) => v.minimumPayment > price.totalPrice
+                  ) ? (
+                  <div>
+                    <FontAwesomeIcon
+                      icon={faExclamationCircle}
+                      className="text-red-500"
+                    />
+                  </div>
+                ) : locale == "contentJSONEng" ? (
+                  `${appliedVouchers.length} voucher applied`
+                ) : (
+                  `${appliedVouchers.length} voucher digunakan`
+                )}
+              </button>
 
               {/* Voucher Section */}
               <label
@@ -1072,12 +1133,17 @@ const CartPage = () => {
                     />
                     <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                   </label>
-                  {
-                    selectedShipping ?
-                    !selectedShipping?.is_cod ? <div className="text-sm text-red-400">COD is not available for this shipping option</div> : ""
-                    :
+                  {selectedShipping ? (
+                    !selectedShipping?.is_cod ? (
+                      <div className="text-sm text-red-400">
+                        COD is not available for this shipping option
+                      </div>
+                    ) : (
+                      ""
+                    )
+                  ) : (
                     ""
-                  }
+                  )}
                 </div>
               )}
 
@@ -1103,16 +1169,37 @@ const CartPage = () => {
                       </span>
                       <span className="font-light text-black">
                         Rp.
-                        {ongkir?.status === "Active"
-                          ? ongkir?.minimumPaymentAmount <
-                            price.totalPrice - price.voucher
-                            ? price.shippingFee > ongkir?.maximumFreeOngkir
-                              ? <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span>{price.shippingFee - ongkir?.maximumFreeOngkir}</span>
-                              : locale == "contentJSONEng"
-                              ? <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span> 0 (Free Delivery)</span>
-                              : <span><span className="line-through text-gray-300 mx-2">{price.shippingFee}</span> 0 (Gratis)</span>
-                            : price.shippingFee
-                          : price.shippingFee}
+                        {ongkir?.status === "Active" ? (
+                          ongkir?.minimumPaymentAmount <
+                          price.totalPrice - price.voucher ? (
+                            price.shippingFee > ongkir?.maximumFreeOngkir ? (
+                              <span>
+                                <span className="line-through text-gray-300 mx-2">
+                                  {price.shippingFee}
+                                </span>
+                                {price.shippingFee - ongkir?.maximumFreeOngkir}
+                              </span>
+                            ) : locale == "contentJSONEng" ? (
+                              <span>
+                                <span className="line-through text-gray-300 mx-2">
+                                  {price.shippingFee}
+                                </span>{" "}
+                                0 (Free Delivery)
+                              </span>
+                            ) : (
+                              <span>
+                                <span className="line-through text-gray-300 mx-2">
+                                  {price.shippingFee}
+                                </span>{" "}
+                                0 (Gratis)
+                              </span>
+                            )
+                          ) : (
+                            price.shippingFee
+                          )
+                        ) : (
+                          price.shippingFee
+                        )}
                       </span>
                     </div>
                     {ongkir?.status === "Active" ? (
@@ -1142,46 +1229,58 @@ const CartPage = () => {
                 {price.voucher != 0 ? (
                   <div className="flex justify-between">
                     <span className="text-sm gap-2 flex">
-                      <div>Voucher - { voucherCode }</div>
+                      <div>Voucher - {voucherCode}</div>
                     </span>
                     <span className="font-light text-sm text-green-500">
-                      - Rp. {price.voucher > price.totalPrice ? price.totalPrice : price.voucher}
+                      - Rp.{" "}
+                      {price.voucher > price.totalPrice
+                        ? price.totalPrice
+                        : price.voucher}
                     </span>
                   </div>
                 ) : null}
 
+                {appliedVouchers.map((voucher: Voucher) => {
+                  return (
+                    <div
+                      className="flex justify-between"
+                      key={voucher.voucherId}
+                    >
+                      {/* <span className="text-sm sm:text-lg font-semibold gap-2 flex"> */}
 
-                {
-                  appliedVouchers.map((voucher: Voucher) => {
-                    return <div className="flex justify-between" key={voucher.voucherId}>
-
-                    {/* <span className="text-sm sm:text-lg font-semibold gap-2 flex"> */}
-
-                    <span className="text-sm gap-2 flex">
-                      <div>{ voucher.voucherName }</div>
-                    </span>
-                    <span className="font-light text-sm text-green-500">
-                    - Rp. {(() => {
-                            if (voucher.voucherType === "fixed") {
-                              return Math.min(price.totalPrice, voucher.maxDiscount)
-                            }
-                            if (voucher.voucherType === "percentage") {
-                              return (
-                                Math.min(price.totalPrice * (voucher.discount / 100), voucher.maxDiscount)
-                              )
-                            }
-                            if (voucher.voucherType === "ongkir") {
-                              return Math.min(price.shippingFee, Math.min(price.totalPrice, voucher.discount));
-                            }
-                            if(voucher.voucherType === "product"){
-                              return voucher.discount
-                            }
-                            return 0;
-                          })()}
-                    </span>
-                  </div>
-                  })
-                }
+                      <span className="text-sm gap-2 flex">
+                        <div>{voucher.voucherName}</div>
+                      </span>
+                      <span className="font-light text-sm text-green-500">
+                        - Rp.{" "}
+                        {(() => {
+                          if (voucher.voucherType === "fixed") {
+                            return Math.min(
+                              price.totalPrice,
+                              voucher.maxDiscount
+                            );
+                          }
+                          if (voucher.voucherType === "percentage") {
+                            return Math.min(
+                              price.totalPrice * (voucher.discount / 100),
+                              voucher.maxDiscount
+                            );
+                          }
+                          if (voucher.voucherType === "ongkir") {
+                            return Math.min(
+                              price.shippingFee,
+                              Math.min(price.totalPrice, voucher.discount)
+                            );
+                          }
+                          if (voucher.voucherType === "product") {
+                            return voucher.discount;
+                          }
+                          return 0;
+                        })()}
+                      </span>
+                    </div>
+                  );
+                })}
 
                 <div className="flex justify-between">
                   <span className="text-lg sm:text-xl font-semibold">
@@ -1189,32 +1288,33 @@ const CartPage = () => {
                   </span>
                   <span className="font-light text-black">
                     Rp.{" "}
-                    {
-                      price.totalPrice +
-                        (ongkir?.status === "Active"
-                          ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
-                            ? price.shippingFee > ongkir?.maximumFreeOngkir
-                              ? price.shippingFee - ongkir?.maximumFreeOngkir
-                              : 0
-                            : price.shippingFee
-                          : price.shippingFee) -
-                        (price.voucher > price.totalPrice ? price.totalPrice : price.voucher) 
-                        -
-                        Math.min(
-                          price.totalPrice +
+                    {price.totalPrice +
+                      (ongkir?.status === "Active"
+                        ? ongkir?.minimumPaymentAmount <
+                          price.totalPrice - price.voucher
+                          ? price.shippingFee > ongkir?.maximumFreeOngkir
+                            ? price.shippingFee - ongkir?.maximumFreeOngkir
+                            : 0
+                          : price.shippingFee
+                        : price.shippingFee) -
+                      (price.voucher > price.totalPrice
+                        ? price.totalPrice
+                        : price.voucher) -
+                      Math.min(
+                        price.totalPrice +
                           (ongkir?.status === "Active"
-                            ? ongkir?.minimumPaymentAmount < price.totalPrice - price.voucher
+                            ? ongkir?.minimumPaymentAmount <
+                              price.totalPrice - price.voucher
                               ? price.shippingFee > ongkir?.maximumFreeOngkir
                                 ? price.shippingFee - ongkir?.maximumFreeOngkir
                                 : 0
                               : price.shippingFee
                             : price.shippingFee) -
-
-                          (price.voucher > price.totalPrice ? price.totalPrice : price.voucher),
-                          price.visibleVoucher
-                        )
-                    }
-
+                          (price.voucher > price.totalPrice
+                            ? price.totalPrice
+                            : price.voucher),
+                        price.visibleVoucher
+                      )}
                   </span>
                 </div>
               </div>
@@ -1222,9 +1322,9 @@ const CartPage = () => {
               <button
                 id="checkout_event"
                 className="w-full bg-secondary text-white py-2 sm:py-3 mt-4 rounded-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all"
-                onClick={() =>{
-                  trackCheckOut()
-                  checkOut()
+                onClick={() => {
+                  trackCheckOut();
+                  checkOut();
                 }}
               >
                 Checkout
@@ -1252,12 +1352,19 @@ const CartPage = () => {
             description={`Are you sure you want to remove ${removedProduct?.name}?`}
             onDelete={() => {
               for (const voucher of appliedVouchers) {
-                if (price.totalPrice - ((removedProduct?.price ?? 0) * (removedProduct?.quantity ?? 0)) < voucher.minimumPayment) {
+                if (
+                  price.totalPrice -
+                    (removedProduct?.price ?? 0) *
+                      (removedProduct?.quantity ?? 0) <
+                  voucher.minimumPayment
+                ) {
                   setAppliedVouchers([]);
                   setSelectedVouchers([]);
                   setVoucherCode("");
-                  toastError("There is change in voucher! Please check your voucher");
-                  break; 
+                  toastError(
+                    "There is change in voucher! Please check your voucher"
+                  );
+                  break;
                 }
               }
               handleRemoveCart(removedProduct?.id || "");
@@ -1269,21 +1376,19 @@ const CartPage = () => {
           />
         </div>
 
-        <div className="fixed items-center z-[1000]">
+        <div className="fixed items-center z-50">
           <Modal
-        
-            backdrop="opaque" 
+          size="5xl"
+            backdrop="opaque"
             isOpen={isVoucherOpen}
             onClose={() => setIsVoucherOpen(false)}
             closeButton={false}
-            className='text-black h-[600px] z-[888] fixed'
+            className="text-black h-[600px]  fixed"
           >
             <ModalContent>
               {/* Modal Header */}
               <ModalHeader>
-                <h4 className="font-bold text-lg">
-                  Vouchers
-                </h4>
+                <h4 className="font-bold text-lg">Vouchers</h4>
               </ModalHeader>
 
               {/* Modal Body */}
@@ -1302,92 +1407,152 @@ const CartPage = () => {
                   <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
                   {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
                 </p> */}
-                {
-                  visibleVoucher.length === 0 ?
+                {visibleVoucher.length === 0 ? (
                   <p className="text-center text-gray-600 mt-20">
-                    <FontAwesomeIcon icon={faSearch} size="sm" className="mr-2" />
-                    {locale == "contentJSONEng" ? "There is no voucher" : "Tidak ada voucher"}
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      size="sm"
+                      className="mr-2"
+                    />
+                    {locale == "contentJSONEng"
+                      ? "There is no voucher"
+                      : "Tidak ada voucher"}
                   </p>
-                  :
+                ) : (
                   <div className="mt-4 overflow-y-scroll h-[380px]">
-                    {
-                      visibleVoucher.map((voucher: Voucher) => (
-                        <div
-                          key={voucher.voucherId}
-                          className={`p-4 h-[120px] flex items-center cursor-pointer justify-between border-b-1 "border-gray-300"
-                              ${
-                                voucher.voucherSpecialEvent === true ?
-                                ""
-                                :
-                                price.totalPrice < voucher.minimumPayment || 
-                                selectedVouchers.some((v) => v.voucherType === voucher.voucherType && v.voucherId !== voucher.voucherId && !v.voucherSpecialEvent)
-                                ? "opacity-50 cursor-auto" 
-                                : 
-                                !checkVariantVoucherExist(voucher) && voucher.voucherType === "product"
-                                ? "opacity-50 cursor-auto" 
-                                :
-                                voucher.voucherType === "ongkir" && selectedShipping === null
-                                ? "opacity-50 cursor-auto" 
-                                :
-                                ""
-                              }`
-                            }
-                          onClick={() => handleSelect(voucher)}
-                        >
-                          <div className="flex items-center gap-4">
-
-                            {/* <Image src="/a.jpg" alt="Voucher" width={80} height={80} className="rounded-md" /> */}
-                            {
-                              voucher.voucherType === "percentage" &&
-                              <FontAwesomeIcon icon={faPercentage} width={80} height={80} className="rounded-md text-3xl" />
-                            }
-                            {
-                              voucher.voucherType === "fixed" &&
-                              <FontAwesomeIcon icon={faMoneyBill} width={80} height={80} className="rounded-md text-3xl" />
-                            }
-                            {
-                              voucher.voucherType === "ongkir" &&
-                              <FontAwesomeIcon icon={faShippingFast} width={80} height={80} className="rounded-md text-3xl" />
-                            }
-                            {
-                              voucher.voucherType === "product" &&
-                              <FontAwesomeIcon icon={faBottleWater} width={80} height={80} className="rounded-md text-3xl" />
-                            }
-                            <div>
-                              <div className="text-lg font-medium">{voucher.voucherName}</div>
-                              <div className="text-sm text-gray-600">
-                                {voucher.voucherType === "percentage" && `Discount ${voucher.discount}%`}
-                                {voucher.voucherType === "fixed" && `Discount Rp ${voucher.maxDiscount}`}
-                                {voucher.voucherType === "ongkir" && `Free shipping Rp ${voucher.discount}`}
-                              </div>
-                              <div className="text-sm text-gray-500">Min. payment Rp {voucher.minimumPayment}</div>
-                              {
-                                voucher.voucherType === "percentage" && 
-                                <div className="text-sm text-gray-500">Max. discount Rp {voucher.maxDiscount}</div>  
-                              }
-                              
-                              {
-                                price.totalPrice < voucher.minimumPayment &&
-                                <div className="text-xs mt-2 text-red-500">Add Rp { voucher.minimumPayment - price.totalPrice } more to use this voucher</div>
-                              }
-                              {
-                                voucher.voucherType === "ongkir" && selectedShipping === null &&
-                                <div className="text-xs mt-2 text-red-500">Please select the shipping expedition first</div>
-                              }
-                            </div>
-                          </div>
-                          <input
-                            type="checkbox"
-                            checked={selectedVouchers.some((v) => v.voucherId === voucher.voucherId)}
-                            readOnly
-                            className="h-5 w-5 cursor-pointer"
-                          />
+                    {Object.entries(
+                      visibleVoucher.reduce((acc : any, voucher : any) => {
+                        if (!acc[voucher.voucherType]) {
+                          acc[voucher.voucherType] = [];
+                        }
+                        acc[voucher.voucherType].push(voucher);
+                        return acc;
+                      }, {})
+                    ).map(([voucherType, vouchers]) => (
+                      <div key={voucherType}>
+                        <div className="text-xl font-semibold mt-4">
+                          {voucherType === "fixed" && "Fixed Amount"}
+                          {voucherType === "percentage" && "Percentage"}
+                          {voucherType === "ongkir" && "Free Shipping"}
+                          {voucherType === "product" && "Product Vouchers"}
                         </div>
-                      ))
-                    }
-                    
+
+                        {vouchers.map((voucher: Voucher) => (
+                          <div
+                            key={voucher.voucherId}
+                            className={`p-4 h-[120px] flex items-center cursor-pointer justify-between border-b-1 "border-gray-300"
+            ${
+              voucher.voucherSpecialEvent === true
+                ? ""
+                : price.totalPrice < voucher.minimumPayment ||
+                  selectedVouchers.some(
+                    (v) =>
+                      v.voucherType === voucher.voucherType &&
+                      v.voucherId !== voucher.voucherId &&
+                      !v.voucherSpecialEvent
+                  )
+                ? "opacity-50 cursor-auto"
+                : !checkVariantVoucherExist(voucher) &&
+                  voucher.voucherType === "product"
+                ? "opacity-50 cursor-auto"
+                : voucher.voucherType === "ongkir" && selectedShipping === null
+                ? "opacity-50 cursor-auto"
+                : ""
+            }`}
+                            onClick={() => handleSelect(voucher)}
+                          >
+                            <div className="flex items-center gap-4">
+                              {voucher.voucherType === "percentage" && (
+                                <FontAwesomeIcon
+                                  icon={faPercentage}
+                                  width={80}
+                                  height={80}
+                                  className="rounded-md text-3xl"
+                                />
+                              )}
+                              {voucher.voucherType === "fixed" && (
+                                <FontAwesomeIcon
+                                  icon={faMoneyBill}
+                                  width={80}
+                                  height={80}
+                                  className="rounded-md text-3xl"
+                                />
+                              )}
+                              {voucher.voucherType === "ongkir" && (
+                                <FontAwesomeIcon
+                                  icon={faShippingFast}
+                                  width={80}
+                                  height={80}
+                                  className="rounded-md text-3xl"
+                                />
+                              )}
+                              {voucher.voucherType === "product" && (
+                                <FontAwesomeIcon
+                                  icon={faBottleWater}
+                                  width={80}
+                                  height={80}
+                                  className="rounded-md text-3xl"
+                                />
+                              )}
+
+                              <div>
+                                <div className="text-lg font-medium">
+                                  {voucher.voucherName}
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  {voucher.voucherType === "percentage" &&
+                                    `Discount ${voucher.discount}%`}
+                                  {voucher.voucherType === "fixed" &&
+                                    `Discount Rp ${voucher.maxDiscount}`}
+                                  {voucher.voucherType === "ongkir" &&
+                                    `Free shipping Rp ${voucher.discount}`}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  Min. payment Rp {voucher.minimumPayment}
+                                </div>
+                                {voucher.voucherType === "percentage" && (
+                                  <div className="text-sm text-gray-500">
+                                    Max. discount Rp {voucher.maxDiscount}
+                                  </div>
+                                )}
+                                {
+                                  voucher.voucherType === "product" && (
+                                    <div className="text-sm text-gray-500">
+                                    Free  {voucher.productVariant?.product.productName || "product"} - {voucher.productVariant?.productColor || "color"}
+                                   </div>
+                                  )
+                                }
+
+                                {price.totalPrice < voucher.minimumPayment && (
+                                  <div className="text-xs mt-2 text-red-500">
+                                    Add Rp{" "}
+                                    {voucher.minimumPayment - price.totalPrice}{" "}
+                                    more to use this voucher
+                                  </div>
+                                )}
+                                {voucher.voucherType === "ongkir" &&
+                                  selectedShipping === null && (
+                                    <div className="text-xs mt-2 text-red-500">
+                                      Please select the shipping expedition
+                                      first
+                                    </div>
+                                  )}
+                              </div>
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={selectedVouchers.some(
+                                (v) => v.voucherId === voucher.voucherId
+                              )}
+                              readOnly
+                              className="h-5 w-5 cursor-pointer"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    ))}
                   </div>
-                }
+                )}
               </ModalBody>
 
               {/* Modal Footer */}
@@ -1398,15 +1563,15 @@ const CartPage = () => {
                 <Button color="danger" className='bg-red-500' variant="solid" onPress={onDelete}>
                   Confirm
                 </Button> */}
-                <Button color="secondary" onClick={handleApplyVoucher}>Apply Voucher</Button>
+                <Button color="secondary" onClick={handleApplyVoucher}>
+                  Apply Voucher
+                </Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
         </div>
       </div>
       <Footer />
-
-      
     </div>
   );
 };
