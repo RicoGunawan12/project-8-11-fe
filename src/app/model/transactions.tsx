@@ -1,3 +1,6 @@
+import { ProductVariant } from "./product";
+import { Voucher } from "./voucher";
+
 interface Product {
   defaultImage: string | null;
   productCategoryId: string;
@@ -89,6 +92,8 @@ export interface Transaction {
   voucherId: string | null;
   paymentLink: string
   awb: string;
+  voucherCode: Voucher[]
+  
 }
 
 export interface Delivery {
@@ -106,5 +111,6 @@ export interface Payment {
   totalPrice : number,
   shippingFee : number,
   voucher : number,
+  visibleVoucher : number,
   grandTotal : number
 }

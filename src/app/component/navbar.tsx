@@ -141,7 +141,7 @@ const NavigationBar = () => {
   }, []);
 
   return (
-    <div className="w-screen bg-secondary h-20 p-6 fixed top-0 flex justify-between items-center shadow-md z-[100] text-black">
+    <div className="w-screen bg-secondary h-20 p-6 fixed top-0 flex justify-between items-center shadow-md z-40 text-black">
       {/* Logo */}
       <div className="flex items-center">
         <Link href="/" className="text-3xl font-bold text-white">

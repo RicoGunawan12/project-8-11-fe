@@ -1,3 +1,5 @@
+import { ProductCard } from "./productCard";
+
 export interface Product {
   productCategoryName: string;
   productName: string;
@@ -30,6 +32,7 @@ export interface ProductVariant {
   productStock: string;
   productWeight: string;
   sku: string;
+  product: ProductCard
 }
 
 export interface CreateProductResponse {
