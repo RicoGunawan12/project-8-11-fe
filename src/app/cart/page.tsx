@@ -1092,10 +1092,10 @@ const CartPage = () => {
                 )}
                 {price.voucher != 0 ? (
                   <div className="flex justify-between">
-                    <span className="text-sm sm:text-lg font-semibold gap-2 flex">
-                      <div>Voucher:</div>
+                    <span className="text-sm gap-2 flex">
+                      <div>Voucher - { voucherCode }</div>
                     </span>
-                    <span className="font-light text-green-500">
+                    <span className="font-light text-sm text-green-500">
                       - Rp. {price.voucher > price.totalPrice ? price.totalPrice : price.voucher}
                     </span>
                   </div>
@@ -1108,10 +1108,10 @@ const CartPage = () => {
 
                     {/* <span className="text-sm sm:text-lg font-semibold gap-2 flex"> */}
 
-                    <span className="text-sm sm:text-lg gap-2 flex">
+                    <span className="text-sm gap-2 flex">
                       <div>{ voucher.voucherName }</div>
                     </span>
-                    <span className="font-light text-green-500">
+                    <span className="font-light text-sm text-green-500">
                     - Rp. {(() => {
                             if (voucher.voucherType === "fixed") {
                               return Math.min(price.totalPrice - Math.min(price.totalPrice * (voucher.discount / 100), voucher.discount)
@@ -1123,7 +1123,7 @@ const CartPage = () => {
                               )
                             }
                             if (voucher.voucherType === "ongkir") {
-                              return Math.min(price.totalPrice, voucher.discount);
+                              return Math.min(price.shippingFee, Math.min(price.totalPrice, voucher.discount));
                             }
                             if(voucher.voucherType === "product"){
                               return voucher.discount
@@ -1257,7 +1257,7 @@ const CartPage = () => {
                       visibleVoucher.map((voucher: Voucher) => (
                         <div
                           key={voucher.voucherId}
-                          className={`p-4 h-[130px] flex items-center cursor-pointer justify-between border-b-1 "border-gray-300"
+                          className={`p-4 h-[120px] flex items-center cursor-pointer justify-between border-b-1 "border-gray-300"
                               ${
                                 voucher.voucherSpecialEvent === true ?
                                 ""
