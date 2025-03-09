@@ -741,6 +741,7 @@ const CartPage = () => {
     }
 
     for (const p of data) {
+      console.log("comparing: ", p.productVariantId, voucher.variantsId)
       if (p.productVariantId == voucher.variantsId) {
         console.log(voucher, p.product_variant.productPrice);
         voucher.discount = p.product_variant.productPrice;
@@ -1378,7 +1379,7 @@ const CartPage = () => {
 
         <div className="fixed items-center z-50">
           <Modal
-          size="5xl"
+            size="5xl"
             backdrop="opaque"
             isOpen={isVoucherOpen}
             onClose={() => setIsVoucherOpen(false)}
@@ -1421,7 +1422,7 @@ const CartPage = () => {
                 ) : (
                   <div className="mt-4 overflow-y-scroll h-[380px]">
                     {Object.entries(
-                      visibleVoucher.reduce((acc : any, voucher : any) => {
+                      visibleVoucher.reduce((acc: any, voucher: any) => {
                         if (!acc[voucher.voucherType]) {
                           acc[voucher.voucherType] = [];
                         }
@@ -1441,24 +1442,24 @@ const CartPage = () => {
                           <div
                             key={voucher.voucherId}
                             className={`p-4 h-[120px] flex items-center cursor-pointer justify-between border-b-1 "border-gray-300"
-            ${
-              voucher.voucherSpecialEvent === true
-                ? ""
-                : price.totalPrice < voucher.minimumPayment ||
-                  selectedVouchers.some(
-                    (v) =>
-                      v.voucherType === voucher.voucherType &&
-                      v.voucherId !== voucher.voucherId &&
-                      !v.voucherSpecialEvent
-                  )
-                ? "opacity-50 cursor-auto"
-                : !checkVariantVoucherExist(voucher) &&
-                  voucher.voucherType === "product"
-                ? "opacity-50 cursor-auto"
-                : voucher.voucherType === "ongkir" && selectedShipping === null
-                ? "opacity-50 cursor-auto"
-                : ""
-            }`}
+                              ${
+                                voucher.voucherSpecialEvent === true
+                                  ? ""
+                                  : price.totalPrice < voucher.minimumPayment ||
+                                    selectedVouchers.some(
+                                      (v) =>
+                                        v.voucherType === voucher.voucherType &&
+                                        v.voucherId !== voucher.voucherId &&
+                                        !v.voucherSpecialEvent
+                                    )
+                                  ? "opacity-50 cursor-auto"
+                                  : !checkVariantVoucherExist(voucher) &&
+                                    voucher.voucherType === "product"
+                                  ? "opacity-50 cursor-auto"
+                                  : voucher.voucherType === "ongkir" && selectedShipping === null
+                                  ? "opacity-50 cursor-auto"
+                                  : ""
+                              }`}
                             onClick={() => handleSelect(voucher)}
                           >
                             <div className="flex items-center gap-4">
@@ -1515,13 +1516,16 @@ const CartPage = () => {
                                     Max. discount Rp {voucher.maxDiscount}
                                   </div>
                                 )}
-                                {
-                                  voucher.voucherType === "product" && (
-                                    <div className="text-sm text-gray-500">
-                                    Free  {voucher.productVariant?.product.productName || "product"} - {voucher.productVariant?.productColor || "color"}
-                                   </div>
-                                  )
-                                }
+                                {voucher.voucherType === "product" && (
+                                  <div className="text-sm text-gray-500">
+                                    Free{" "}
+                                    {voucher.productVariant?.product
+                                      .productName || "product"}{" "}
+                                    -{" "}
+                                    {voucher.productVariant?.productColor ||
+                                      "color"}
+                                  </div>
+                                )}
 
                                 {price.totalPrice < voucher.minimumPayment && (
                                   <div className="text-xs mt-2 text-red-500">
