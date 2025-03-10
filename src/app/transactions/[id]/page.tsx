@@ -615,7 +615,7 @@ const TransactionPage = () => {
               </div>
               <div className="w-full flex justify-end">
                 <div className="w-1/2 flex flex-col bg-white border-l-2 border-r-2 border-b-2 p-6">
-                <div className="mt-4 flex justify-between w-full">
+                <div className="flex justify-between w-full">
                   <div className="font-semibold text-lg text-gray-700 w-1/2">
                     Subtotal ({transaction?.transaction_details.length} items) 
                   </div>
@@ -628,7 +628,7 @@ const TransactionPage = () => {
                 </div>
 
                 {/* Apply Discounts */}
-                <div className="mb-4 w-full">
+                <div className="py-2 w-full">
                   {transaction?.voucherCode?.length ? (
                     <div className="flex w-full flex-col">
                       {transaction.voucherCode
@@ -636,9 +636,9 @@ const TransactionPage = () => {
                         .map((voucher, index) => (
                           <div
                             key={index}
-                            className="relative flex justify-between w-full  py-4 sm:py-6"
+                            className="relative flex justify-between w-full  py-2"
                           >
-                            <div className="text-lg text-gray-700 w-1/3">
+                            <div className="text-sm text-gray-700 w-1/3">
                               {voucher.voucherName}
                             </div>
 
@@ -688,7 +688,7 @@ const TransactionPage = () => {
                 </div>
 
                 {/* Total After Discount */}
-                <div className="mt-4 flex justify-between w-full">
+                <div className="flex justify-between w-full">
                   <div className="font-semibold text-lg text-gray-700">
                     Grand Total
                   </div>
