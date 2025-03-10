@@ -15,7 +15,12 @@ import { useLocaleStore } from "@/app/component/locale";
 import Link from "next/link";
 import { data } from "framer-motion/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBottleWater, faMoneyBill, faPercentage, faShippingFast } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBottleWater,
+  faMoneyBill,
+  faPercentage,
+  faShippingFast,
+} from "@fortawesome/free-solid-svg-icons";
 
 const TransactionPage = () => {
   const router = useRouter();
@@ -560,10 +565,24 @@ const TransactionPage = () => {
 
                   {/* Desktop view - table style */}
                   <div className="hidden md:block w-full text-left border ">
+                    <div className="bg-white grid grid-cols-4 gap-6 py-2 px-4 items-center border-b justify-evenly hover:bg-gray-100">
+                      <div className="flex items-center justify-center">
+                        Product Image
+                      </div>
+                      <div className="flex items-center justify-center">
+                        Product Name
+                      </div>
+                      <div className="flex items-center justify-center">
+                        Quantity
+                      </div>
+                      <div className="flex items-center justify-center">
+                        Total
+                      </div>
+                    </div>
                     {transaction?.transaction_details.map((detail) => (
                       <div
                         key={detail.transactionDetailId}
-                        className="bg-white grid grid-cols-4 gap-4 py-2 px-4 border-b justify-evenly hover:bg-gray-100"
+                        className="bg-white grid grid-cols-4 gap-4 py-2 px-4 items-center border-b justify-evenly hover:bg-gray-100"
                       >
                         <div className="flex items-center justify-center">
                           <Image
@@ -579,87 +598,134 @@ const TransactionPage = () => {
                             height={200}
                           />
                         </div>
-                        <div>
+                        <div className="flex items-center justify-center">
                           {detail.product_variant.product.productName} -{" "}
                           {detail.product_variant.productColor}
                         </div>
-                        <div>
+                        <div className="flex items-center justify-center">
                           {detail.quantity} x Rp. {detail.paidProductPrice}
                         </div>
-                        <div>
+                        <div className="flex items-center justify-center">
                           Rp. {detail.paidProductPrice * detail.quantity}
                         </div>
                       </div>
                     ))}
-
-                    {transaction?.voucherCode ? (
-                      <div className="flex w-full flex-col">
-                        {transaction.voucherCode
-                          .filter(Boolean)
-                          .map((voucher, index) => (
-                            <div
-                              key={index}
-                              className="relative grid grid-cols-4 w-full space-x-4 py-4 sm:py-6"
-                            >
-                              {/* Voucher Details */}
-                              {voucher.voucherType === "percentage" && (
-                                <FontAwesomeIcon
-                                  icon={faPercentage}
-                                  width={200}
-                                  height={200}
-                                  className="rounded-md text-3xl"
-                                />
-                              )}
-                              {voucher.voucherType === "fixed" && (
-                                <FontAwesomeIcon
-                                  icon={faMoneyBill}
-                                  width={200}
-                                  height={200}
-                                  className="rounded-md text-3xl"
-                                />
-                              )}
-                              {voucher.voucherType === "ongkir" && (
-                                <FontAwesomeIcon
-                                  icon={faShippingFast}
-                                  width={200}
-                                  height={200}
-                                  className="rounded-md text-3xl"
-                                />
-                              )}
-                              {voucher.voucherType === "product" && (
-                                <FontAwesomeIcon
-                                  icon={faBottleWater}
-                                  width={200}
-                                  height={200}
-                                  className="rounded-md text-3xl"
-                                />
-                              )}
-                              <div className="text-lg text-gray-700">
-                                Voucher Name: {voucher.voucherName} <br />
-                              </div>
-                              <div>Voucher Type: {voucher.voucherType}</div>
-
-                              {voucher.voucherType != "product" && (
-                                <div className="text-lg text-gray-600">
-                                  - Rp.{voucher.discount}
-                                </div>
-                              )}
-                              {voucher.productVariant && (
-                                <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500">
-                                  Free product:{" "}
-                                  {voucher.productVariant.product.productName} -{" "}
-                                  {voucher.productVariant.productColor}
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                      </div>
-                    ) : (
-                      <div className="text-center mt-6 h-full flex items-center">
-                        No Voucher Used
-                      </div>
-                    )}
                   </div>
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <div className="w-1/2 flex flex-col bg-white border-l-2 border-r-2 border-b-2 p-6">
+                <div className="flex justify-between w-full">
+                  <div className="font-semibold text-lg text-gray-700 w-1/2">
+                    Subtotal ({transaction?.transaction_details.length} items) 
+                  </div>
+                  <div className="text-lg text-gray-800 w-1/3 flex justify-end">
+                    Rp.{" "}
+                    {transaction?.transaction_details.reduce((acc, detail) => {
+                      return acc + detail.paidProductPrice * detail.quantity;
+                    }, 0)}
+                  </div>
+                </div>
+
+                {/* Apply Discounts */}
+                <div className="py-2 w-full">
+                  {transaction?.voucherCode?.length ? (
+                    <div className="flex w-full flex-col">
+                      {transaction.voucherCode
+                        .filter(Boolean)
+                        .map((voucher, index) => (
+                          <div
+                            key={index}
+                            className="relative flex justify-between w-full  py-2"
+                          >
+                            <div className="text-sm text-gray-700 w-1/3">
+                              {voucher.voucherName}
+                            </div>
+
+                            {/* Show Discount */}
+                            {voucher.voucherType == "fixed" && (
+                              <div className=" text-gray-600 w-1/3 flex justify-end text-sm">
+                                - Rp.{voucher.discount}
+                              </div>
+                            )}
+                            
+                            {voucher.voucherType === "percentage" && (
+                              <>
+                                {/* Calculate subtotal for the percentage discount */}
+                                {(() => {
+                                  const subtotal = transaction?.transaction_details.reduce(
+                                    (acc, detail) => acc + detail.paidProductPrice * detail.quantity,
+                                    0
+                                  );
+                                  const discountAmount = Math.min((voucher.discount * subtotal) / 100, voucher.maxDiscount)
+
+                                  return (
+                                    <div className="text-gray-600 w-1/3 flex justify-end text-sm">
+                                      - Rp.{discountAmount}
+                                    </div>
+                                  );
+                                })()}
+                              </>
+                            )}
+                            {voucher.productVariant && (
+                              <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500 w-1/3">
+                                Free product:{" "}
+                                {voucher.productVariant.product.productName} -{" "}
+                                {voucher.productVariant.productColor}
+                              </div>
+                            )}
+                            {voucher.productVariant && (
+                              <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500 w-1/3 flex justify-end">
+                                - Rp. {voucher.productVariant.productPrice}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+
+                {/* Total After Discount */}
+                <div className="flex justify-between w-full">
+                  <div className="font-semibold text-lg text-gray-700">
+                    Grand Total
+                  </div>
+
+                  {/* Calculate Total After Discount */}
+                  <div className="text-lg text-gray-800">
+                    Rp.{" "}
+                    {(() => {
+                      let subtotal = transaction?.transaction_details.reduce(
+                        (acc, detail) =>
+                          acc + detail.paidProductPrice * detail.quantity,
+                        0
+                      );
+
+                      let totalDiscount = 0;
+
+                      // Loop through voucher codes and apply any discounts
+                      transaction?.voucherCode?.forEach((voucher) => {
+                        if (voucher?.voucherType === "percentage") {
+                          // Percentage discount based on subtotal
+                          totalDiscount += Math.min(((subtotal || 0) * voucher.discount) / 100, voucher.maxDiscount)
+                        } else if (voucher?.voucherType === "fixed") {
+                          // Fixed discount
+                          totalDiscount += voucher.discount;
+                        } else if (voucher?.voucherType === "ongkir") {
+                          // Free shipping (remove the shipping cost, if any)
+                          totalDiscount += voucher.discount;
+                        } else if(voucher?.voucherType === "product"){
+                          totalDiscount += parseInt(voucher.productVariant.productPrice)
+                        }
+                      });
+
+                      const totalAfterDiscount = (subtotal || 0) - totalDiscount;
+                      return Math.max(totalAfterDiscount.toFixed(0), 0); // round to nearest whole number
+                    })()}
+                  </div>
+                </div>
                 </div>
               </div>
             </div>
