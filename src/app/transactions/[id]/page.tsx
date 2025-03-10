@@ -613,123 +613,119 @@ const TransactionPage = () => {
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div className="w-full min-h-[250px] rounded-md border-2 bg-gray-50 p-4 shadow-2xl md:w-3/4 md:p-6">
-              <h2 className="mb-4 text-xl font-semibold text-black md:text-2xl">
-                Calculation
-              </h2>
-
-              {/* Subtotal Calculation */}
-              <div className="mb-4 flex justify-between">
-                <div className="font-semibold text-lg text-gray-700 w-1/3">
-                  Subtotal ({transaction?.transaction_details.length} items)
-                </div>
-                <div className="text-lg text-gray-800 w-1/3 flex justify-end">
-                  Rp.{" "}
-                  {transaction?.transaction_details.reduce((acc, detail) => {
-                    return acc + detail.paidProductPrice * detail.quantity;
-                  }, 0)}
-                </div>
-              </div>
-
-              {/* Apply Discounts */}
-              <div className="mb-4">
-                {transaction?.voucherCode?.length ? (
-                  <div className="flex w-full flex-col">
-                    {transaction.voucherCode
-                      .filter(Boolean)
-                      .map((voucher, index) => (
-                        <div
-                          key={index}
-                          className="relative flex justify-between w-full  py-4 sm:py-6"
-                        >
-                          <div className="text-lg text-gray-700 w-1/3">
-                            {voucher.voucherName}
-                          </div>
-
-                          {/* Show Discount */}
-                          {voucher.voucherType == "fixed" && (
-                            <div className=" text-gray-600 w-1/3 flex justify-end text-sm">
-                              - Rp.{voucher.discount}
-                            </div>
-                          )}
-                          
-                          {voucher.voucherType === "percentage" && (
-                            <>
-                              {/* Calculate subtotal for the percentage discount */}
-                              {(() => {
-                                const subtotal = transaction?.transaction_details.reduce(
-                                  (acc, detail) => acc + detail.paidProductPrice * detail.quantity,
-                                  0
-                                );
-                                const discountAmount = Math.min((voucher.discount * subtotal) / 100, voucher.maxDiscount)
-
-                                return (
-                                  <div className="text-gray-600 w-1/3 flex justify-end text-sm">
-                                    - Rp.{discountAmount}
-                                  </div>
-                                );
-                              })()}
-                            </>
-                          )}
-                          {voucher.productVariant && (
-                            <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500 w-1/3">
-                              Free product:{" "}
-                              {voucher.productVariant.product.productName} -{" "}
-                              {voucher.productVariant.productColor}
-                            </div>
-                          )}
-                          {voucher.productVariant && (
-                            <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500 w-1/3 flex justify-end">
-                              - Rp. {voucher.productVariant.productPrice}
-                            </div>
-                          )}
-                        </div>
-                      ))}
+              <div className="w-full flex justify-end">
+                <div className="w-1/2 flex flex-col bg-white border-l-2 border-r-2 border-b-2 p-6">
+                <div className="mt-4 flex justify-between w-full">
+                  <div className="font-semibold text-lg text-gray-700 w-1/2">
+                    Subtotal ({transaction?.transaction_details.length} items) 
                   </div>
-                ) : (
-                  <></>
-                )}
-              </div>
-
-              {/* Total After Discount */}
-              <div className="mt-4 flex justify-between">
-                <div className="font-semibold text-lg text-gray-700">
-                  Grand Total
+                  <div className="text-lg text-gray-800 w-1/3 flex justify-end">
+                    Rp.{" "}
+                    {transaction?.transaction_details.reduce((acc, detail) => {
+                      return acc + detail.paidProductPrice * detail.quantity;
+                    }, 0)}
+                  </div>
                 </div>
 
-                {/* Calculate Total After Discount */}
-                <div className="text-lg text-gray-800">
-                  Rp.{" "}
-                  {(() => {
-                    let subtotal = transaction?.transaction_details.reduce(
-                      (acc, detail) =>
-                        acc + detail.paidProductPrice * detail.quantity,
-                      0
-                    );
+                {/* Apply Discounts */}
+                <div className="mb-4 w-full">
+                  {transaction?.voucherCode?.length ? (
+                    <div className="flex w-full flex-col">
+                      {transaction.voucherCode
+                        .filter(Boolean)
+                        .map((voucher, index) => (
+                          <div
+                            key={index}
+                            className="relative flex justify-between w-full  py-4 sm:py-6"
+                          >
+                            <div className="text-lg text-gray-700 w-1/3">
+                              {voucher.voucherName}
+                            </div>
 
-                    let totalDiscount = 0;
+                            {/* Show Discount */}
+                            {voucher.voucherType == "fixed" && (
+                              <div className=" text-gray-600 w-1/3 flex justify-end text-sm">
+                                - Rp.{voucher.discount}
+                              </div>
+                            )}
+                            
+                            {voucher.voucherType === "percentage" && (
+                              <>
+                                {/* Calculate subtotal for the percentage discount */}
+                                {(() => {
+                                  const subtotal = transaction?.transaction_details.reduce(
+                                    (acc, detail) => acc + detail.paidProductPrice * detail.quantity,
+                                    0
+                                  );
+                                  const discountAmount = Math.min((voucher.discount * subtotal) / 100, voucher.maxDiscount)
 
-                    // Loop through voucher codes and apply any discounts
-                    transaction?.voucherCode?.forEach((voucher) => {
-                      if (voucher?.voucherType === "percentage") {
-                        // Percentage discount based on subtotal
-                        totalDiscount += Math.min(((subtotal || 0) * voucher.discount) / 100, voucher.maxDiscount)
-                      } else if (voucher?.voucherType === "fixed") {
-                        // Fixed discount
-                        totalDiscount += voucher.discount;
-                      } else if (voucher?.voucherType === "ongkir") {
-                        // Free shipping (remove the shipping cost, if any)
-                        totalDiscount += voucher.discount;
-                      } else if(voucher?.voucherType === "product"){
-                        totalDiscount += parseInt(voucher.productVariant.productPrice)
-                      }
-                    });
+                                  return (
+                                    <div className="text-gray-600 w-1/3 flex justify-end text-sm">
+                                      - Rp.{discountAmount}
+                                    </div>
+                                  );
+                                })()}
+                              </>
+                            )}
+                            {voucher.productVariant && (
+                              <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500 w-1/3">
+                                Free product:{" "}
+                                {voucher.productVariant.product.productName} -{" "}
+                                {voucher.productVariant.productColor}
+                              </div>
+                            )}
+                            {voucher.productVariant && (
+                              <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500 w-1/3 flex justify-end">
+                                - Rp. {voucher.productVariant.productPrice}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
 
-                    const totalAfterDiscount = (subtotal || 0) - totalDiscount;
-                    return Math.max(totalAfterDiscount.toFixed(0), 0); // round to nearest whole number
-                  })()}
+                {/* Total After Discount */}
+                <div className="mt-4 flex justify-between w-full">
+                  <div className="font-semibold text-lg text-gray-700">
+                    Grand Total
+                  </div>
+
+                  {/* Calculate Total After Discount */}
+                  <div className="text-lg text-gray-800">
+                    Rp.{" "}
+                    {(() => {
+                      let subtotal = transaction?.transaction_details.reduce(
+                        (acc, detail) =>
+                          acc + detail.paidProductPrice * detail.quantity,
+                        0
+                      );
+
+                      let totalDiscount = 0;
+
+                      // Loop through voucher codes and apply any discounts
+                      transaction?.voucherCode?.forEach((voucher) => {
+                        if (voucher?.voucherType === "percentage") {
+                          // Percentage discount based on subtotal
+                          totalDiscount += Math.min(((subtotal || 0) * voucher.discount) / 100, voucher.maxDiscount)
+                        } else if (voucher?.voucherType === "fixed") {
+                          // Fixed discount
+                          totalDiscount += voucher.discount;
+                        } else if (voucher?.voucherType === "ongkir") {
+                          // Free shipping (remove the shipping cost, if any)
+                          totalDiscount += voucher.discount;
+                        } else if(voucher?.voucherType === "product"){
+                          totalDiscount += parseInt(voucher.productVariant.productPrice)
+                        }
+                      });
+
+                      const totalAfterDiscount = (subtotal || 0) - totalDiscount;
+                      return Math.max(totalAfterDiscount.toFixed(0), 0); // round to nearest whole number
+                    })()}
+                  </div>
+                </div>
                 </div>
               </div>
             </div>
