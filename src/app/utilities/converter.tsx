@@ -19,3 +19,24 @@ export const mapPaymentMethod = (paymentMethod: string): string => {
         return paymentMethod; // In case an unknown payment method is found
     }
   };
+
+const defaultLocales = "id-ID";
+const defaultCurrency = "IDR";
+
+const defaultNumberFormat = new Intl.NumberFormat(defaultLocales, {
+  style: "currency",
+  currency: defaultCurrency
+});
+
+export const formatCurrency = (value: number, locales: string = "id-ID", currency: string = "IDR") => {
+  if (locales === defaultLocales && currency === defaultCurrency) {
+    return defaultNumberFormat.format(value);
+  }
+
+  const numberFormat = new Intl.NumberFormat(locales, {
+    style: "currency",
+    currency
+  });
+
+  return numberFormat.format(value);
+}
