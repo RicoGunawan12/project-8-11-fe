@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@nextui-org/react";
 import Banner from "../component/banner";
 import { Loading } from "../utilities/loading";
-import { mapPaymentMethod } from "../utilities/converter";
+import { formatCurrency, mapPaymentMethod } from "../utilities/converter";
 import Footer from "../component/footer";
 import { Bounce, toast } from "react-toastify";
 import DeleteConfirmationModal from "../component/modal/deleteConfirmation";
@@ -241,8 +241,7 @@ const ProfilePage = () => {
                                 {transaction.status || "N/A"}
                               </td>
                               <td className="py-2 px-4 border-b">
-                                Rp{" "}
-                                {transaction.totalPrice.toLocaleString("id-ID")}
+                                {formatCurrency(transaction.totalPrice)}
                               </td>
                             </tr>
                           ))}

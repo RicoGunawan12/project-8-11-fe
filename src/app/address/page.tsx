@@ -4,6 +4,7 @@ import NavigationBar from "../component/navbar";
 import { getTokenCookie } from "../utilities/token";
 import { UserData } from "../model/user";
 import { Transaction } from "../model/transactions";
+import { formatCurrency } from "../utilities/converter";
 
 
 const ProfilePage = () => {
@@ -148,8 +149,7 @@ const ProfilePage = () => {
                               {transaction.status || "N/A"}
                             </td>
                             <td className="py-2 px-4 border-b">
-                              Rp{" "}
-                              {transaction.totalPrice.toLocaleString("id-ID")}
+                              {formatCurrency(transaction.totalPrice)}
                             </td>
                           </tr>
                         ))}
