@@ -1477,15 +1477,15 @@ const CartPage = () => {
                         <div className="text-lg font-medium truncate">{voucher.voucherName}</div>
                         <div className="text-sm text-gray-600 truncate">
                           {voucher.voucherType === "percentage" && `Discount ${voucher.discount}%`}
-                          {voucher.voucherType === "fixed" && `Discount Rp ${voucher.maxDiscount}`}
-                          {voucher.voucherType === "ongkir" && `Free shipping Rp ${voucher.discount}`}
+                          {voucher.voucherType === "fixed" && `Discount ${formatCurrency(voucher.maxDiscount)}`}
+                          {voucher.voucherType === "ongkir" && `Free shipping ${formatCurrency(voucher.discount)}`}
                         </div>
                         <div className="text-sm text-gray-500 truncate">
-                          Min. payment Rp {voucher.minimumPayment}
+                          Min. payment {formatCurrency(voucher.minimumPayment)}
                         </div>
                         {voucher.voucherType === "percentage" && (
                           <div className="text-sm text-gray-500 truncate">
-                            Max. discount Rp {voucher.maxDiscount}
+                            Max. discount {formatCurrency(voucher.maxDiscount)}
                           </div>
                         )}
                         {voucher.voucherType === "product" && (
@@ -1496,7 +1496,7 @@ const CartPage = () => {
 
                         {price.totalPrice < voucher.minimumPayment && (
                           <div className="text-xs mt-2 text-red-500">
-                            Add Rp {voucher.minimumPayment - price.totalPrice} more to use this voucher
+                            Add {formatCurrency(voucher.minimumPayment - price.totalPrice)} more to use this voucher
                           </div>
                         )}
                         {voucher.voucherType === "ongkir" && selectedShipping === null && (
