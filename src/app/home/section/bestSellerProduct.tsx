@@ -200,10 +200,9 @@ const BestSellerProduct = () => {
                       </div>
                     ) : (
                       <div className="flex text-xs font-normal justify-start">
-                        <p>Rp. {product.product_variants[0]?.productPrice}</p>
+                        <p>{formatCurrency(product.product_variants[0]?.productPrice)}</p>
                       </div>
                     )}
-                    {/* Rp. {product.product_variants[0]?.productPrice} */}
                   </div>
                 </div>
               </Link>
