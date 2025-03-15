@@ -8,7 +8,7 @@ import Banner from "@/app/component/banner";
 import Footer from "@/app/component/footer";
 import { Loading } from "@/app/utilities/loading";
 import { toastError, toastSuccess } from "@/app/utilities/toast";
-import { formatDate, mapPaymentMethod } from "@/app/utilities/converter";
+import { formatCurrency, formatDate, mapPaymentMethod } from "@/app/utilities/converter";
 import Image from "next/image";
 import DeleteConfirmationModal from "@/app/component/modal/deleteConfirmation";
 import { useLocaleStore } from "@/app/component/locale";
@@ -452,7 +452,7 @@ const TransactionPage = () => {
                         <div className="font-semibold">Shipping ID:</div>
                         <div>{transaction?.awb ? transaction?.awb : "-"}</div>
                         <div className="font-semibold">Total Price:</div>
-                        <div>Rp. {transaction?.totalPrice}</div>
+                        <div>{formatCurrency(transaction?.totalPrice ?? 0)}</div>
                         <div className="font-semibold">Status:</div>
                         <div>{transaction?.status}</div>
                         <div className="font-semibold">Shipping:</div>
@@ -485,7 +485,7 @@ const TransactionPage = () => {
                           {formatDate(transaction?.transactionDate || "")}
                         </td>
                         <td className="py-2 px-4 border-b">
-                          Rp. {transaction?.totalPrice}
+                          {formatCurrency(transaction?.totalPrice ?? 0)}
                         </td>
                         <td className="py-2 px-4 border-b">
                           {transaction?.status}
@@ -553,10 +553,10 @@ const TransactionPage = () => {
                           <div className="font-semibold">Quantity:</div>
                           <div>{detail.quantity}</div>
                           <div className="font-semibold">Price:</div>
-                          <div>Rp. {detail.paidProductPrice}</div>
+                          <div>{formatCurrency(detail.paidProductPrice)}</div>
                           <div className="font-semibold">Total:</div>
                           <div>
-                            Rp. {detail.paidProductPrice * detail.quantity}
+                            {formatCurrency(detail.paidProductPrice * detail.quantity)}
                           </div>
                         </div>
                       </div>
@@ -603,10 +603,10 @@ const TransactionPage = () => {
                           {detail.product_variant.productColor}
                         </div>
                         <div className="flex items-center justify-center">
-                          {detail.quantity} x Rp. {detail.paidProductPrice}
+                          {detail.quantity} x {formatCurrency(detail.paidProductPrice)}
                         </div>
                         <div className="flex items-center justify-center">
-                          Rp. {detail.paidProductPrice * detail.quantity}
+                          {formatCurrency(detail.paidProductPrice * detail.quantity)}
                         </div>
                       </div>
                     ))}
@@ -620,10 +620,9 @@ const TransactionPage = () => {
                     Subtotal ({transaction?.transaction_details.length} items) 
                   </div>
                   <div className="text-lg text-gray-800 w-1/3 flex justify-end">
-                    Rp.{" "}
-                    {transaction?.transaction_details.reduce((acc, detail) => {
+                    {formatCurrency(transaction?.transaction_details.reduce((acc, detail) => {
                       return acc + detail.paidProductPrice * detail.quantity;
-                    }, 0)}
+                    }, 0) ?? 0)}
                   </div>
                 </div>
 
@@ -645,7 +644,7 @@ const TransactionPage = () => {
                             {/* Show Discount */}
                             {voucher.voucherType == "fixed" && (
                               <div className=" text-gray-600 w-1/3 flex justify-end text-sm">
-                                - Rp.{voucher.discount}
+                                - {formatCurrency(voucher.discount)}
                               </div>
                             )}
                             
@@ -661,7 +660,7 @@ const TransactionPage = () => {
 
                                   return (
                                     <div className="text-gray-600 w-1/3 flex justify-end text-sm">
-                                      - Rp.{discountAmount}
+                                      - {formatCurrency(discountAmount)}
                                     </div>
                                   );
                                 })()}
@@ -676,7 +675,7 @@ const TransactionPage = () => {
                             )}
                             {voucher.productVariant && (
                               <div className="mt-4 sm:mt-0 sm:text-sm text-gray-500 w-1/3 flex justify-end">
-                                - Rp. {voucher.productVariant.productPrice}
+                                - {formatCurrency(parseInt(voucher.productVariant.productPrice))}
                               </div>
                             )}
                           </div>
@@ -695,7 +694,6 @@ const TransactionPage = () => {
 
                   {/* Calculate Total After Discount */}
                   <div className="text-lg text-gray-800">
-                    Rp.{" "}
                     {(() => {
                       let subtotal = transaction?.transaction_details.reduce(
                         (acc, detail) =>
@@ -722,7 +720,7 @@ const TransactionPage = () => {
                       });
 
                       const totalAfterDiscount = (subtotal || 0) - totalDiscount;
-                      return Math.max(totalAfterDiscount.toFixed(0), 0); // round to nearest whole number
+                      return formatCurrency(Math.max(parseInt(totalAfterDiscount.toFixed(0)), 0)); // round to nearest whole number
                     })()}
                   </div>
                 </div>
