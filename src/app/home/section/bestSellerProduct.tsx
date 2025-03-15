@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useLocaleStore } from "@/app/component/locale";
 import Page from "@/app/model/pageModel";
 import { Loading } from "@/app/utilities/loading";
+import { formatCurrency } from "@/app/utilities/converter";
 
 const BestSellerProduct = () => {
   const [products, setProducts] = useState<ExploreProduct[]>();
@@ -185,17 +186,16 @@ const BestSellerProduct = () => {
                     product.promo_details[0].promo != null ? (
                       <div className="flex flex-wrap text-xs font-normal justify-start">
                         <span className="line-through mr-2 text-gray-600">
-                          Rp. {product.product_variants[0]?.productPrice}
+                          {formatCurrency(product.product_variants[0]?.productPrice)}
                         </span>
                         <span className="font-semibold">
-                          Rp.{" "}
                           {product.product_variants[0]?.productPrice -
                             product.promo_details[0].promo?.promoAmount >
                           0
                             ? 
-                                product.product_variants[0]?.productPrice
-                               - product.promo_details[0].promo?.promoAmount
-                            : 0}
+                                formatCurrency(product.product_variants[0]?.productPrice
+                               - product.promo_details[0].promo?.promoAmount)
+                            : formatCurrency(0)}
                         </span>
                       </div>
                     ) : (

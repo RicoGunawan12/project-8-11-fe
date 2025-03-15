@@ -8,6 +8,7 @@ import { Loading } from "@/app/utilities/loading";
 import { ProductCard } from "@/app/model/productCard";
 import StarRating from "@/app/utilities/rating";
 import { getUserId } from "@/app/utilities/token";
+import { formatCurrency } from "@/app/utilities/converter";
 
 // Declare fbq for TypeScript
 declare global {
@@ -153,17 +154,17 @@ const OurProductSection = () => {
                       {product.promo_details[0] && product.promo_details[0].promo != null ? (
                         <div className="flex flex-wrap text-xs font-normal justify-start">
                           <span className="line-through mr-2 text-gray-600">
-                            Rp. {product.product_variants[0]?.productPrice}
+                            {formatCurrency(parseInt(product.product_variants[0]?.productPrice))}
                           </span>
                           <span className="font-semibold">
-                            Rp. {parseInt(product.product_variants[0]?.productPrice) - product.promo_details[0].promo?.promoAmount > 0
-                              ? parseInt(product.product_variants[0]?.productPrice) - product.promo_details[0].promo?.promoAmount
-                              : 0}
+                            {parseInt(product.product_variants[0]?.productPrice) - product.promo_details[0].promo?.promoAmount > 0
+                              ? formatCurrency(parseInt(product.product_variants[0]?.productPrice) - product.promo_details[0].promo?.promoAmount)
+                              : formatCurrency(0)}
                           </span>
                         </div>
                       ) : (
                         <div className="flex text-xs font-normal justify-start">
-                          <p>Rp. {product.product_variants[0]?.productPrice}</p>
+                          <p>{formatCurrency(parseInt(product.product_variants[0]?.productPrice))}</p>
                         </div>
                       )}
                     </div>
