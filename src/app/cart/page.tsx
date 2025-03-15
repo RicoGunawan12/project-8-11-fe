@@ -39,6 +39,7 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import { Voucher } from "../model/voucher";
+import { formatCurrency } from "../utilities/converter";
 
 const CartPage = () => {
   const router = useRouter();
@@ -835,22 +836,21 @@ const CartPage = () => {
                     quantities[item.productVariantId] === 1 ? (
                       <div>
                         <span className="line-through mr-2 text-gray-600">
-                          Rp. {item.product_variant?.productPrice}
+                          {formatCurrency(item.product_variant?.productPrice)}
                         </span>
                         <span className="font-semibold">
-                          Rp.{" "}
                           {item.product_variant?.productPrice -
                             item.product_variant.product?.promo_details[0].promo
                               .promoAmount >
                           0
-                            ? item.product_variant?.productPrice -
+                            ? formatCurrency(item.product_variant?.productPrice -
                               item.product_variant.product?.promo_details[0]
-                                .promo.promoAmount
-                            : 0}
+                                .promo.promoAmount)
+                            : formatCurrency(0)}
                         </span>
                       </div>
                     ) : (
-                      <div>Rp. {item.product_variant?.productPrice}</div>
+                      <div>{formatCurrency(item.product_variant?.productPrice)}</div>
                     )}
                   </div>
                   <div className="flex items-center justify-center mt-2 sm:mt-0 sm:ml-4">
@@ -1030,7 +1030,7 @@ const CartPage = () => {
                     <option key={index} value={option.shipping_name}>
                       <div className="flex justify-between w-full">
                         <div>
-                          {option.shipping_name} - Rp. {option.shipping_cost}
+                          {option.shipping_name} - {formatCurrency(option.shipping_cost)}
                         </div>
                         {/* <div className="text-red-500">{option?.is_cod ? "" : "X COD"}</div> */}
                       </div>
@@ -1164,7 +1164,7 @@ const CartPage = () => {
                     :
                   </span>
                   <span className="font-light text-black">
-                    Rp. {price.totalPrice}
+                    {formatCurrency(price.totalPrice)}
                   </span>
                 </div>
                 {selectedShipping && (
@@ -1177,37 +1177,36 @@ const CartPage = () => {
                         :
                       </span>
                       <span className="font-light text-black">
-                        Rp.
                         {ongkir?.status === "Active" ? (
                           ongkir?.minimumPaymentAmount <
                           price.totalPrice - price.voucher ? (
                             price.shippingFee > ongkir?.maximumFreeOngkir ? (
                               <span>
                                 <span className="line-through text-gray-300 mx-2">
-                                  {price.shippingFee}
+                                  {formatCurrency(price.shippingFee)}
                                 </span>
-                                {price.shippingFee - ongkir?.maximumFreeOngkir}
+                                {formatCurrency(price.shippingFee - ongkir?.maximumFreeOngkir)}
                               </span>
                             ) : locale == "contentJSONEng" ? (
                               <span>
                                 <span className="line-through text-gray-300 mx-2">
-                                  {price.shippingFee}
+                                  {formatCurrency(price.shippingFee)}
                                 </span>{" "}
-                                0 (Free Delivery)
+                                {formatCurrency(0)} (Free Delivery)
                               </span>
                             ) : (
                               <span>
                                 <span className="line-through text-gray-300 mx-2">
                                   {price.shippingFee}
                                 </span>{" "}
-                                0 (Gratis)
+                                {formatCurrency(0)} (Gratis)
                               </span>
                             )
                           ) : (
-                            price.shippingFee
+                            formatCurrency(price.shippingFee)
                           )
                         ) : (
-                          price.shippingFee
+                          formatCurrency(price.shippingFee)
                         )}
                       </span>
                     </div>
@@ -1216,18 +1215,18 @@ const CartPage = () => {
                       price.totalPrice - price.voucher ? (
                         locale === "contentJSONEng" ? (
                           <span>
-                            Add Rp.
-                            {ongkir?.minimumPaymentAmount -
+                            Add 
+                            {formatCurrency(ongkir?.minimumPaymentAmount -
                               price.totalPrice -
-                              price.voucher}{" "}
+                              price.voucher)}{" "}
                             more to get free delivery
                           </span>
                         ) : (
                           <span>
-                            Tambah Rp.{" "}
-                            {ongkir?.minimumPaymentAmount -
+                            Tambah 
+                            {formatCurrency(ongkir?.minimumPaymentAmount -
                               price.totalPrice -
-                              price.voucher}{" "}
+                              price.voucher)}{" "}
                             untuk mendapatkan gratis biaya pengiriman
                           </span>
                         )
@@ -1241,10 +1240,10 @@ const CartPage = () => {
                       <div>Voucher - {voucherCode}</div>
                     </span>
                     <span className="font-light text-sm text-green-500">
-                      - Rp.{" "}
+                      - 
                       {price.voucher > price.totalPrice
-                        ? price.totalPrice
-                        : price.voucher}
+                        ? formatCurrency(price.totalPrice)
+                        : formatCurrency(price.voucher)}
                     </span>
                   </div>
                 ) : null}
@@ -1261,30 +1260,30 @@ const CartPage = () => {
                         <div>{voucher.voucherName}</div>
                       </span>
                       <span className="font-light text-sm text-green-500">
-                        - Rp.{" "}
+                        - 
                         {(() => {
                           if (voucher.voucherType === "fixed") {
-                            return Math.min(
+                            return formatCurrency(Math.min(
                               price.totalPrice,
                               voucher.maxDiscount
-                            );
+                            ));
                           }
                           if (voucher.voucherType === "percentage") {
-                            return Math.min(
+                            return formatCurrency(Math.min(
                               price.totalPrice * (voucher.discount / 100),
                               voucher.maxDiscount
-                            );
+                            ));
                           }
                           if (voucher.voucherType === "ongkir") {
-                            return Math.min(
+                            return formatCurrency(Math.min(
                               price.shippingFee,
                               Math.min(price.totalPrice, voucher.discount)
-                            );
+                            ));
                           }
                           if (voucher.voucherType === "product") {
-                            return voucher.discount;
+                            return formatCurrency(voucher.discount);
                           }
-                          return 0;
+                          return formatCurrency(0);
                         })()}
                       </span>
                     </div>
@@ -1296,8 +1295,7 @@ const CartPage = () => {
                     Grand Total:
                   </span>
                   <span className="font-light text-black">
-                    Rp.{" "}
-                    {price.totalPrice +
+                    {formatCurrency(price.totalPrice +
                       (ongkir?.status === "Active"
                         ? ongkir?.minimumPaymentAmount <
                           price.totalPrice - price.voucher
@@ -1323,7 +1321,7 @@ const CartPage = () => {
                             ? price.totalPrice
                             : price.voucher),
                         price.visibleVoucher
-                      )}
+                      ))}
                   </span>
                 </div>
               </div>
