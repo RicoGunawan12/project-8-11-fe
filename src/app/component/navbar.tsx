@@ -9,6 +9,7 @@ import { useLocaleStore } from "./locale";
 import Image from "next/image";
 import DeleteConfirmationModal from "./modal/deleteConfirmation";
 import { useRouter } from "next/navigation";
+import { formatCurrency } from "../utilities/converter";
 
 const NavigationBar = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -436,12 +437,12 @@ const NavigationBar = () => {
                           {
                             product.promo_details[0] && product.promo_details[0].promo != null ?
                               <div className="flex justify-start">
-                                <span className="line-through mr-2 text-gray-600">Rp. {product.product_variants[0]?.productPrice}</span>
-                                <span className="font-semibold text-black">Rp. {product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount > 0 ? product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount : 0}</span>
+                                <span className="line-through mr-2 text-gray-600">{formatCurrency(product.product_variants[0]?.productPrice)}</span>
+                                <span className="font-semibold text-black">{product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount > 0 ? formatCurrency(product.product_variants[0]?.productPrice - product.promo_details[0].promo?.promoAmount) : formatCurrency(0)}</span>
                               </div>
                               :
                               <div className="text-black">
-                                Rp. {product.product_variants[0]?.productPrice}
+                                {formatCurrency(product.product_variants[0]?.productPrice)}
                               </div>
                           }
                         </div>
