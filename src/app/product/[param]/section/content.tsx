@@ -12,6 +12,7 @@ import Footer from "@/app/component/footer";
 import StarRating from "@/app/utilities/rating";
 import { Rating, RatingCount } from "@/app/model/rating";
 import Link from "next/link";
+import { formatCurrency } from "@/app/utilities/converter";
 
 const TABS = ["Product Descriptions", "Product Review"];
 
@@ -324,21 +325,20 @@ const ProductDetailContent = () => {
                 data.promo_details[0].promo != null ? (
                   <div>
                     <span className="line-through mr-2 text-gray-600">
-                      Rp. {data.product_variants[buyVariant]?.productPrice}
+                      {formatCurrency(parseInt(data.product_variants[buyVariant]?.productPrice))}
                     </span>
                     <span className="font-semibold text-black">
-                      Rp.{" "}
-                      {Math.max(
+                      {formatCurrency(Math.max(
                         parseInt(
                           data.product_variants[buyVariant]?.productPrice
                         ) - data.promo_details[0].promo?.promoAmount,
                         0
-                      )}
+                      ))}
                     </span>
                   </div>
                 ) : (
                   <div>
-                    Rp. {data.product_variants[buyVariant]?.productPrice}
+                    {formatCurrency(parseInt(data.product_variants[buyVariant]?.productPrice))}
                   </div>
                 )}
               </div>
@@ -615,22 +615,21 @@ const ProductDetailContent = () => {
                   product.promo_details[0].promo != null ? (
                     <div className="flex flex-wrap text-xs font-normal justify-start">
                       <span className="line-through mr-2 text-gray-600">
-                        Rp. {product.product_variants[0]?.productPrice}
+                        {formatCurrency(parseInt(product.product_variants[0]?.productPrice))}
                       </span>
                       <span className="font-semibold">
-                        Rp.{" "}
                         {parseInt(product.product_variants[0]?.productPrice) -
                           product.promo_details[0].promo?.promoAmount >
                         0
-                          ? parseInt(
+                          ? formatCurrency(parseInt(
                               product.product_variants[0]?.productPrice
-                            ) - product.promo_details[0].promo?.promoAmount
-                          : 0}
+                            ) - product.promo_details[0].promo?.promoAmount)
+                          : formatCurrency(0)}
                       </span>
                     </div>
                   ) : (
                     <div className="flex text-xs font-normal justify-start">
-                      <p>Rp. {product.product_variants[0]?.productPrice}</p>
+                      <p>{formatCurrency(parseInt(product.product_variants[0]?.productPrice))}</p>
                     </div>
                   )}
                 </div>
