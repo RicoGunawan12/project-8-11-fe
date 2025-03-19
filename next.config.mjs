@@ -35,6 +35,7 @@ const nextConfig = {
     BANNERS: process.env.BANNERS,
     RATINGS: process.env.RATINGS,
     META_PIXEL: process.env.META_PIXEL,
+    TIKTOK_PIXEL: process.env.TIKTOK_PIXEL,
     GOOGLE_ANALYTICS: process.env.GOOGLE_ANALYTICS,
     CAROUSELS : process.env.CAROUSELS,
     LOCATIONS : process.env.LOCATIONS,
