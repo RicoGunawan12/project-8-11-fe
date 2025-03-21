@@ -23,6 +23,7 @@ const OurProductSection = () => {
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
 
   useEffect(() => {
+
     const fetchData = async () => {
       try {
         setLoading(true);

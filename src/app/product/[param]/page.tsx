@@ -1,7 +1,8 @@
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import ProductDetailContent from "./section/content";
 import { Metadata } from "next";
+import { getUserId } from "@/app/utilities/token";
 
 type Props = {
   params: Promise<{ param: string }>;
@@ -50,6 +51,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 }
 
 const ProductDetailPage = () => {
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'View Product Detail Page', {
+        user_id : getUserId()
+      });
+    }
+  }, [])
 
   return (
     <ProductDetailContent />

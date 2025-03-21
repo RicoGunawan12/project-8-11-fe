@@ -2,7 +2,7 @@
 import NavigationBar from '@/app/component/navbar';
 import { ErrorMessage } from '@/app/model/error';
 import { toastError, toastSuccess } from '@/app/utilities/toast';
-import { checkTokenCookieValid, deleteTokenCookie, getTokenCookie } from '@/app/utilities/token';
+import { checkTokenCookieValid, deleteTokenCookie, getTokenCookie, getUserId } from '@/app/utilities/token';
 import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
@@ -65,10 +65,15 @@ const AddressForm = () => {
 
     useEffect(() => {
         const checkAuthenticated = async () => {
-          await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
+            await checkTokenCookieValid().then((value) => { setAuthenticated(value); if (!value) { router.push(`${process.env.LOGIN_ENDPOINT}`); } });
         };
-      
+        
         checkAuthenticated();
+        if (typeof window !== 'undefined' && window.fbq) {
+          window.fbq('track', 'View Add User Address Page', {
+            user_id : getUserId()
+          });
+        }
     }, []);
 
     useEffect(() => {

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NavigationBar from "../component/navbar";
-import { deleteTokenCookie, getTokenCookie } from "../utilities/token";
+import { deleteTokenCookie, getTokenCookie, getUserId } from "../utilities/token";
 import { UserData } from "../model/user";
 import { Transaction } from "../model/transactions";
 import { useRouter } from "next/navigation";
@@ -30,6 +30,14 @@ const ProfilePage = () => {
   const router = useRouter();
   const [selectedAddress, setSelectedAddress] = useState({ name: '', category: '', id: '' })
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'View Profile Page', {
+        user_id : getUserId()
+      });
+    }
+  }, [])
 
   const fetchData = async () => {
     if (!clientToken) {

@@ -173,6 +173,14 @@ const CartPage = () => {
   // }
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'View Cart Page', {
+        user_id : getUserId()
+      });
+    }
+  }, [])
+
+  useEffect(() => {
     const token = getTokenCookie();
     setClientToken(token);
 

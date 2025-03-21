@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { toastError, toastSuccess } from "../utilities/toast";
-import { getTokenCookie } from "../utilities/token";
+import { getTokenCookie, getUserId } from "../utilities/token";
 import { Transaction } from "../model/transactions";
 import NavigationBar from "../component/navbar";
 import Link from "next/link";
@@ -11,6 +11,15 @@ const TransactionPage = () => {
   const router = useRouter();
   const [data, setData] = useState<Transaction[]>([]);
   const clientToken = getTokenCookie();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'View Transaction History Page', {
+        user_id : getUserId()
+      });
+    }
+  }, [])
+
 
   useEffect(() => {
     const fetchData = async () => {
